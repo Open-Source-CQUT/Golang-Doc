@@ -42,6 +42,7 @@ export default hopeTheme({
 
 
     plugins: {
+        git:true,
         autoCatalog: false,
         readingTime: {
             wordPerMinute: 200
