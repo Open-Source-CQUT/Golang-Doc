@@ -35,6 +35,6 @@ title: 语法基础
 
 [15.哈希表](15.map.md)
 
-[16.指针](15.pointer.md)
+[16.指针](16.pointer.md)
 
 

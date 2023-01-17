@@ -38,7 +38,7 @@
 | -------------- | ------------------------------------------------------------ |
 | 地鼠文档       | [地鼠文档 (topgoer.cn)](https://www.topgoer.cn/)（内容非常多，全是免费的，对我帮助最大的网站） |
 | Go语言中文网   | [首页 - Go语言中文网 - Golang中文社区 (studygolang.com)](https://studygolang.com/) |
-| Go语言菜鸟教程 | [Go 语言教程 菜鸟教程 (runoob.com)](https://www.runoob.com/go/go-tutorial.html) |
+| Go语言菜鸟教程 | [Go 语言教程 菜鸟教程 (runoob.com)](https://www.runoob.com/go/go-tutorial.html) （最良心的论坛没有之一） |
 | Go技术栈       | [Golang技术专栏 - Golang技术栈，Golang文章、教程、视频分享！ (golang-tech-stack.com)](https://golang-tech-stack.com/tutorial/) |
 | Go语言入门教程 | [Go语言入门教程，Golang入门教程（非常详细） (biancheng.net)](http://c.biancheng.net/golang/) |
 | Go语言中文网   | [首页 - Go语言中文网 - Golang中文社区 (studygolang.com)](https://studygolang.com/) |

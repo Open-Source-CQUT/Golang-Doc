@@ -24,7 +24,7 @@ features:
 
 - title: 工具完善
   icon: emmet
-  details: Go语言有一套完善且成熟的工具链，从编码到依赖，再从编译到测试，极大的提高了开发效率。
+  details: Go语言有一套完善且成熟的工具链，从编码到依赖，再从编译到测试，极大地提升了开发效率。
 
 - title: 生态良好
   icon: flex
@@ -34,9 +34,9 @@ features:
   icon: mount
   details: Go语言广泛应用于云原生，区块链，Web，游戏开发等互联网科技行业，使用Go语言的行业也在逐步变多。
 
-- title: 前景巨大
+- title: 前景良好
   icon: network
-  details: ⼴泛应用于Web，人工智能、⼤数据开发、数据分析及科学计算、运维开发、爬虫开发、游戏开发等领域。
+  details: Go在自己擅长的领域有着非常不俗的表现，发展势头十分强劲，使用人数也在逐渐增多，未来的前景十分令人看好。
 
 copyright: false
 footer: MIT Licensed | Copyright © 2021-present 寒江

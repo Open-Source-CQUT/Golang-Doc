@@ -38,6 +38,7 @@ export const zhSidebar = sidebar({
             children: [
                 {icon: "discover", text: "中间件", prefix: "middleware/", collapsible: true, children: "structure"},
                 {icon: "snow", text: "有趣技术", prefix: "thirdPart/", collapsible: true, children: "structure"},
+                {icon: "git", text: "Git", prefix: "git/", collapsible: true, children: "structure"},
                 {icon: "relation", text: "Docker", prefix: "docker/", collapsible: true, children: "structure"},
                 {icon: "linux", text: "Linux", prefix: "linux/", collapsible: true, children: "structure"},
             ]

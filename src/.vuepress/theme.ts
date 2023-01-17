@@ -29,7 +29,7 @@ export default hopeTheme({
     // 是否展示脚注
     displayFooter: false,
     // 仓库中的文件夹
-    docsDir: "Golang-Doc/src/",
+    docsDir: "/src",
     // 导航栏
     navbar: zhNavbar,
     // 侧边栏
@@ -45,7 +45,7 @@ export default hopeTheme({
         git:true,
         autoCatalog: false,
         readingTime: {
-            wordPerMinute: 200
+            wordPerMinute: 150
         },
         // markdown增强
         mdEnhance: {

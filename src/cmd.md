@@ -323,3 +323,92 @@ go doc template.new
  go doc json.Number.Int64
 ```
 
+
+
+## Embed
+
+基本用法:
+
+```go
+//go:embed static
+var content []byte
+```
+
+`embed`是用于解决编译时将静态文件打包入二进制执行程序内部的问题，有一些静态文件在运行期间是不可能会改变的，可以在打包时将其嵌入二进制程序内部。在使用时有几个需要注意的点：
+
+- 注释的变量类型仅支持三种 `string`，`[]byte`，`embed.FS`，即便是别名也不允许，并且只能声明不能初始化。
+- 注释时与`//`不能有空格间隔，否则会被当作普通注释。
+- 路径只能书写相对路径，路径中不能以`.` 或`/`开头，匹配多个路径时要使用`path.Match`风格的模式匹配。
+
+以下是几种符合规划的例子
+
+```go
+//go:embed README.txt
+var ReadMe string // 字符串
+
+//go:embed README.txt
+var ReadMeBytes []byte // 字节切片
+
+//go:embed static
+var StaticDir embed.FS // 如果想要嵌入多个文件或者目录必须使用embed.FS
+
+//go:embed static template
+//go:embed web/index.html
+var ResourceDir embed.FS
+```
+
+**示例**
+
+假设有如下文件结构
+
+```text
+test/
+|
+|--defaultConfig.yml
+```
+
+在开发时经常会遇到默认配置的情况，一般来说如果初始化时没有配置文件，就应该自动生成一个，所以选择将默认配置文件嵌入二进制程序。
+
+```go
+package embed_test
+
+import (
+	"bytes"
+	"embed"
+	"fmt"
+	"io"
+	"os"
+	"testing"
+)
+
+//go:embed defaultConfig.yml
+var defaultConfigString string
+
+func TestEmbedString(t *testing.T) {
+	dist, err := os.Create("./config.yml")
+	fmt.Println(err)
+	io.Copy(dist, bytes.NewBufferString(defaultConfigString))
+}
+
+//go:embed defaultConfig.yml
+var defaultConfigBytes []byte
+
+func TestEmbedBytes(t *testing.T) {
+	dist, err := os.Create("./config.yml")
+	fmt.Println(err)
+	io.Copy(dist, bytes.NewReader(defaultConfigBytes))
+}
+
+//go:embed defaultConfig.yml
+var defaultConfigFS embed.FS
+
+func TestEmbedFS(t *testing.T) {
+	dist, err := os.Create("./config.yml")
+	fmt.Println(err)
+	file, err := defaultConfigFS.Open("defaultConfig.yml")
+	fmt.Println(err)
+	io.Copy(dist, file)
+}
+
+```
+

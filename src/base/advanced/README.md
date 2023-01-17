@@ -9,20 +9,22 @@ index: false
 
 [19.接口](19.interface.md)
 
-[20.延迟调用](20.defer.md)
+[20.泛型](20.generic.md)
 
-[21.异常](21.error.md)
+[21.延迟调用](20.defer.md)
 
-[22.文件IO](22.io.md)
+[22.异常](21.error.md)
 
-[23.反射](23.reflect.md)
+[23.文件IO](22.io.md)
 
-[24.并发](24.concurrency.md)
+[24.反射](23.reflect.md)
 
-[25.依赖管理](25.dependency.md)
+[25.并发](24.concurrency.md)
 
-[26.数据编码](26.encode.md)
+[26.依赖管理](25.dependency.md)
 
-[27.模板引擎](27.template.md)
+[27.数据编码](26.encode.md)
 
-[28.单元测试](28.test.md)
+[28.模板引擎](27.template.md)
+
+[29.单元测试](28.test.md)

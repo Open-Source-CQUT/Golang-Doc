@@ -306,7 +306,9 @@ PASS
 
 
 
-## 寻找子串的位置
+## 子串的位置
+
+返回第一次出现的子串的下标
 
 ```go
 func Index(s, substr string) int
@@ -318,13 +320,13 @@ func Index(s, substr string) int
 func IndexAny(s, chars string) int 
 ```
 
-返回子串中任意第一个出现的字符下标
+返回第一次出现的子串的下标
 
 ```go
 func IndexRune(s string, r rune) int
 ```
 
-返回s中第一次出现字符r的下标
+示例
 
 ```go
 func TestIndex(t *testing.T) {
@@ -343,5 +345,407 @@ func TestIndex(t *testing.T) {
 PASS
 ```
 
+<br/>
 
+返回最后一次出现的子串的下标
+
+```go
+func LastIndex(s, substr string) int
+```
+
+返回最后一次出现的子串任意字符的下标
+
+```go
+func LastIndexAny(s, chars string) int
+```
+
+示例
+
+```go
+func TestLastIndex(t *testing.T) {
+	fmt.Println(strings.LastIndex("abcdefga", "a"))
+	fmt.Println(strings.LastIndexAny("abcdefghisa", "ba"))
+}
+```
+
+
+
+## 遍历替换字符串
+
+Map 返回字符串 s 的副本，并根据映射函数修改字符串 s 的所有字符。如果映射返回负值，则从字符串中删除该字符，不进行替换
+
+```go
+func Map(mapping func(rune) rune, s string) string
+```
+
+示例
+
+```go
+func TestMap(t *testing.T) {
+   fmt.Println(strings.Map(func(r rune) rune {
+      return r - 32
+   }, "abcdefghijk"))
+   fmt.Println(strings.Map(func(r rune) rune {
+      return r + 32
+   }, "ABCDEFGHIJK"))
+   fmt.Println(strings.Map(func(r rune) rune {
+      if r < 'F' {
+         return -1
+      } else {
+         return r
+      }
+   }, "ABCDEFGHIJK"))
+}
+```
+
+输出
+
+```text
+=== RUN   TestMap
+ABCDEFGHIJK
+abcdefghijk
+FGHIJK
+--- PASS: TestMap (0.00s)
+PASS
+```
+
+
+
+## 重复复制字符串
+
+根据给定的Count复制字符串，如果为负数会导致`panic`
+
+```go
+func Repeat(s string, count int) string
+```
+
+示例
+
+```go
+func TestRepeat(t *testing.T) {
+   fmt.Println(strings.Repeat("a", 10))
+   fmt.Println(strings.Repeat("abc", 10))
+}
+```
+
+输出
+
+```
+=== RUN   TestRepeat
+aaaaaaaaaa
+abcabcabcabcabcabcabcabcabcabc
+--- PASS: TestRepeat (0.00s)
+PASS
+```
+
+
+
+## 替换字符串
+
+s为源字符串，old指要被替换的部分，new指old的替换部分，n指的是替换次数，n小于0时表示不限制替换次数。
+
+```go
+func Replace(s, old, new string, n int) string
+```
+
+示例
+
+```go
+func TestReplace(t *testing.T) {
+   fmt.Println(strings.Replace("Hello this is golang", "golang", "c++", 1))
+   fmt.Println(strings.Replace("Hello this is golang", "o", "c", -1))
+   fmt.Println(strings.Replace("Hello this is golang", "o", "c", 1))
+}
+```
+
+输出
+
+```
+=== RUN   TestReplace
+Hello this is c++
+Hellc this is gclang
+Hellc this is golang
+--- PASS: TestReplace (0.00s)
+PASS
+```
+
+<br>
+
+ `Replace`的方便函数，等价于`stings.Replace(s,old,new,-1)`
+
+```go
+func ReplaceAll(s, old, new string) string
+```
+
+示例
+
+```go
+func TestReplaceAll(t *testing.T) {
+	fmt.Println(strings.ReplaceAll("Hello this is golang", "o", "c++"))
+}
+```
+
+输出
+
+```
+=== RUN   TestReplaceAll
+Hellc++ this is gc++lang
+--- PASS: TestReplaceAll (0.00s)
+PASS
+```
+
+
+
+## 分隔字符串
+
+根据子串sep将字符串s分隔成一个字符串切片
+
+```go
+func Split(s, sep string) []string
+```
+
+根据子串sep将字符串s分隔成一个字符串切片，其分隔次数由n决定
+
+```go
+func SplitN(s, sep string, n int) []string
+```
+
+根据子串sep将字符串s分隔成包含sep的字符串元素组成的字符串切片
+
+```go
+func SplitAfter(s, sep string) []string
+```
+
+根据子串sep将字符串s分隔成包含sep的字符串元素组成的字符串切片，其分隔次数由n决定
+
+```go
+func SplitAfterN(s, sep string, n int) []string
+```
+
+示例
+
+```go
+func TestSplit(t *testing.T) {
+   fmt.Printf("%q\n", strings.Split("this is go language", " "))
+   fmt.Printf("%q\n", strings.SplitN("this is go language", " ", 2))
+   fmt.Printf("%q\n", strings.SplitAfter("this is go language", " "))
+   fmt.Printf("%q\n", strings.SplitAfterN("this is go language", " ", 2))
+}
+```
+
+输出
+
+```
+=== RUN   TestSplit
+["this" "is" "go" "language"]
+["this" "is go language"]
+["this " "is " "go " "language"]
+["this " "is go language"]
+--- PASS: TestSplit (0.00s)
+PASS
+```
+
+
+
+## 大小写转换
+
+将英文字符串英文小写字符串
+
+```go
+func ToLower(s string) string
+```
+
+根据传入的对应语言的`unicode.SpecialCase` ，转换成对应语言的小写字符串
+
+```go
+func ToLowerSpecial(c unicode.SpecialCase, s string) string
+```
+
+将英文字符串转换成大写字符串
+
+```go
+func ToUpper(s string) string
+```
+
+根据传入对应语言的`unicode.SpecialCase`，转换成对应语言的大写字符串
+
+```go
+func ToUpperSpecial(c unicode.SpecialCase, s string) string
+```
+
+示例
+
+```go
+func TestLowerAndUpper(t *testing.T) {
+   fmt.Println(strings.ToLower("My name is jack,Nice to meet you!"))
+   fmt.Println(strings.ToLowerSpecial(unicode.TurkishCase, "Önnek İş"))
+   fmt.Println(strings.ToUpper("My name is jack,Nice to meet you!"))
+   fmt.Println(strings.ToUpperSpecial(unicode.TurkishCase, "örnek iş"))
+}
+```
+
+输出
+
+```
+=== RUN   TestLowerAndUpper
+my name is jack,nice to meet you!
+önnek iş
+MY NAME IS JACK,NICE TO MEET YOU!
+ÖRNEK İŞ
+--- PASS: TestLowerAndUpper (0.00s)
+PASS
+```
+
+
+
+## 修剪字符串
+
+修剪字符串两端，将cutset任意匹配的子串删除
+
+```go
+func Trim(s, cutset string) string
+```
+
+修剪字符串左端，将cutset任意匹配的子串删除
+
+```go
+func TrimLeft(s, cutset string) string
+```
+
+修剪字符串左端前缀，将cutset匹配的子串删除，不匹配就会返回字符串s
+
+```go
+func TrimPrefix(s, suffix string) string
+```
+
+修剪字符串右端，将cutset任意匹配的子串删除
+
+```go
+func TrimRight(s, cutset string) string
+```
+
+修剪字符串右端后缀，将cutset匹配的子串删除，不匹配就会返回字符串s
+
+```go
+func TrimSuffix(s, suffix string) string
+```
+
+示例
+
+```go
+func TestTrim(t *testing.T) {
+	fmt.Println(strings.Trim("!!this is a test statement!!", "!!!"))
+	fmt.Println(strings.TrimLeft("!!this is a test statement!!", "!!!"))
+	fmt.Println(strings.TrimRight("!!this is a test statement!!", "!!!"))
+	fmt.Println(strings.TrimPrefix("!!this is a test statement!!", "!!!"))
+	fmt.Println(strings.TrimSuffix("!!this is a test statement!!", "!!!"))
+}
+```
+
+输出
+
+```
+=== RUN   TestTrim
+this is a test statement
+this is a test statement!!
+!!this is a test statement
+!!this is a test statement!!
+!!this is a test statement!!
+--- PASS: TestTrim (0.00s)
+PASS
+```
+
+
+
+## 字符串Builder
+
+字符串Builder比起直接操作字符串更加节省内存。
+
+```go
+type Builder struct {
+	// 内部字段不对外暴露
+}
+```
+
+示例
+
+```go
+func TestBuilder(t *testing.T) {
+   builder := strings.Builder{}
+   builder.WriteString("hello")
+   builder.WriteString(" world")
+   fmt.Println(builder.Len())
+   fmt.Println(builder.String())
+}
+```
+
+输出
+
+```
+=== RUN   TestBuilder
+11
+hello world
+--- PASS: TestBuilder (0.00s)
+PASS
+```
+
+
+
+## 字符串Replacer
+
+Replacer转用于替换字符串
+
+```go
+func NewReplacer(oldnew ...string) *Replacer
+```
+
+示例
+
+```go
+func TestReplacer(t *testing.T) {
+	r := strings.NewReplacer("<", "&lt;", ">", "&gt;")
+	fmt.Println(r.Replace("This is <b>HTML</b>!"))
+}
+```
+
+输出
+
+```
+This is &lt;b&gt;HTML&lt;/b&gt;!
+```
+
+
+
+## 字符串Reader
+
+Reader实现了io.Reader, io.ReaderAt, io.ByteReader, io.ByteScanner, io.RuneReader, io.RuneScanner, io.Seeker, 和 io.WriterTo interfaces。 
+
+```go
+func NewReader(s string) *Reader
+```
+
+示例
+
+```go
+func TestReader(t *testing.T) {
+   reader := strings.NewReader("abcdefghijk")
+   buffer := make([]byte, 20, 20)
+   read, err := reader.Read(buffer)
+   if err != nil {
+      log.Panic(err)
+   }
+   fmt.Println(read)
+   fmt.Println(string(buffer))
+}
+```
+
+输出
+
+```
+=== RUN   TestReader
+11
+abcdefghijk         
+--- PASS: TestReader (0.00s)
+PASS
+```
 
