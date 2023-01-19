@@ -11,20 +11,20 @@ index: false
 
 [20.泛型](20.generic.md)
 
-[21.延迟调用](20.defer.md)
+[21.延迟调用](21.defer.md)
 
-[22.异常](21.error.md)
+[22.异常](22.error.md)
 
-[23.文件IO](22.io.md)
+[23.文件IO](23.io.md)
 
-[24.反射](23.reflect.md)
+[24.反射](24.reflect.md)
 
-[25.并发](24.concurrency.md)
+[25.并发](25.concurrency.md)
 
-[26.依赖管理](25.dependency.md)
+[26.依赖管理](26.dependency.md)
 
-[27.数据编码](26.encode.md)
+[27.数据格式](27.encode.md)
 
-[28.模板引擎](27.template.md)
+[28.模板引擎](28.template.md)
 
-[29.单元测试](28.test.md)
+[29.单元测试](29.test.md)
