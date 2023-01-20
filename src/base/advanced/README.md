@@ -3,9 +3,9 @@ title: 语法进阶
 index: false
 ---
 
-[17.结构体](17.struct.md)
+[17.函数](17.func.md)
 
-[18.函数](18.func.md)
+[18.结构体](18.struct.md)
 
 [19.接口](19.interface.md)
 
