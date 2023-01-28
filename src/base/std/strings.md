@@ -691,6 +691,37 @@ PASS
 
 
 
+::: tip
+
+不要试图将`Builder`作为值进行传递，例如将`strings.Builder`作为函数参数传递的时候，程序会`panic`
+
+```
+strings: illegal use of non-zero Builder copied by value
+```
+
+其内部有如下一段代码
+
+```go
+type Builder struct {
+	addr *Builder //自身的地址
+	buf  []byte
+}
+
+func (b *Builder) copyCheck() {
+   if b.addr == nil {
+      b.addr = (*Builder)(noescape(unsafe.Pointer(b)))
+   } else if b.addr != b {
+      panic("strings: illegal use of non-zero Builder copied by value")
+   }
+}
+```
+
+当对`Builder` 进行值拷贝的同时，也拷贝了内部切片的指针，两个`Builder`在写入字符串的时候都是在对同一个切片进行操作，这也是为什么不允许被值拷贝的原因。
+
+:::
+
+
+
 ## 字符串Replacer
 
 Replacer转用于替换字符串

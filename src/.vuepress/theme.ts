@@ -3,7 +3,7 @@ import {zhNavbar} from "./navbar/index.js";
 import {zhSidebar} from "./sidebar/index.js";
 
 export default hopeTheme({
-    hotReload: false, //热重载
+    hotReload: true, //热重载
 
     hostname: "https://golang.halfiisland.com/",
     author: {

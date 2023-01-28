@@ -34,7 +34,7 @@ features:
   icon: mount
   details: Go语言广泛应用于云原生，区块链，Web，游戏开发等互联网科技行业，使用Go语言的行业也在逐步变多。
 
-- title: 前景良好
+- title: 前景可期
   icon: network
   details: Go在自己擅长的领域有着非常不俗的表现，发展势头十分强劲，使用人数也在逐渐增多，未来的前景十分令人看好。
 
