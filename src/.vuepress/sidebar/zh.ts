@@ -17,9 +17,10 @@ export const zhSidebar = sidebar({
             text: "语言进阶",
             prefix: "advance/",
             children: [
-                {icon: "mysql", text: "数据库", prefix: "data/", collapsible: true, children: "structure"},
+                {icon: "engine", text: "原理解析", prefix: "details/", collapsible: true, children: "structure"},
                 {icon: "engine", text: "实用依赖", prefix: "dependency/", collapsible: true, children: "structure"},
                 {icon: "customize", text: "实用框架", prefix: "framework/", collapsible: true, children: "structure"},
+                {icon: "mysql", text: "数据库", prefix: "data/", collapsible: true, children: "structure"},
                 {icon: "change", text: "微服务", prefix: "mirco/", collapsible: true, children: "structure"},
             ]
         },
