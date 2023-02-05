@@ -51,6 +51,7 @@
 | ------------ | ---------------------------------------------------------- |
 | Go程序设计   | [Go 程序设计 (yuque.com)](https://www.yuque.com/qyuhen/go) |
 | 真没什么逻辑 | [面向信仰编程 (draveness.me)](https://draveness.me/)       |
+| 煎鱼大佬     | [煎鱼 (eddycjy.com)](https://eddycjy.com/)                 |
 
 
 
