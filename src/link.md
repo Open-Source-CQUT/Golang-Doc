@@ -29,6 +29,7 @@
 | Effective Go     | [《高效的 Go 编程 Effective Go》 Go 技术论坛 (learnku.com)](https://learnku.com/docs/effective-go/2020) |
 | Go标准库教程     | [简介 · Go语言标准库 (studygolang.com)](https://books.studygolang.com/The-Golang-Standard-Library-by-Example/) |
 | Go语言原本       | [Changkun OuGo 语言原本 (golang.design)](https://golang.design/under-the-hood/) |
+| Go语言设计哲学   | [Go语言设计哲学](https://golang3.eddycjy.com/)                             |
 
 
 
