@@ -33,6 +33,16 @@
 
 
 
+## 实体书
+
+| 名称                         |
+| ---------------------------- |
+| 《Go专家编程》               |
+| 《Go并发编程实战》           |
+| 《Go语言高并发与微服务实战》 |
+
+
+
 ## 论坛
 
 | 名称           | 网址                                                         |
@@ -48,11 +58,12 @@
 
 ## 博客
 
-| 名称         | 网址                                                       |
-| ------------ | ---------------------------------------------------------- |
-| Go程序设计   | [Go 程序设计 (yuque.com)](https://www.yuque.com/qyuhen/go) |
-| 真没什么逻辑 | [面向信仰编程 (draveness.me)](https://draveness.me/)       |
-| 煎鱼大佬     | [煎鱼 (eddycjy.com)](https://eddycjy.com/)                 |
+| 名称         | 网址                                                         |
+| ------------ | ------------------------------------------------------------ |
+| Go程序设计   | [Go 程序设计 (yuque.com)](https://www.yuque.com/qyuhen/go)   |
+| 真没什么逻辑 | [面向信仰编程 (draveness.me)](https://draveness.me/)         |
+| 煎鱼大佬     | [煎鱼 (eddycjy.com)](https://eddycjy.com/)                   |
+| 代码随想录   | [代码随想录 (programmercarl.com)](https://programmercarl.com/) |
 
 
 
