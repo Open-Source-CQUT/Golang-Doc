@@ -15,6 +15,14 @@
 | [69. x 的平方根 - 力扣（LeetCode）](https://leetcode.cn/problems/sqrtx/) |
 | [1250. 检查「好数组」 - 力扣（LeetCode）](https://leetcode.cn/problems/check-if-it-is-a-good-array/) |
 | [面试题45. 把数组排成最小的数 - 力扣（LeetCode）](https://leetcode.cn/problems/ba-shu-zu-pai-cheng-zui-xiao-de-shu-lcof/) |
+| [50. Pow(x, n) - 力扣（LeetCode）](https://leetcode.cn/problems/powx-n/) |
+| [剑指 Offer 64. 求1+2+…+n - 力扣（LeetCode）](https://leetcode.cn/problems/qiu-12n-lcof/) |
+| [剑指 Offer 39. 数组中出现次数超过一半的数字 - 力扣（LeetCode）](https://leetcode.cn/problems/shu-zu-zhong-chu-xian-ci-shu-chao-guo-yi-ban-de-shu-zi-lcof/) |
+| [剑指 Offer 65. 不用加减乘除做加法 - 力扣（LeetCode）](https://leetcode.cn/problems/bu-yong-jia-jian-cheng-chu-zuo-jia-fa-lcof/) |
+| [剑指 Offer 15. 二进制中1的个数 - 力扣（LeetCode）](https://leetcode.cn/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/) |
+| [剑指 Offer 56 - I. 数组中数字出现的次数 - 力扣（LeetCode）](https://leetcode.cn/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-lcof/) |
+|                                                              |
+|                                                              |
 
 ## 模拟
 
@@ -29,6 +37,11 @@
 | [13. 罗马数字转整数 - 力扣（LeetCode）](https://leetcode.cn/problems/roman-to-integer/) |
 | [2283. 判断一个数的数字计数是否等于数位的值 - 力扣（LeetCode）](https://leetcode.cn/problems/check-if-number-has-equal-digit-count-and-digit-value/) |
 | [2180. 统计各位数字之和为偶数的整数个数 - 力扣（LeetCode）](https://leetcode.cn/problems/count-integers-with-even-digit-sum/) |
+| [面试题61. 扑克牌中的顺子 - 力扣（LeetCode）](https://leetcode.cn/problems/bu-ke-pai-zhong-de-shun-zi-lcof/) |
+|                                                              |
+|                                                              |
+|                                                              |
+|                                                              |
 
 ## 查找
 
@@ -46,6 +59,10 @@
 
 | [347. 前 K 个高频元素 - 力扣（LeetCode）](https://leetcode.cn/problems/top-k-frequent-elements/) |
 | ------------------------------------------------------------ |
+| [剑指 Offer 40. 最小的k个数 - 力扣（LeetCode）](https://leetcode.cn/problems/zui-xiao-de-kge-shu-lcof/) |
+| [面试题45. 把数组排成最小的数 - 力扣（LeetCode）](https://leetcode.cn/problems/ba-shu-zu-pai-cheng-zui-xiao-de-shu-lcof/) |
+|                                                              |
+|                                                              |
 
 ## 前缀和
 
@@ -136,6 +153,16 @@
 |                                                              |
 |                                                              |
 
+## 分治
+
+| [剑指 Offer 33. 二叉搜索树的后序遍历序列 - 力扣（LeetCode）](https://leetcode.cn/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/) |
+| ------------------------------------------------------------ |
+| [剑指 Offer 07. 重建二叉树 - 力扣（LeetCode）](https://leetcode.cn/problems/zhong-jian-er-cha-shu-lcof/) |
+|                                                              |
+|                                                              |
+
+
+
 ## 哈希表
 
 | [1. 两数之和 - 力扣（LeetCode）](https://leetcode.cn/problems/two-sum/) |
@@ -216,6 +243,14 @@
 | [144. 二叉树的前序遍历 - 力扣（LeetCode）](https://leetcode.cn/problems/binary-tree-preorder-traversal/) |
 | [剑指 Offer 54. 二叉搜索树的第k大节点 - 力扣（LeetCode）](https://leetcode.cn/problems/er-cha-sou-suo-shu-de-di-kda-jie-dian-lcof/) |
 | [剑指 Offer 34. 二叉树中和为某一值的路径 - 力扣（LeetCode）](https://leetcode.cn/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/) |
+| [剑指 Offer 55 - II. 平衡二叉树 - 力扣（LeetCode）](https://leetcode.cn/problems/ping-heng-er-cha-shu-lcof/) |
+| [剑指 Offer 54. 二叉搜索树的第k大节点 - 力扣（LeetCode）](https://leetcode.cn/problems/er-cha-sou-suo-shu-de-di-kda-jie-dian-lcof/) |
+| [剑指 Offer 34. 二叉树中和为某一值的路径 - 力扣（LeetCode）](https://leetcode.cn/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/) |
+|                                                              |
+|                                                              |
+|                                                              |
+|                                                              |
+|                                                              |
 
 ## 图论
 
@@ -299,4 +334,29 @@
 | [70. 爬楼梯 - 力扣（LeetCode）](https://leetcode.cn/problems/climbing-stairs/) |
 | [279. 完全平方数 - 力扣（LeetCode）](https://leetcode.cn/problems/perfect-squares/) |
 | [322. 零钱兑换 - 力扣（LeetCode）](https://leetcode.cn/problems/coin-change/) |
+| [516. 最长回文子序列 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-palindromic-subsequence/) |
+| [647. 回文子串 - 力扣（LeetCode）](https://leetcode.cn/problems/palindromic-substrings/) |
+| [72. 编辑距离 - 力扣（LeetCode）](https://leetcode.cn/problems/edit-distance/) |
+| [583. 两个字符串的删除操作 - 力扣（LeetCode）](https://leetcode.cn/problems/delete-operation-for-two-strings/) |
+| [115. 不同的子序列 - 力扣（LeetCode）](https://leetcode.cn/problems/distinct-subsequences/) |
+| [392. 判断子序列 - 力扣（LeetCode）](https://leetcode.cn/problems/is-subsequence/) |
+| [53. 最大子数组和 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-subarray/) |
+| [1035. 不相交的线 - 力扣（LeetCode）](https://leetcode.cn/problems/uncrossed-lines/) |
+| [1143. 最长公共子序列 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-common-subsequence/) |
+| [718. 最长重复子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-length-of-repeated-subarray/) |
+| [674. 最长连续递增序列 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-continuous-increasing-subsequence/) |
+| [300. 最长递增子序列 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-increasing-subsequence/) |
+| [714. 买卖股票的最佳时机含手续费 - 力扣（LeetCode）](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/) |
+| [309. 最佳买卖股票时机含冷冻期 - 力扣（LeetCode）](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/) |
+| [123. 买卖股票的最佳时机 III - 力扣（LeetCode）](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/) |
+| [188. 买卖股票的最佳时机 IV - 力扣（LeetCode）](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/) |
+| [122. 买卖股票的最佳时机 II - 力扣（LeetCode）](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/) |
+| [121. 买卖股票的最佳时机 - 力扣（LeetCode）](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/) |
+|                                                              |
+|                                                              |
+|                                                              |
+|                                                              |
+|                                                              |
+|                                                              |
+|                                                              |
 
