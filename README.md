@@ -7,7 +7,7 @@ yarn docs:dev
 
 ## 清空缓存运行
 ```bash
-yanr docs:clean-dev
+yarn docs:clean-dev
 ```
 
 ## 构建
