@@ -41,6 +41,9 @@
 | 《Go专家编程》               |
 | 《Go并发编程实战》           |
 | 《Go语言高并发与微服务实战》 |
+| 《图解HTTP》                 |
+| 《图解TCP/IP》               |
+| 《图解网络硬件》             |
 
 
 
@@ -75,4 +78,13 @@
 | Go标准库文档  | [Standard library - Go Packages](https://pkg.go.dev/std)     |
 | Redis命令文档 | [Redis 命令参考 — Redis 命令参考 (redisfans.com)](http://doc.redisfans.com/index.html) |
 | Redis教程     | [Redis中文网 - Redis开发与运维技术、Redis教程、使用手册](https://redis.com.cn/) |
+
+
+
+## 工具
+
+| 地址                                                         | 功能                             |
+| ------------------------------------------------------------ | -------------------------------- |
+| [Go结构体/JSON转换 - 油条工具箱 (utils.fun)](https://utils.fun/go-struct-json) | Go结构体与Json之间的转换         |
+| [Compiler Explorer (godbolt.org)](https://godbolt.org/)      | Go代码实时转换查看对应的汇编代码 |
 
