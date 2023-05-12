@@ -4635,22 +4635,7 @@ vuepress-plugin-md-enhance@2.0.0-beta.154:
     vuepress-plugin-sass-palette "2.0.0-beta.154"
     vuepress-shared "2.0.0-beta.154"
 
-vuepress-plugin-photo-swipe@2.0.0-beta.154:
-  version "2.0.0-beta.154"
-  resolved "https://registry.npmmirror.com/vuepress-plugin-photo-swipe/-/vuepress-plugin-photo-swipe-2.0.0-beta.154.tgz#45bba7ca604ac72b7032fef38730485e0b7c0b95"
-  integrity sha512-tkcQAfP8ehIrKaSxcJ5AIvKa9fO3y8SnbEyy3nDg2W+jYvX28grnxCevDldDE4s/1dW+uWe+XQxrSqb6tTIp2w==
-  dependencies:
-    "@vuepress/client" "2.0.0-beta.60"
-    "@vuepress/shared" "2.0.0-beta.60"
-    "@vuepress/utils" "2.0.0-beta.60"
-    "@vueuse/core" "^9.10.0"
-    photoswipe "^5.3.4"
-    vue "^3.2.45"
-    vue-router "^4.1.6"
-    vuepress-plugin-sass-palette "2.0.0-beta.154"
-    vuepress-shared "2.0.0-beta.154"
-
-vuepress-plugin-photo-swipe@^2.0.0-beta.154:
+vuepress-plugin-photo-swipe@2.0.0-beta.154, vuepress-plugin-photo-swipe@^2.0.0-beta.154:
   version "2.0.0-beta.154"
   resolved "https://registry.yarnpkg.com/vuepress-plugin-photo-swipe/-/vuepress-plugin-photo-swipe-2.0.0-beta.154.tgz#45bba7ca604ac72b7032fef38730485e0b7c0b95"
   integrity sha512-tkcQAfP8ehIrKaSxcJ5AIvKa9fO3y8SnbEyy3nDg2W+jYvX28grnxCevDldDE4s/1dW+uWe+XQxrSqb6tTIp2w==
