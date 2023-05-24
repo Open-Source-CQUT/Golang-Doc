@@ -1,6 +1,6 @@
 import {hopeTheme} from "vuepress-theme-hope";
-import {zhNavbar} from "./navbar/index.js";
-import {zhSidebar} from "./sidebar/index.js";
+import {zhNavbar} from "./navbar";
+import {zhSidebar} from "./sidebar";
 
 export default hopeTheme({
     hotReload: true, //热重载
@@ -39,6 +39,7 @@ export default hopeTheme({
     metaLocales: {
         editLink: "在 GitHub 上编辑此页",
     },
+
 
 
     plugins: {
