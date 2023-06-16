@@ -29,25 +29,6 @@ export default defineUserConfig({
         "!node_modules",
     ],
     plugins: [
-        componentsPlugin({
-            rootComponents: {
-                notice: [
-                    {
-                        path: "/",
-                        title: "域名更换",
-                        content: "旧版www域名SSL证书已过期，请前往新的golang域名，已经是新域名的可以忽略。",
-                        showOnce: true,
-                        actions: [
-                            {
-                                type: "primary",
-                                text: "前往",
-                                link: "https://golang.halfiisland.com/"
-                            }
-                        ]
-                    },
-                ],
-            }
-        }),
         searchProPlugin({
             // 索引全部内容
             indexContent: true
