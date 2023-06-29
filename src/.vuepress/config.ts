@@ -4,7 +4,7 @@ import {searchProPlugin} from "vuepress-plugin-search-pro";
 import {componentsPlugin} from "vuepress-plugin-components";
 
 export default defineUserConfig({
-    base: "/Golang-Doc/",
+    base: "/",
     lang: "zh-CN",
     title: "Golang中文学习文档",
     description: "Go爱好者驱动的中文学习文档",
