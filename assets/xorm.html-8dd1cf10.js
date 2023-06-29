@@ -1,0 +1,1 @@
+import{_ as r,V as o,W as t,X as e,Y as a}from"./framework-44a66fc7.js";const c={},s=e("h1",{id:"xorm",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#xorm","aria-hidden":"true"},"#"),a(" Xorm")],-1),n=[s];function _(d,i){return o(),t("div",null,n)}const h=r(c,[["render",_],["__file","xorm.html.vue"]]);export{h as default};
