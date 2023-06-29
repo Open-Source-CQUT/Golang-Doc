@@ -2,4 +2,4 @@
 User-agent:*
 Disallow:
 
-Sitemap: https://golang.halfiisland.com/Golang-Doc/sitemap.xml
+Sitemap: https://golang.halfiisland.com/sitemap.xml
