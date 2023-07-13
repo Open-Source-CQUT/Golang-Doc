@@ -10,7 +10,7 @@ import{_ as n,V as s,W as a,Z as e}from"./framework-44a66fc7.js";const t={},i=e(
 <span class="token punctuation">}</span>
 </code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>结构体本身以及其内部的字段都遵守大小写命名的暴露方式。对于一些类型相同的字段，可以像如下方式声明：</p><div class="language-go line-numbers-mode" data-ext="go"><pre class="language-go"><code><span class="token keyword">type</span> Rectangle <span class="token keyword">struct</span> <span class="token punctuation">{</span>
 	height<span class="token punctuation">,</span> width<span class="token punctuation">,</span> area <span class="token builtin">int</span>
-	color <span class="token builtin">string</span>
+	color               <span class="token builtin">string</span>
 <span class="token punctuation">}</span>
 </code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><div class="hint-container tip"><p class="hint-container-title">提示</p><p>在声明结构体字段时，字段名与方法名不应该重复</p></div><br><h2 id="创建" tabindex="-1"><a class="header-anchor" href="#创建" aria-hidden="true">#</a> 创建</h2><p>Go不存在构造方法，大多数情况下采用如下的方式来创建。</p><div class="language-go line-numbers-mode" data-ext="go"><pre class="language-go"><code>programmer <span class="token operator">:=</span> Programmer<span class="token punctuation">{</span>
    Name<span class="token punctuation">:</span>     <span class="token string">&quot;jack&quot;</span><span class="token punctuation">,</span>
