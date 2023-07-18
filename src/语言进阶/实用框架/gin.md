@@ -105,7 +105,7 @@ Response file saved.
 
 ::: tip
 
-开始之前建议可以阅读一下`HttpRouter`的简单教程:[HttpRouter简单教程](src/语言进阶/实用依赖/HttpRouter.md)
+开始之前建议可以阅读一下`HttpRouter`的简单教程:[HttpRouter简单教程](/语言进阶/实用依赖/HttpRouter.md)
 
 :::
 
@@ -470,7 +470,7 @@ func SomeHandler(c *gin.Context) {
 
 ## 数据校验
 
-`gin`内置的校验工具其实是`github.com/go-playground/validator/v10`，使用方法也几乎没有什么差别，[前往Validator教程](src/语言进阶/实用依赖/Validator.md)
+`gin`内置的校验工具其实是`github.com/go-playground/validator/v10`，使用方法也几乎没有什么差别，[前往Validator教程](/语言进阶/实用依赖/Validator.md)
 
 
 
@@ -1537,7 +1537,7 @@ func main() {
 - Token刷新问题
 - 一旦签发则无法主动控制
 
-自从前端革命以来，前端程序员不再只是一个“写页面的”，前后端分离的趋势愈演愈烈，JWT是最适合前后端分离和分布式系统来做会话控制的，具有很大的天然优势。考虑到JWT已经完全脱离Gin的内容，且没有任何中间件支持，因为JWT本身就是不局限于任何框架任何语言，在这里就不作细致的讲解，可以前往另一篇教程：[JWT使用教程](src/语言进阶/实用依赖/jwt.md)
+自从前端革命以来，前端程序员不再只是一个“写页面的”，前后端分离的趋势愈演愈烈，JWT是最适合前后端分离和分布式系统来做会话控制的，具有很大的天然优势。考虑到JWT已经完全脱离Gin的内容，且没有任何中间件支持，因为JWT本身就是不局限于任何框架任何语言，在这里就不作细致的讲解，可以前往另一篇教程：[JWT使用教程](/语言进阶/实用依赖/jwt.md)
 
 
 
