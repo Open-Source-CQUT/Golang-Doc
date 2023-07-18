@@ -81,29 +81,31 @@ protoc-gen-go-grpc 1.3.0
 下面将以一个Hello World示例来进行演示，创建如下的项目结构。
 
 ```
-grpc_learn
-|   go.mod
-|   go.sum
+grpc_learn\helloworld
 |
 +---client
-|   |   main.go
-|   |
-|   \---protoc
+|       main.go
+|
++---hello
+|
+|
++---pb
+|       hello.proto
+|
 \---server
-    |   main.go
-    |
-    \---protoc
-            hello.proto
+        main.go
+
 ```
 
 ### 定义protobuf文件
 
-其中，在`server/protoc/hello.proto`中，写入如下内容，这是一个相当简单的示例，如果不会protoc语法，请移步相关教程。
+其中，在`pb/hello.proto`中，写入如下内容，这是一个相当简单的示例，如果不会protoc语法，请移步相关教程。
 
 ```protobuf
 syntax = "proto3";
 
-option go_package = ".;service";
+// .表示就直接生成在输出路径下，hello是包名
+option go_package = ".;hello";
 
 // 请求
 message HelloReq {
@@ -125,12 +127,13 @@ service SayHello {
 
 编写完成后，使用protoc编译器生成数据序列化相关的代码，使用生成器生成rpc相关代码
 
-```
-protoc --go_out=server/protoc server/protoc/*.proto
-protoc --go-grpc_out=server/protoc server/protoc/*.proto
+```sh
+$ protoc -I ./pb \
+		--go_out=./hello ./pb/*.proto\
+		--go-grpc_out=./hello ./pb/*.proto
 ```
 
-此时可以发现文件夹生成了`hello.pb.go`和`hello_grpc.pb.go`文件，浏览`hello.pb.go`可以发现我们定义的message
+此时可以发现`hello`文件夹生成了`hello.pb.go`和`hello_grpc.pb.go`文件，浏览`hello.pb.go`可以发现我们定义的message
 
 ```go
 type HelloReq struct {
@@ -267,18 +270,436 @@ func main() {
 2023/07/16 16:26:51 received grpc resp: msg:"hello world! client"
 ```
 
-在本例中，客户端建立好连接后，在调用远程方法时就跟调用本地方法一样，直接访问`client`的`Hello`方法并获取结果。这就是一个最简单的GRPC例子
+在本例中，客户端建立好连接后，在调用远程方法时就跟调用本地方法一样，直接访问`client`的`Hello`方法并获取结果，这就是一个最简单的GRPC例子，许多开源的框架也都是对这一个流程进行了封装。
 
 
 
-## 流式通信
+## bufbuild
 
-grpc的通信方式有两大类，一元RPC（Unary RPC）和流式RPC（Stream RPC）。Hello World中的示例就是一个典型的一元RPC。
+在上述例子中，是直接使用命令生成的代码，如果后期插件多了命令会显得相当繁琐，这时可以通过工具来进行管理protobuf文件，正好就有这么一个开源的管理工具`bufbuild/buf`。
+
+开源地址：[bufbuild/buf: A new way of working with Protocol Buffers. (github.com)](https://github.com/bufbuild/buf)
+
+文档地址：[Buf - Install the Buf CLI](https://buf.build/docs/installation)
+
+**特点**
+
+- BSR管理
+- Linter
+- 代码生成
+- 格式化
+- 依赖管理
+
+有了这个工具可以相当方便的管理protobuf文件。
+
+
+
+文档中提供了相当多的安装方式，可以自己选择。如果本地安装了go环境的话，直接使用`go install`安装即可
+
+```sh
+$ go install github.com/bufbuild/buf/cmd/buf@latest
+```
+
+安装完毕后查看版本
+
+```sh
+$ buf --version
+1.24.0
+```
+
+来到`helloworld/pb`文件夹，执行如下命令创建一个module来管理pb文件。
+
+```sh
+$ buf mod init
+$ ls
+buf.yaml  hello.proto
+```
+
+`buf.yaml`文件内容默认如下
+
+```yaml
+version: v1
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
+```
+
+再来到`helloworld/`目录下，创建`buf.gen.yaml`，写入如下内容
+
+```yaml
+version: v1
+plugins:
+  - plugin: go
+    out: hello
+    opt:
+  - plugin: go-grpc
+    out: hello
+    opt:
+```
+
+再执行命令生成代码
+
+```sh
+$ buf generate
+```
+
+完成后就可以看到生成的文件了，当然buf不止这点功能，其他的功能可以自己去文档学习。
+
+
+
+## 流式调用
+
+grpc的调用方式有两大类，一元RPC（Unary RPC）和流式RPC（Stream RPC）。Hello World中的示例就是一个典型的一元RPC。
 
 ![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307162029789.png)
 
-一元rpc就跟普通的http一样，客户端请求，服务端返回数据。流式RPC的请求和响应可以是流式的，如下图
+一元rpc用起来就跟普通的http一样，客户端请求，服务端返回数据，一问一答的方式。而流式RPC的请求和响应都 可以是流式的，如下图
 
 ![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307162033200.png)
 
-使用流式请求时，客户端可以通过流来多次发起rpc请求给服务端，使用流式响应时，服务端可以通过流多次返回响应给客户端。可以是只有请求是流式的（Client-Streaming RPC），也可以是只有响应是流式的（Server-Streaming RPC），或者请求和响应都是流式的（Bi-driectional-Streaming RPC）
+使用流式请求时，只返回一次响应，客户端可以通过流来多次发送参数给服务端，服务端可以不需要像一元RPC那样等到所有参数都接收完毕再处理，具体处理逻辑可以由服务端决定。正常情况下，只有客户端可以主动关闭流式请求，一旦流被关闭，当前RPC请求也就会结束。
+
+使用流式响应时，只发送一次参数，服务端可以通过流多次发送数据给客户端，客户端不需要像一元RPC那样接受完所有数据再处理，具体的处理逻辑可以由客户端自己决定。正常请求下，只有服务端可以主动关闭流式响应，一旦流被关闭，当前RPC请求也就会结束。
+
+```protobuf
+service MessageService {
+  rpc getMessage(stream google.protobuf.StringValue) returns (Message);
+}
+```
+
+也可以是只有响应是流式的（Server-Streaming RPC）
+
+```protobuf
+service MessageService {
+  rpc getMessage(google.protobuf.StringValue) returns (stream Message);
+}
+```
+
+或者请求和响应都是流式的（Bi-driectional-Streaming RPC）
+
+```
+service MessageService {
+  rpc getMessage(stream google.protobuf.StringValue) returns (stream Message);
+}
+```
+
+### 单向流式
+
+下面通过一个例子来演示单向流式的操作，首先创建如下的项目结构
+
+```
+grpc_learn\server_client_stream
+|   buf.gen.yaml
+|
++---client
+|       main.go
+|
++---pb
+|       buf.yaml
+|       message.proto
+|
+\---server
+        main.go
+```
+
+`message.proto`内容如下
+
+```protobuf
+syntax = "proto3";
+
+
+option go_package = ".;message";
+
+import "google/protobuf/wrappers.proto";
+
+message Message {
+  string from = 1;
+  string content = 2;
+  string to = 3;
+}
+
+service MessageService {
+  rpc receiveMessage(google.protobuf.StringValue) returns (stream Message);
+  rpc sendMessage(stream Message) returns (google.protobuf.Int64Value);
+}
+```
+
+通过buf生成代码
+
+```sh
+$ buf generate
+```
+
+这里演示是消息服务，`receiveMessage`接收一个指定的用户名，类型为字符串，返回消息流，`sendMessage`接收消息流，返回成功发送的消息数目，类型为64位整型。接下来创建`server/message_service.go`，自己实现默认的代码生成的服务
+
+```go
+package main
+
+import (
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/wrapperspb"
+	"grpc_learn/server_client_stream/message"
+)
+
+type MessageService struct {
+	message.UnimplementedMessageServiceServer
+}
+
+func (m *MessageService) ReceiveMessage(user *wrapperspb.StringValue, recvServer message.MessageService_ReceiveMessageServer) error {
+	return status.Errorf(codes.Unimplemented, "method ReceiveMessage not implemented")
+}
+func (m *MessageService) SendMessage(sendServer message.MessageService_SendMessageServer) error {
+	return status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
+}
+```
+
+可以看到接收消息和发送消息的参数里面都有一个流包装接口
+
+```go
+type MessageService_ReceiveMessageServer interface {
+    // 发送消息
+	Send(*Message) error
+	grpc.ServerStream
+}
+
+type MessageService_SendMessageServer interface {
+    // 发送返回值并关闭连接
+	SendAndClose(*wrapperspb.StringValue) error
+    // 接收消息
+	Recv() (*Message, error)
+	grpc.ServerStream
+}
+
+```
+
+它们都嵌入了`gprc.ServerStream`接口
+
+```go
+type ServerStream interface {
+	SetHeader(metadata.MD) error
+	SendHeader(metadata.MD) error
+	SetTrailer(metadata.MD)
+	Context() context.Context
+	SendMsg(m interface{}) error
+	RecvMsg(m interface{}) error
+}
+```
+
+可以看到，流式RPC并不像一元RPC那样入参和返回值都可以很明确的体现在函数签名上，这些方法乍一看是看不出来入参和返回值是什么类型的，需要调用传入的Stream类型完成流式传输，接下来开始编写服务端的具体逻辑。在编写服务端逻辑的时候，用了一个`sync.map`来模拟消息队列，当客户端发送`ReceiveMessage`请求时，服务端通过流式响应不断返回客户端想要的消息，直到超时过后断开请求。当客户端请求`SendMessage`时，通过流式请求不断发送消息过来，服务端不断的将消息放入队列中，直到客户端主动断开请求，并返回给客户端消息发送条数。
+
+```go
+package main
+
+import (
+	"errors"
+	"google.golang.org/protobuf/types/known/wrapperspb"
+	"grpc_learn/server_client_stream/message"
+	"io"
+	"log"
+	"sync"
+	"time"
+)
+
+// 一个模拟的消息队列
+var messageQueue sync.Map
+
+type MessageService struct {
+	message.UnimplementedMessageServiceServer
+}
+
+// ReceiveMessage
+// param user *wrapperspb.StringValue
+// param recvServer message.MessageService_ReceiveMessageServer
+// return error
+// 接收指定用户的消息
+func (m *MessageService) ReceiveMessage(user *wrapperspb.StringValue, recvServer message.MessageService_ReceiveMessageServer) error {
+	timer := time.NewTimer(time.Second * 5)
+	for {
+		time.Sleep(time.Millisecond * 100)
+		select {
+		case <-timer.C:
+			log.Printf("5秒钟内没有收到%s的消息，关闭连接", user.GetValue())
+			return nil
+		default:
+			value, ok := messageQueue.Load(user.GetValue())
+			if !ok {
+				messageQueue.Store(user.GetValue(), []*message.Message{})
+				continue
+			}
+			queue := value.([]*message.Message)
+			if len(queue) < 1 {
+				continue
+			}
+
+			// 拿到消息
+			msg := queue[0]
+			// 通过流式传输将消息发送给客户端
+			err := recvServer.Send(msg)
+			log.Printf("receive %+v\n", msg)
+			if err != nil {
+				return err
+			}
+
+			queue = queue[1:]
+			messageQueue.Store(user.GetValue(), queue)
+			timer.Reset(time.Second * 5)
+		}
+	}
+}
+
+// SendMessage
+// param sendServer message.MessageService_SendMessageServer
+// return error
+// 发送消息给指定用户
+func (m *MessageService) SendMessage(sendServer message.MessageService_SendMessageServer) error {
+	count := 0
+	for {
+		// 从客户端接收消息
+		msg, err := sendServer.Recv()
+		if errors.Is(err, io.EOF) {
+			return sendServer.SendAndClose(wrapperspb.Int64(int64(count)))
+		}
+		if err != nil {
+			return err
+		}
+		log.Printf("send %+v\n", msg)
+
+		value, ok := messageQueue.Load(msg.From)
+		if !ok {
+			messageQueue.Store(msg.From, []*message.Message{msg})
+			continue
+		}
+		queue := value.([]*message.Message)
+		queue = append(queue, msg)
+		// 将消息放入消息队列中
+		messageQueue.Store(msg.From, queue)
+		count++
+	}
+}
+```
+
+客户端开了两个协程，一个协程用来发送消息，另一个协程用来接收消息，当然也可以一边发送一边接收，代码如下。
+
+```go
+package main
+
+import (
+	"context"
+	"errors"
+	"github.com/dstgo/task"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/types/known/wrapperspb"
+	"grpc_learn/server_client_stream/message"
+	"io"
+	"log"
+	"time"
+)
+
+var Client message.MessageServiceClient
+
+func main() {
+	dial, err := grpc.Dial("localhost:9090", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Panicln(err)
+	}
+	defer dial.Close()
+
+	Client = message.NewMessageServiceClient(dial)
+
+	log.SetPrefix("client\t")
+	msgTask := task.NewTask(func(err error) {
+		log.Panicln(err)
+	})
+
+	ctx := context.Background()
+
+	// 接收消息请求
+	msgTask.AddJobs(func() {
+		receiveMessageStream, err := Client.ReceiveMessage(ctx, wrapperspb.String("jack"))
+		if err != nil {
+			log.Panicln(err)
+		}
+		for {
+			recv, err := receiveMessageStream.Recv()
+			if errors.Is(err, io.EOF) {
+				log.Println("暂无消息，关闭连接")
+				break
+			} else if err != nil {
+				break
+			}
+			log.Printf("receive %+v", recv)
+		}
+	})
+
+	msgTask.AddJobs(func() {
+		from := "jack"
+		to := "mike"
+
+		sendMessageStream, err := Client.SendMessage(ctx)
+		if err != nil {
+			log.Panicln(err)
+		}
+		msgs := []string{
+			"在吗",
+			"下午有没有时间一起打游戏",
+			"那行吧，以后有时间一起约",
+			"就这个周末应该可以吧",
+			"那就这么定了",
+		}
+		for _, msg := range msgs {
+			time.Sleep(time.Second)
+			sendMessageStream.Send(&message.Message{
+				From:    from,
+				Content: msg,
+				To:      to,
+			})
+		}
+		// 消息发送完了，主动关闭请求并获取返回值
+		recv, err := sendMessageStream.CloseAndRecv()
+		if err != nil {
+			log.Println(err)
+		} else {
+			log.Printf("发送完毕，总共发送了%d条消息\n", recv.GetValue())
+		}
+	})
+
+	msgTask.Run()
+}
+```
+
+执行过后服务端输出如下
+
+```
+server  2023/07/18 16:28:24 send from:"jack" content:"在吗" to:"mike"
+server  2023/07/18 16:28:24 receive from:"jack" content:"在吗" to:"mike"
+server  2023/07/18 16:28:25 send from:"jack" content:"下午有没有时间一起打游戏" to:"mike"
+server  2023/07/18 16:28:25 receive from:"jack" content:"下午有没有时间一起打游戏" to:"mike"
+server  2023/07/18 16:28:26 send from:"jack" content:"那行吧，以后有时间一起约" to:"mike"
+server  2023/07/18 16:28:26 receive from:"jack" content:"那行吧，以后有时间一起约" to:"mike"
+server  2023/07/18 16:28:27 send from:"jack" content:"就这个周末应该可以吧" to:"mike"
+server  2023/07/18 16:28:27 receive from:"jack" content:"就这个周末应该可以吧" to:"mike"
+server  2023/07/18 16:28:28 send from:"jack" content:"那就这么定了" to:"mike"
+server  2023/07/18 16:28:28 receive from:"jack" content:"那就这么定了" to:"mike"
+server  2023/07/18 16:28:33 5秒钟内没有收到jack的消息，关闭连接
+```
+
+客户端输出如下
+
+```
+client  2023/07/18 16:28:24 receive from:"jack" content:"在吗" to:"mike"
+client  2023/07/18 16:28:25 receive from:"jack" content:"下午有没有时间一起打游戏" to:"mike"
+client  2023/07/18 16:28:26 receive from:"jack" content:"那行吧，以后有时间一起约" to:"mike"
+client  2023/07/18 16:28:27 receive from:"jack" content:"就这个周末应该可以吧" to:"mike"
+client  2023/07/18 16:28:28 发送完毕，总共发送了5条消息
+client  2023/07/18 16:28:28 receive from:"jack" content:"那就这么定了" to:"mike"
+client  2023/07/18 16:28:33 暂无消息，关闭连接
+```
+
+通过这个例子可以发现单向流式RPC请求处理起来的话不论是客户端还是服务端都要比一元rpc复杂，不过双向流式RPC比它们还要更复杂些。
+
+### 双向流式
