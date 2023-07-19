@@ -358,7 +358,7 @@ grpc的调用方式有两大类，一元RPC（Unary RPC）和流式RPC（Stream 
 
 ![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307162029789.png)
 
-一元rpc用起来就跟普通的http一样，客户端请求，服务端返回数据，一问一答的方式。而流式RPC的请求和响应都 可以是流式的，如下图
+一元rpc（或者叫普通rpc更能理解些，实在不知道怎么翻译这个`unary`了）用起来就跟普通的http一样，客户端请求，服务端返回数据，一问一答的方式。而流式RPC的请求和响应都 可以是流式的，如下图
 
 ![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307162033200.png)
 
@@ -987,3 +987,238 @@ client 2023/07/19 17:26:32 end chat mike
 ```
 
 通过示例可以看到的是，双向流式的处理逻辑无论是客户端还是服务端，都要比单向流式更复杂，需要结合多协程开启异步任务才能更好的处理逻辑。
+
+## metadata
+
+metadata本质上是一个map，它的value是一个字符串切片，就类似http1的header一样，并且它在gRPC中扮演的角色也和http header类似，提供一些本次RPC调用的一些信息，同时metadata的生命周期跟随着一次rpc调用的整个过程，调用结束，它的生命周期也就结束了。
+
+它在gRPC中主要通过`context`来进行传输和存储，不过gRPC提供了`metadata`包，里面有相当多的方便函数来简化操作，不需要我们去手动操作`context `。metadata在gRPC中对应的类型为`metadata.MD`，如下所示。
+
+```go
+// MD is a mapping from metadata keys to values. Users should use the following
+// two convenience functions New and Pairs to generate MD.
+type MD map[string][]string
+```
+
+我们可以直接使用`metadata.New`函数来创建，不过在创建之前，有几个点需要注意
+
+```go
+func New(m map[string]string) MD
+```
+
+metadata对键名有所限制，仅能是以下规则限制的字符：
+
+- ASCII字符
+- 数字：0-9
+- 小写字母：a-z
+- 大写字母：A-Z
+- 特殊字符：-_
+
+::: tip
+
+在metadata中，大写的字母都会被转换为小写，也就是说会占用同一个key，值也会被覆盖。
+
+:::
+
+::: tip
+
+以`grpc-`开头的key是grpc保留使用的内部key，如果使用这类key的话可能会导致一些错误。
+
+:::
+
+### 手动创建
+
+创建metadata的方式有很多，这里介绍手动创建metadata最常用的两种方法，第一种就是使用`metadata.New`函数，直接传入一个map。
+
+```go
+func New(m map[string]string) MD
+```
+
+```go
+md := metadata.New(map[string]string{
+    "key":  "value",
+    "key1": "value1",
+    "key2": "value2",
+})
+```
+
+第二种是`metadata.Pairs`，传入偶数长度的字符串切片，会自动的解析成键值对。
+
+```go
+func Pairs(kv ...string) MD
+```
+
+```go
+md := metadata.Pairs("k", "v", "k1", "v1", "k2", "v2")
+```
+
+还可以使用`metadata.join`来合并多个metadata
+
+```go
+func Join(mds ...MD) MD
+```
+
+```go
+md1 := metadata.New(map[string]string{
+    "key":  "value",
+    "key1": "value1",
+    "key2": "value2",
+})
+md2 := metadata.Pairs("k", "v", "k1", "v1", "k2", "v2")
+union := metadata.join(md1,md2)
+```
+
+### 服务端使用
+
+**获取metadata**
+
+服务端获取metadata可以使用`metadata.FromIncomingContext`函数来获取
+
+```go
+func FromIncomingContext(ctx context.Context) (MD, bool)
+```
+
+对于一元rpc而言，service的参数里面会带一个`context`参数，直接从里面获取metadata即可
+
+```go
+func (h *HelloWorld) Hello(ctx context.Context, name *wrapperspb.StringValue) (*wrapperspb.StringValue, error) {
+	md, b := metadata.FromIncomingContext(ctx)
+	...
+}
+```
+
+对于流式rpc，service的参数里面会有一个流对象，通过它可以获取流的`context`
+
+```go
+func (m *ChatService) Chat(chatServer message.ChatService_ChatServer) error {
+	md, b := metadata.FromIncomingContext(chatServer.Context())
+    ...
+}
+```
+
+**发送metadata**
+
+发送metadata可以使用`grpc.sendHeader`函数
+
+```go
+func SendHeader(ctx context.Context, md metadata.MD) error
+```
+
+该函数最多调用一次，在一些导致header被自动发送的事件发生后使用则不会生效。在一些情况下，如果不想直接发送header，这时可以使用`grpc.SetHeader`函数。
+
+```go
+func SetHeader(ctx context.Context, md metadata.MD) error 
+```
+
+该函数多次调用的话，会将每次传入的metadata合并，并在以下几种情况发送给客户端
+
+- `gprc.SendHeader`和`Servertream.SendHeader`被调用时
+- 一元rpc的handler返回时
+- 调用流式rpc中流对象的`Stream.SendMsg`时
+- rpc请求的状态变为`send out`，这种情况要么是rpc请求成功了，要么就是出错了。
+
+对于流式rpc而言，建议使用流对象的`SendHeader`方法和`SetHeader`方法。
+
+```go
+type ServerStream interface {
+	SetHeader(metadata.MD) error
+	SendHeader(metadata.MD) error
+	SetTrailer(metadata.MD)
+	...
+}
+```
+
+::: tip
+
+在使用过程中会发现Header和Trailer两个功能差不多，不过它们的主要区别在于发送的时机，一元rpc中可能体会不到，但是这一差别在流式RPC中尤为明显，因为流式RPC中的Header可以不用等待请求结束就可以发送Header。前面提到过了Header会在特定的情况下被发送，而Trailer仅仅只会在整个RPC请求结束后才会被发送，在此之前，获取到的trailer都是空的。
+
+:::
+
+### 客户端使用
+
+**获取metadata**
+
+客户端想要获取响应的header，可以通过`grpc.Header`和`grpc.Trailer`来实现
+
+```go
+func Header(md *metadata.MD) CallOption
+```
+
+```go
+func Trailer(md *metadata.MD) CallOption
+```
+
+不过需要注意的是，并不能直接获取，可以看到以上两个函数返回值是`CallOption`，也就是说是在发起RPC请求时作为option参数传入的。
+
+```go
+// 声明用于接收值的md
+var header, trailer metadata.MD
+
+// 调用rpc请求时传入option
+res, err := client.SomeRPC(
+    ctx,
+    data,
+    grpc.Header(&header),
+    grpc.Trailer(&trailer)
+)
+```
+
+在请求完成后，会将值写到传入的md中。对于流式rpc而言，可以通过发起请求时返回的流对象直接获取
+
+```go
+type ClientStream interface {
+	Header() (metadata.MD, error)
+	Trailer() metadata.MD
+    ...
+}
+```
+
+```go
+stream, err := client.StreamRPC(ctx)
+header, err := stream.Header()
+trailer, err := Stream.Trailer()
+```
+
+**发送metadata**
+
+客户端想要发送metadata很简单，之前提到过metadata的表现形式就是valueContext，将metadata结合到context中，然后在请求的时候把context传入即可，`metadata`包提供了两个函数来方便构造context。
+
+```go
+func NewOutgoingContext(ctx context.Context, md MD) context.Context 
+```
+
+```go
+md := metadata.Pairs("k1", "v1")
+ctx := context.Background()
+outgoingContext := metadata.NewOutgoingContext(ctx, md)
+
+// 一元rpc
+res,err := client.SomeRPC(outgoingContext,data)
+// 流式rpc
+stream,err := client.StreamRPC(outgoingContext)
+```
+
+如果原有的ctx已经有metadata了的话，再使用`NewOutgoingContext`会将先前的数据直接覆盖掉，为了避免这种情况，可以使用下面这个函数，它不会覆盖，而是会将数据合并。
+
+```go
+func AppendToOutgoingContext(ctx context.Context, kv ...string) context.Context
+```
+
+```go
+md := metadata.Pairs("k1", "v1")
+ctx := context.Background()
+outgoingContext := metadata.NewOutgoingContext(ctx, md)
+
+appendContext := metadata.AppendToOutgoingContext(outgoingContext, "k2","v2")
+
+// 一元rpc
+res,err := client.SomeRPC(appendContext,data)
+// 流式rpc
+stream,err := client.StreamRPC(appendContext)
+```
+
+## 拦截器
+
+## TLS安全传输
+
+## 自定义认证
