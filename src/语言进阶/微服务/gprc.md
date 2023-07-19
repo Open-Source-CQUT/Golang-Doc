@@ -1,14 +1,16 @@
-# GPRC
+# gPRC
 
 ![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307161153673.png)
 
-远程过程调用rpc应该是微服务当中必须要学习的一个点了，在学习的过程中会遇到各式各样的rpc框架，不过在go这个领域，几乎所有的rpc框架都是基于gprc的，并且它还成为了云原生领域的一个基础协议，为什么选择它，官方如下回答：
+远程过程调用rpc应该是微服务当中必须要学习的一个点了，在学习的过程中会遇到各式各样的rpc框架，不过在go这个领域，几乎所有的rpc框架都是基于gRPC的，并且它还成为了云原生领域的一个基础协议，为什么选择它，官方如下回答：
 
-> GRPC 是一个现代化的开源高性能远程过程调用(Remote Process Call，RPC)框架，可以在任何环境中运行。它可以通过可插拔的负载平衡、跟踪、健康检查和身份验证支持，有效地连接数据中心内和数据中心之间的服务。它还适用于连接设备、移动应用程序和浏览器到后端服务的最后一英里分布式计算。
+> gRPC 是一个现代化的开源高性能远程过程调用(Remote Process Call，RPC)框架，可以在任何环境中运行。它可以通过可插拔的负载平衡、跟踪、健康检查和身份验证支持，有效地连接数据中心内和数据中心之间的服务。它还适用于连接设备、移动应用程序和浏览器到后端服务的最后一英里分布式计算。
 
 官方网址：[gRPC](https://grpc.io/)
 
 官方文档：[Documentation | gRPC](https://grpc.io/docs/)
+
+gRPC技术教程：[Basics tutorial | Go | gRPC](https://grpc.io/docs/languages/go/basics/)
 
 ProtocBuf官网：[Reference Guides | Protocol Buffers Documentation (protobuf.dev)](https://protobuf.dev/reference/)
 
@@ -350,7 +352,7 @@ $ buf generate
 
 
 
-## 流式调用
+## 流式RPC
 
 grpc的调用方式有两大类，一元RPC（Unary RPC）和流式RPC（Stream RPC）。Hello World中的示例就是一个典型的一元RPC。
 
@@ -703,3 +705,285 @@ client  2023/07/18 16:28:33 暂无消息，关闭连接
 通过这个例子可以发现单向流式RPC请求处理起来的话不论是客户端还是服务端都要比一元rpc复杂，不过双向流式RPC比它们还要更复杂些。
 
 ### 双向流式
+
+双向流式PRC，即请求和响应都是流式的，就相当于把上例中的两个服务结合成一个。对于流式RPC而言，第一个请求肯定是由客户端发起的，随后客户端可以随时通过流来发送请求参数，服务端也可以随时通过流来返回数据，不管哪一方主动关闭流，当前请求都会结束。
+
+::: tip
+
+后续的内容除非必要，都会直接省略掉pb代码生成以及创建rpc客户端服务端这些步骤的代码描述
+
+:::
+
+首先创建如下项目结构
+
+```
+bi_stream\
+|   buf.gen.yaml
+|
++---client
+|       main.go
+|
++---message
+|       message.pb.go
+|       message_grpc.pb.go
+|
++---pb
+|       buf.yaml
+|       message.proto
+|
+\---server
+        main.go
+        message_service.go
+```
+
+`message.proto`内容如下
+
+```protobuf
+syntax = "proto3";
+
+
+option go_package = ".;message";
+
+import "google/protobuf/wrappers.proto";
+
+message Message {
+  string from = 1;
+  string content = 2;
+  string to = 3;
+}
+
+service ChatService {
+  rpc chat(stream Message) returns (stream Message);
+}
+```
+
+服务端逻辑中，建立连接后，开启两个协程，一个协程负责接收消息，一个负责发送消息，具体的处理逻辑与上个例子类似，不过这次去掉了超时的判定逻辑。
+
+```go
+package main
+
+import (
+	"github.com/dstgo/task"
+	"google.golang.org/grpc/metadata"
+	"grpc_learn/bi_stream/message"
+	"log"
+	"sync"
+	"time"
+)
+
+// MessageQueue 模拟的消息队列
+var MessageQueue sync.Map
+
+type ChatService struct {
+	message.UnimplementedChatServiceServer
+}
+
+// Chat
+// param chatServer message.ChatService_ChatServer
+// return error
+// 聊天服务，服务端逻辑我们用多协程来进行处理
+func (m *ChatService) Chat(chatServer message.ChatService_ChatServer) error {
+	md, _ := metadata.FromIncomingContext(chatServer.Context())
+	from := md.Get("from")[0]
+	defer log.Println(from, "end chat")
+
+	var chatErr error
+	chatCh := make(chan error)
+
+	// 创建两个协程，一个收消息，一个发消息
+	chatTask := task.NewTask(func(err error) {
+		chatErr = err
+	})
+
+	// 接收消息的协程
+	chatTask.AddJobs(func() {
+		for {
+			msg, err := chatServer.Recv()
+			log.Printf("receive %+v err %+v\n", msg, err)
+			if err != nil {
+				chatErr = err
+				chatCh <- err
+				break
+			}
+
+			value, ok := MessageQueue.Load(msg.To)
+			if !ok {
+				MessageQueue.Store(msg.To, []*message.Message{msg})
+			} else {
+				queue := value.([]*message.Message)
+				queue = append(queue, msg)
+				MessageQueue.Store(msg.To, queue)
+			}
+		}
+	})
+
+	// 发送消息的协程
+	chatTask.AddJobs(func() {
+	Send:
+		for {
+			time.Sleep(time.Millisecond * 100)
+			select {
+			case <-chatCh:
+				log.Println(from, "close send")
+				break Send
+			default:
+				value, ok := MessageQueue.Load(from)
+				if !ok {
+					value = []*message.Message{}
+					MessageQueue.Store(from, value)
+				}
+
+				queue := value.([]*message.Message)
+				if len(queue) < 1 {
+					continue Send
+				}
+
+				msg := queue[0]
+				queue = queue[1:]
+				MessageQueue.Store(from, queue)
+				err := chatServer.Send(msg)
+				log.Printf("send %+v\n", msg)
+				if err != nil {
+					chatErr = err
+					break Send
+				}
+			}
+		}
+	})
+
+	chatTask.Run()
+
+	return chatErr
+}
+```
+
+客户端逻辑中，开启了两个子协程来模拟两个人的聊天过程，两个子协程中分别又各有两个孙协程负责收发消息（客户端逻辑中并没有保证两个人聊天的消息收发顺序正确，只是一个简单的双方发送与接收的例子）
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/dstgo/task"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
+	"grpc_learn/bi_stream/message"
+	"log"
+	"time"
+)
+
+var Client message.ChatServiceClient
+
+func main() {
+	log.SetPrefix("client ")
+	dial, err := grpc.Dial("localhost:9090", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	defer dial.Close()
+
+	if err != nil {
+		log.Panicln(err)
+	}
+	Client = message.NewChatServiceClient(dial)
+
+	chatTask := task.NewTask(func(err error) {
+		log.Panicln(err)
+	})
+
+	chatTask.AddJobs(func() {
+		NewChat("jack", "mike", "你好", "有没有时间一起打游戏？", "好吧")
+	})
+
+	chatTask.AddJobs(func() {
+		NewChat("mike", "jack", "你好", "没有", "没时间，你找别人吧")
+	})
+
+	chatTask.Run()
+}
+
+func NewChat(from string, to string, contents ...string) {
+	ctx := context.Background()
+	mdCtx := metadata.AppendToOutgoingContext(ctx, "from", from)
+	chat, err := Client.Chat(mdCtx)
+	defer log.Println("end chat", from)
+
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	chatTask := task.NewTask(func(err error) {
+		log.Panicln(err)
+	})
+
+	chatTask.AddJobs(func() {
+		for _, content := range contents {
+			time.Sleep(time.Second)
+			chat.Send(&message.Message{
+				From:    from,
+				Content: content,
+				To:      to,
+			})
+		}
+		// 消息发完了，就关闭连接
+		time.Sleep(time.Second * 5)
+		chat.CloseSend()
+	})
+
+	// 接收消息的协程
+	chatTask.AddJobs(func() {
+		for {
+			msg, err := chat.Recv()
+			log.Printf("receive %+v\n", msg)
+			if err != nil {
+				log.Println(err)
+				break
+			}
+		}
+	})
+
+	chatTask.Run()
+}
+
+```
+
+正常情况下，服务端输出
+
+```
+server 2023/07/19 17:18:44 server listening on [::]:9090
+server 2023/07/19 17:18:49 receive from:"mike" content:"你好" to:"jack" err <nil>
+server 2023/07/19 17:18:49 receive from:"jack" content:"你好" to:"mike" err <nil>
+server 2023/07/19 17:18:49 send from:"jack" content:"你好" to:"mike"
+server 2023/07/19 17:18:49 send from:"mike" content:"你好" to:"jack"
+server 2023/07/19 17:18:50 receive from:"jack" content:"有没有时间一起打游戏？" to:"mike" err <nil>
+server 2023/07/19 17:18:50 receive from:"mike" content:"没有" to:"jack" err <nil>
+server 2023/07/19 17:18:50 send from:"mike" content:"没有" to:"jack"
+server 2023/07/19 17:18:50 send from:"jack" content:"有没有时间一起打游戏？" to:"mike"
+server 2023/07/19 17:18:51 receive from:"jack" content:"好吧" to:"mike" err <nil>
+server 2023/07/19 17:18:51 receive from:"mike" content:"没时间，你找别人吧" to:"jack" err <nil>
+server 2023/07/19 17:18:51 send from:"jack" content:"好吧" to:"mike"
+server 2023/07/19 17:18:51 send from:"mike" content:"没时间，你找别人吧" to:"jack"
+server 2023/07/19 17:18:56 receive <nil> err EOF
+server 2023/07/19 17:18:56 receive <nil> err EOF
+server 2023/07/19 17:18:56 jack close send
+server 2023/07/19 17:18:56 jack end chat
+server 2023/07/19 17:18:56 mike close send
+server 2023/07/19 17:18:56 mike end chat
+```
+
+正常情况下，客户端输出（可以看到消息的顺序逻辑是乱的）
+
+```
+client 2023/07/19 17:26:24 receive from:"jack"  content:"你好"  to:"mike"
+client 2023/07/19 17:26:24 receive from:"mike"  content:"你好"  to:"jack"
+client 2023/07/19 17:26:25 receive from:"mike"  content:"没有"  to:"jack"
+client 2023/07/19 17:26:25 receive from:"jack"  content:"有没有时间一起打游戏？"  to:"mike"
+client 2023/07/19 17:26:26 receive from:"jack"  content:"好吧"  to:"mike"
+client 2023/07/19 17:26:26 receive from:"mike"  content:"没时间，你找别人吧"  to:"jack"
+client 2023/07/19 17:26:32 receive <nil>
+client 2023/07/19 17:26:32 rpc error: code = Unknown desc = EOF
+client 2023/07/19 17:26:32 end chat jack
+client 2023/07/19 17:26:32 receive <nil>
+client 2023/07/19 17:26:32 rpc error: code = Unknown desc = EOF
+client 2023/07/19 17:26:32 end chat mike
+```
+
+通过示例可以看到的是，双向流式的处理逻辑无论是客户端还是服务端，都要比单向流式更复杂，需要结合多协程开启异步任务才能更好的处理逻辑。
