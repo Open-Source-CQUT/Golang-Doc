@@ -1176,7 +1176,7 @@ type ClientStream interface {
 ```go
 stream, err := client.StreamRPC(ctx)
 header, err := stream.Header()
-trailer, err := Stream.Trailer()
+trailer := Stream.Trailer()
 ```
 
 **发送metadata**
@@ -1218,6 +1218,402 @@ stream,err := client.StreamRPC(appendContext)
 ```
 
 ## 拦截器
+
+gRPC的拦截器就类似于gin中的Middleware一样，都是为了在请求前或者请求后做一些特殊的工作并且不影响到本身的业务逻辑。在gRPC中，拦截器有两大类，服务端拦截器和客户端拦截器，根据请求类型来分则有一元RPC拦截器，和流式RPC拦截器，下图
+
+![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307201503603.png)
+
+为了能更好的理解拦截器，下面会根据一个非常简单的示例来进行描述。
+
+```go
+grpc_learn\interceptor
+|   buf.gen.yaml
+|
++---client
+|       main.go
+|
++---pb
+|       buf.yaml
+|       person.proto
+|
++---person
+|       person.pb.go
+|       person_grpc.pb.go
+|
+\---server
+        main.go
+```
+
+`person.proto`内容如下
+
+```protobuf
+syntax = "proto3";
+
+option go_package = ".;person";
+
+import "google/protobuf/wrappers.proto";
+
+message personInfo {
+  string name = 1;
+  int64  age = 2;
+  string address = 3;
+}
+
+service person {
+  rpc getPersonInfo(google.protobuf.StringValue) returns (personInfo);
+  rpc createPersonInfo(stream personInfo) returns (google.protobuf.Int64Value);
+}
+```
+
+服务端代码如下，逻辑全是之前的内容，比较简单不再赘述。
+
+```go
+package main
+
+import (
+	"context"
+	"errors"
+	"google.golang.org/protobuf/types/known/wrapperspb"
+	"grpc_learn/interceptor/person"
+	"io"
+	"sync"
+)
+
+// 存放数据
+var personData sync.Map
+
+type PersonService struct {
+	person.UnimplementedPersonServer
+}
+
+func (p *PersonService) GetPersonInfo(ctx context.Context, name *wrapperspb.StringValue) (*person.PersonInfo, error) {
+	value, ok := personData.Load(name.Value)
+	if !ok {
+		return nil, errors.New("person not found")
+	}
+	personInfo := value.(*person.PersonInfo)
+	return personInfo, nil
+}
+
+func (p *PersonService) CreatePersonInfo(personStream person.Person_CreatePersonInfoServer) error {
+	count := 0
+	for {
+		personInfo, err := personStream.Recv()
+		if errors.Is(err, io.EOF) {
+			return personStream.SendAndClose(wrapperspb.Int64(int64(count)))
+		} else if err != nil {
+			return err
+		}
+
+		personData.Store(personInfo.Name, personInfo)
+		count++
+	}
+}
+```
+
+### 服务端拦截
+
+拦截服务端rpc请求的有`UnaryServerInterceptor`和`StreamServerInterceptor`，具体类型如下所示
+
+```go
+type UnaryServerInterceptor func(ctx context.Context, req interface{}, info *UnaryServerInfo, handler UnaryHandler) (resp interface{}, err error)
+
+type StreamServerInterceptor func(srv interface{}, ss ServerStream, info *StreamServerInfo, handler StreamHandler) error
+```
+
+**一元RPC**
+
+创建一元RPC拦截器，只需要实现`UnaryserverInterceptor`类型即可，下面是一个简单的一元RPC拦截器的例子，功能是输出每一次rpc的请求和响应。
+
+```go
+// UnaryPersonLogInterceptor
+// param ctx context.Context
+// param req interface{} rpc的请求数据
+// param info *grpc.UnaryServerInfo 本次一元RPC的一些请求信息
+// param unaryHandler grpc.UnaryHandler 具体的handler
+// return resp interface{} rpc的响应数据
+// return err error
+func UnaryPersonLogInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, unaryHandler grpc.UnaryHandler) (resp interface{}, err error) {
+	log.Println(fmt.Sprintf("before unary rpc intercept path: %s req: %+v", info.FullMethod, req))
+	resp, err = unaryHandler(ctx, req)
+	log.Println(fmt.Sprintf("after unary rpc intercept path: %s resp: %+v err: %+v", info.FullMethod, resp, err))
+	return resp, err
+}
+```
+
+对于一元RPC而言，拦截器拦截的是每一个RPC的请求和响应，即拦截的是RPC的请求阶段和响应阶段，如果拦截器返回error，那么本次请求就会结束。
+
+**流式rpc**
+
+创建流式RPC拦截器，只需要实现`StreamServerInterceptor`类型即可，下面是一个简单的流式RPC拦截器的例子。
+
+```go
+// StreamPersonLogInterceptor
+// param srv interface{} 对应服务端实现的server
+// param stream grpc.ServerStream 流对象
+// param info *grpc.StreamServerInfo 流信息
+// param streamHandler grpc.StreamHandler 处理器
+// return error
+func StreamPersonLogInterceptor(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, streamHandler grpc.StreamHandler) error {
+	log.Println(fmt.Sprintf("before stream rpc interceptor path: %s srv: %+v clientStream: %t serverStream: %t", info.FullMethod, srv, info.IsClientStream, info.IsServerStream))
+	err := streamHandler(srv, stream)
+	log.Println(fmt.Sprintf("after stream rpc interceptor path: %s srv: %+v clientStream: %t serverStream: %t err: %+v", info.FullMethod, srv, info.IsClientStream, info.IsServerStream, err))
+	return err
+}
+```
+
+对于流式RPC而言，拦截器拦截的是每一个流对象的`Send`和`Recve`方法被调用的时机，如果拦截器返回error，并不会导致本次RPC请求的结束，仅仅只是代表着本次`send `或`recv`出现了错误。
+
+**使用拦截器**
+
+要想使创建的拦截器生效，需要在创建gRPC服务器的时候作为option传入，官方也提供了相关的函数以供使用。如下所示，有添加单个拦截器的函数，也有添加链式拦截器的函数。
+
+```go
+func UnaryInterceptor(i UnaryServerInterceptor) ServerOption
+
+func ChainUnaryInterceptor(interceptors ...UnaryServerInterceptor) ServerOption
+
+func StreamInterceptor(i StreamServerInterceptor) ServerOption 
+
+func ChainStreamInterceptor(interceptors ...StreamServerInterceptor) ServerOption 
+```
+
+::: tip
+
+重复使用`UnaryInterceptor`会抛出如下panic
+
+```
+panic: The unary server interceptor was already set and may not be reset. 
+```
+
+`StreamInterceptor`也是同理，而链式拦截器重复调用则会append到同一个链上。
+
+:::
+
+使用示例如下
+
+```go
+package main
+
+import (
+	"google.golang.org/grpc"
+	"grpc_learn/interceptor/person"
+	"log"
+	"net"
+)
+
+func main() {
+	log.SetPrefix("server ")
+	listen, err := net.Listen("tcp", "9090")
+	if err != nil {
+		log.Panicln(err)
+	}
+	server := grpc.NewServer(
+        // 添加链式拦截器
+		grpc.ChainUnaryInterceptor(UnaryPersonLogInterceptor),
+		grpc.ChainStreamInterceptor(StreamPersonLogInterceptor),
+	)
+	person.RegisterPersonServer(server, &PersonService{})
+	server.Serve(listen)
+}
+```
+
+### 客户端拦截
+
+客户端拦截器跟服务端差不多，一个一元拦截器`UnaryClientInterceptor`，一个流式拦截器`StreamClientInterceptor`，具体类型如下所示。
+
+```go
+type UnaryClientInterceptor func(ctx context.Context, method string, req, reply interface{}, cc *ClientConn, invoker UnaryInvoker, opts ...CallOption) error
+
+type StreamClientInterceptor func(ctx context.Context, desc *StreamDesc, cc *ClientConn, method string, streamer Streamer, opts ...CallOption) (ClientStream, error)
+```
+
+**一元RPC**
+
+创建一元RPC客户端拦截器，实现`UnaryClientInterceptor`即可，下面就是一个简单的例子。
+
+```go
+// UnaryPersonClientInterceptor
+// param ctx context.Context
+// param method string 方法名
+// param req interface{} 请求数据
+// param reply interface{} 响应数据
+// param cc *grpc.ClientConn 客户端连接对象
+// param invoker grpc.UnaryInvoker 被拦截的具体客户端方法
+// param opts ...grpc.CallOption 本次请求的配置项
+// return error
+func UnaryPersonClientInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	log.Println(fmt.Sprintf("before unary request path: %s req: %+v", method, req))
+	err := invoker(ctx, method, req, reply, cc, opts...)
+	log.Println(fmt.Sprintf("after unary request path: %s req: %+v rep: %+v", method, req, reply))
+	return err
+}
+```
+
+通过客户端的一元RPC拦截器，可以获取到本地请求的请求数据和响应数据以及一些其他的请求信息。
+
+**流式RPC**
+
+创建一个流式RPC客户端拦截器，实现`StreamClientInterceptor`即可，下面就是一个例子。
+
+```go
+// StreamPersonClientInterceptor
+// param ctx context.Context
+// param desc *grpc.StreamDesc 流对象的描述信息
+// param cc *grpc.ClientConn 连接对象
+// param method string 方法名
+// param streamer grpc.Streamer 用于创建流对象的对象
+// param opts ...grpc.CallOption 连接配置项
+// return grpc.ClientStream 创建好的客户端流对象
+// return error
+func StreamPersonClientInterceptor(ctx context.Context, desc *grpc.StreamDesc, cc *grpc.ClientConn, method string, streamer grpc.Streamer, opts ...grpc.CallOption) (grpc.ClientStream, error) {
+	log.Println(fmt.Sprintf("before create stream  path: %s name: %+v client: %t server: %t", method, desc.StreamName, desc.ClientStreams, desc.ServerStreams))
+	stream, err := streamer(ctx, desc, cc, method, opts...)
+	log.Println(fmt.Sprintf("after create stream  path: %s name: %+v client: %t server: %t", method, desc.StreamName, desc.ClientStreams, desc.ServerStreams))
+	return stream, err
+}
+```
+
+通过流式RPC客户端拦截器，只能拦截到客户端与服务端建立连接的时候也就是创建流的时机，并不能拦截到客户端流对象每一次收发消息的时候，不过我们把拦截器中创建好的流对象包装一下就可以实现拦截收发消息了，就像下面这样
+
+```go
+// StreamPersonClientInterceptor
+// param ctx context.Context
+// param desc *grpc.StreamDesc 流对象的描述信息
+// param cc *grpc.ClientConn 连接对象
+// param method string 方法名
+// param streamer grpc.Streamer 用于创建流对象的对象
+// param opts ...grpc.CallOption 连接配置项
+// return grpc.ClientStream 创建好的客户端流对象
+// return error
+func StreamPersonClientInterceptor(ctx context.Context, desc *grpc.StreamDesc, cc *grpc.ClientConn, method string, streamer grpc.Streamer, opts ...grpc.CallOption) (grpc.ClientStream, error) {
+	log.Println(fmt.Sprintf("before create stream  path: %stream name: %+v client: %t server: %t", method, desc.StreamName, desc.ClientStreams, desc.ServerStreams))
+	stream, err := streamer(ctx, desc, cc, method, opts...)
+	log.Println(fmt.Sprintf("after create stream  path: %stream name: %+v client: %t server: %t", method, desc.StreamName, desc.ClientStreams, desc.ServerStreams))
+	return &ClientStreamInterceptorWrapper{method, desc, stream}, err
+}
+
+type ClientStreamInterceptorWrapper struct {
+	method string
+	desc   *grpc.StreamDesc
+	grpc.ClientStream
+}
+
+func (c *ClientStreamInterceptorWrapper) SendMsg(m interface{}) error {
+	// 消息发送前
+	err := c.SendMsg(m)
+	// 消息发送后
+	log.Println(fmt.Sprintf("%s send %+v err: %+v", c.method, m, err))
+	return err
+}
+
+func (c *ClientStreamInterceptorWrapper) RecvMsg(m interface{}) error {
+	// 消息接收前
+	err := c.RecvMsg(m)
+	// 消息接收后
+	log.Println(fmt.Sprintf("%s recv %+v err: %+v", c.method, m, err))
+	return err
+}
+```
+
+**使用拦截器**
+
+使用时，与服务端类似也是四个工具函数通过option来添加拦截器，分为单个拦截器和链式拦截器。
+
+```go
+func WithUnaryInterceptor(f UnaryClientInterceptor) DialOption
+
+func WithChainUnaryInterceptor(interceptors ...UnaryClientInterceptor) DialOption
+
+func WithStreamInterceptor(f StreamClientInterceptor) DialOption 
+
+func WithChainStreamInterceptor(interceptors ...StreamClientInterceptor) DialOption
+```
+
+::: tip
+
+客户端重复使用`WithUnaryInterceptor`不会抛出panic，但是仅最后一个会生效。
+
+:::
+
+下面是一个使用案例
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/types/known/wrapperspb"
+	"grpc_learn/interceptor/person"
+	"log"
+)
+
+func main() {
+	log.SetPrefix("client ")
+	dial, err := grpc.Dial("localhost:9090",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithChainUnaryInterceptor(UnaryPersonClientInterceptor),
+		grpc.WithChainStreamInterceptor(StreamPersonClientInterceptor),
+	)
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	ctx := context.Background()
+	client := person.NewPersonClient(dial)
+
+	personStream, err := client.CreatePersonInfo(ctx)
+	personStream.Send(&person.PersonInfo{
+		Name:    "jack",
+		Age:     18,
+		Address: "usa",
+	})
+	personStream.Send(&person.PersonInfo{
+		Name:    "mike",
+		Age:     20,
+		Address: "cn",
+	})
+	recv, err := personStream.CloseAndRecv()
+	log.Println(recv, err)
+
+	log.Println(client.GetPersonInfo(ctx, wrapperspb.String("jack")))
+	log.Println(client.GetPersonInfo(ctx, wrapperspb.String("jenny")))
+}
+```
+
+到目前为止，整个案例已经编写完毕，是时候来运行一下看看结果是什么样的。服务端输出如下
+
+```
+server 2023/07/20 17:27:57 before stream rpc interceptor path: /person/createPersonInfo srv: &{UnimplementedPersonServer:{}} clientStream: true serverStream: false
+server 2023/07/20 17:27:57 after stream rpc interceptor path: /person/createPersonInfo srv: &{UnimplementedPersonServer:{}} clientStream: true serverStream: false err: <nil>
+server 2023/07/20 17:27:57 before unary rpc intercept path: /person/getPersonInfo req: value:"jack"                                                                          
+server 2023/07/20 17:27:57 after unary rpc intercept path: /person/getPersonInfo resp: name:"jack" age:18 address:"usa" err: <nil>                                           
+server 2023/07/20 17:27:57 before unary rpc intercept path: /person/getPersonInfo req: value:"jenny"                                                                         
+server 2023/07/20 17:27:57 after unary rpc intercept path: /person/getPersonInfo resp: <nil> err: person not found   
+```
+
+客户端输出如下
+
+```
+C:\Users\Stranger\AppData\Local\Temp\GoLand\___go_build_grpc_learn_interceptor_client.exe
+client 2023/07/20 17:27:57 before create stream  path: /person/createPersonInfotream name: createPersonInfo client: true server: false
+client 2023/07/20 17:27:57 after create stream  path: /person/createPersonInfotream name: createPersonInfo client: true server: false 
+client 2023/07/20 17:27:57 /person/createPersonInfo send name:"jack" age:18 address:"usa" err: <nil>
+client 2023/07/20 17:27:57 /person/createPersonInfo send name:"mike" age:20 address:"cn" err: <nil>
+client 2023/07/20 17:27:57 /person/createPersonInfo recv value:2 err: <nil>
+client 2023/07/20 17:27:57 value:2 <nil>
+client 2023/07/20 17:27:57 before unary request path: /person/getPersonInfotream req: value:"jack"
+client 2023/07/20 17:27:57 after unary request path: /person/getPersonInfotream req: value:"jack" rep: name:"jack" age:18 address:"usa"
+client 2023/07/20 17:27:57 name:"jack" age:18 address:"usa" <nil>
+client 2023/07/20 17:27:57 before unary request path: /person/getPersonInfotream req: value:"jenny"
+client 2023/07/20 17:27:57 after unary request path: /person/getPersonInfotream req: value:"jenny" rep:
+client 2023/07/20 17:27:57 <nil> rpc error: code = Unknown desc = person not found
+```
+
+可以看到两边的输出都符合预期，起到了拦截的效果，这个案例只是一个很简单的示例，利用gRPC的拦截器可以做很多事情比如授权，日志，监控等等其他功能，可以选择自己造轮子，也可以选择使用开源社区现成的轮子，[gRPC Ecosystem](https://github.com/grpc-ecosystem)专门收集了一系列开源的gRPC拦截器中间件，地址：[grpc-ecosystem/go-grpc-middleware](https://github.com/grpc-ecosystem/go-grpc-middleware)。
 
 ## TLS安全传输
 
