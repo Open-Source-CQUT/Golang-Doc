@@ -42,6 +42,22 @@ ProtocBuf官网：[Reference Guides | Protocol Buffers Documentation (protobuf.d
 
 
 
+::: tip
+
+本文参考了以下文章的内容：
+
+[写给go开发者的gRPC教程-protobuf基础 - 掘金 (juejin.cn)](https://juejin.cn/post/7191008929986379836)
+
+[gRPC 中的 Metadata - 熊喵君的博客 | PANDAYCHEN](https://pandaychen.github.io/2020/02/22/GRPC-METADATA-INTRO/)
+
+[gRPC 系列——grpc 超时传递原理 | 小米信息部技术团队 (xiaomi-info.github.io)](https://xiaomi-info.github.io/2019/12/30/grpc-deadline/)
+
+[gRPC API 设计指南  | Google Cloud](https://cloud.google.com/apis/design?hl=zh-cn)
+
+:::
+
+
+
 ## 依赖安装
 
 先下载Protocol Buffer编译器，下载地址：[Releases · protocolbuffers/protobuf (github.com)](https://github.com/protocolbuffers/protobuf/releases)
@@ -1223,6 +1239,8 @@ gRPC的拦截器就类似于gin中的Middleware一样，都是为了在请求前
 
 ![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307201503603.png)
 
+
+
 为了能更好的理解拦截器，下面会根据一个非常简单的示例来进行描述。
 
 ```go
@@ -1289,7 +1307,7 @@ type PersonService struct {
 func (p *PersonService) GetPersonInfo(ctx context.Context, name *wrapperspb.StringValue) (*person.PersonInfo, error) {
 	value, ok := personData.Load(name.Value)
 	if !ok {
-		return nil, errors.New("person not found")
+		return nil, person.PersonNotFoundErr
 	}
 	personInfo := value.(*person.PersonInfo)
 	return personInfo, nil
@@ -1501,7 +1519,7 @@ type ClientStreamInterceptorWrapper struct {
 
 func (c *ClientStreamInterceptorWrapper) SendMsg(m interface{}) error {
 	// 消息发送前
-	err := c.SendMsg(m)
+	err := c.ClientStream.SendMsg(m)
 	// 消息发送后
 	log.Println(fmt.Sprintf("%s send %+v err: %+v", c.method, m, err))
 	return err
@@ -1509,7 +1527,7 @@ func (c *ClientStreamInterceptorWrapper) SendMsg(m interface{}) error {
 
 func (c *ClientStreamInterceptorWrapper) RecvMsg(m interface{}) error {
 	// 消息接收前
-	err := c.RecvMsg(m)
+	err := c.ClientStream.RecvMsg(m)
 	// 消息接收后
 	log.Println(fmt.Sprintf("%s recv %+v err: %+v", c.method, m, err))
 	return err
@@ -1615,6 +1633,388 @@ client 2023/07/20 17:27:57 <nil> rpc error: code = Unknown desc = person not fou
 
 可以看到两边的输出都符合预期，起到了拦截的效果，这个案例只是一个很简单的示例，利用gRPC的拦截器可以做很多事情比如授权，日志，监控等等其他功能，可以选择自己造轮子，也可以选择使用开源社区现成的轮子，[gRPC Ecosystem](https://github.com/grpc-ecosystem)专门收集了一系列开源的gRPC拦截器中间件，地址：[grpc-ecosystem/go-grpc-middleware](https://github.com/grpc-ecosystem/go-grpc-middleware)。
 
-## TLS安全传输
+## 错误处理
 
-## 自定义认证
+在开始之前先来看一个例子，在上一个拦截器案例中，如果用户查询不到，会向客户端返回错误`person not found`，那么问题来了，客户端能不能根据返回的错误做特殊的处理呢？接下来试一试，在客户端代码中，尝试使用`errors.Is`来判断错误。
+
+```go
+func main() {
+	log.SetPrefix("client ")
+	dial, err := grpc.Dial("localhost:9090",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithChainUnaryInterceptor(UnaryPersonClientInterceptor),
+		grpc.WithChainStreamInterceptor(StreamPersonClientInterceptor),
+	)
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	ctx := context.Background()
+	client := person.NewPersonClient(dial)
+
+	personStream, err := client.CreatePersonInfo(ctx)
+	personStream.Send(&person.PersonInfo{
+		Name:    "jack",
+		Age:     18,
+		Address: "usa",
+	})
+	personStream.Send(&person.PersonInfo{
+		Name:    "mike",
+		Age:     20,
+		Address: "cn",
+	})
+	recv, err := personStream.CloseAndRecv()
+	log.Println(recv, err)
+
+	info, err := client.GetPersonInfo(ctx, wrapperspb.String("john"))
+	log.Println(info, err)
+	if errors.Is(err, person.PersonNotFoundErr) {
+		log.Println("person not found err")
+	}
+}
+```
+
+结果输出如下
+
+```
+client 2023/07/21 16:46:10 before create stream  path: /person/createPersonInfotream name: createPersonInfo client: true server: false
+client 2023/07/21 16:46:10 after create stream  path: /person/createPersonInfotream name: createPersonInfo client: true server: false
+client 2023/07/21 16:46:10 /person/createPersonInfo send name:"jack"  age:18  address:"usa" err: <nil>
+client 2023/07/21 16:46:10 /person/createPersonInfo send name:"mike"  age:20  address:"cn" err: <nil>
+client 2023/07/21 16:46:10 /person/createPersonInfo recv value:2 err: <nil>
+client 2023/07/21 16:46:10 value:2 <nil>
+client 2023/07/21 16:46:10 before unary request path: /person/getPersonInfotream req: value:"john"
+client 2023/07/21 16:46:10 after unary request path: /person/getPersonInfotream req: value:"john" rep:
+client 2023/07/21 16:46:10 <nil> rpc error: code = Unknown desc = person not found
+```
+
+可以看到客户端接收的error是这样的，会发现服务端返回的error在desc这个字段里面
+
+```
+rpc error: code = Unknown desc = person not found
+```
+
+自然`errors.Is`这段逻辑也就没有执行，即便换成`errors.As`也是一样的结果。
+
+```go
+if errors.Is(err, person.PersonNotFoundErr) {
+    log.Println("person not found err")
+}
+```
+
+为此，gRPC提供了`status`包来解决这类问题，这也是为什么客户端接收到的错误会有code和desc字段的原因，因为gRPC实际上返回给客户端的是一个`Status`，其具体类型如下，可以看出也是一个protobuf定义的message。
+
+```go
+type Status struct {
+   state         protoimpl.MessageState
+   sizeCache     protoimpl.SizeCache
+   unknownFields protoimpl.UnknownFields
+
+   Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+   Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+   Details []*anypb.Any `protobuf:"bytes,3,rep,name=details,proto3" json:"details,omitempty"`
+}
+```
+
+```protobuf
+message Status {
+  // The status code, which should be an enum value of
+  // [google.rpc.Code][google.rpc.Code].
+  int32 code = 1;
+
+  // A developer-facing error message, which should be in English. Any
+  // user-facing error message should be localized and sent in the
+  // [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+  // by the client.
+  string message = 2;
+
+  // A list of messages that carry the error details.  There is a common set of
+  // message types for APIs to use.
+  repeated google.protobuf.Any details = 3;
+}
+```
+
+
+
+### 错误码
+
+Status结构体中的Code，是一种类似Http Status形式的存在，用于表示当前rpc请求的状态，gRPC定义了16个code位于`grpc/codes`，涵盖了大部分的场景，分别如下所示
+
+```go
+// A Code is an unsigned 32-bit error code as defined in the gRPC spec.
+type Code uint32
+
+const (
+	// 调用成功
+	OK Code = 0
+
+	// 请求被取消
+	Canceled Code = 1
+
+	// 未知错误
+	Unknown Code = 2
+
+	// 参数不合法
+	InvalidArgument Code = 3
+	
+    // 请求超时
+	DeadlineExceeded Code = 4
+
+	// 资源不存在
+	NotFound Code = 5
+
+    // 已存在相同的资源（能出现这个我是没想到的）
+	AlreadyExists Code = 6
+
+	// 权限不足被拒绝访问
+	PermissionDenied Code = 7
+
+	// 资源枯竭，剩下的容量不足以使用，比如磁盘容量不够了之类的情况
+	ResourceExhausted Code = 8
+
+	// 执行条件不足，比如使用rm删除一个非空的目录，删除的条件是目录是空的，但条件不满足
+	FailedPrecondition Code = 9
+
+	// 请求被打断
+	Aborted Code = 10
+
+	// 操作访问超出限制范围
+	OutOfRange Code = 11
+
+	// 表示当前服务没有实现
+	Unimplemented Code = 12
+
+	// 系统内部错误
+	Internal Code = 13
+
+	// 服务不可用
+	Unavailable Code = 14
+
+	// 数据丢失
+	DataLoss Code = 15
+
+	// 没有通过认证
+	Unauthenticated Code = 16
+
+	_maxCode = 17
+)
+```
+
+`grpc/status`包提供了相当多的函数以方status与error之间的相互转换。我们可以直接使用`status.New`来创建一个Status，或者`Newf`
+
+```go
+func New(c codes.Code, msg string) *Status 
+
+func Newf(c codes.Code, format string, a ...interface{}) *Status
+```
+
+例如下面的代码
+
+```go
+success := status.New(codes.OK, "request success")
+notFound := status.Newf(codes.NotFound, "person not found: %s", name)
+```
+
+通过status的err方法可以获取到其中的error，当状态为ok的时候error为nil。
+
+```go
+func (s *Status) Err() error {
+	if s.Code() == codes.OK {
+		return nil
+	}
+	return &Error{s: s}
+}
+```
+
+也可以直接创建error
+
+```go
+func Err(c codes.Code, msg string) error
+
+func Errorf(c codes.Code, format string, a ...interface{}) error
+```
+
+```go
+success := status.Error(codes.OK, "request success")
+notFound := status.Errorf(codes.InvalidArgument, "person not found: %s", name)
+```
+
+于是我们可以将服务代码修改成如下
+
+```go
+func (p *PersonService) GetPersonInfo(ctx context.Context, name *wrapperspb.StringValue) (*person.PersonInfo, error) {
+	value, ok := personData.Load(name.Value)
+	if !ok {
+		return nil, status.Errorf(codes.NotFound, "person not found: %s", name.String())
+	}
+	personInfo := value.(*person.PersonInfo)
+	return personInfo, status.Errorf(codes.OK, "request success")
+}
+```
+
+在此之前，服务端返回的所有的code都是unknown，现在经过修改后有了更加明确的语义。于是在客户端就可以通过`status.FromError`或者使用下面的函数从error中获取status，从而根据不同的code来做出响应的处理
+
+```go
+func FromError(err error) (s *Status, ok bool)
+
+func Convert(err error) *Status
+
+func Code(err error) codes.Code 
+```
+
+示例如下
+
+```go
+info, err := client.GetPersonInfo(ctx, wrapperspb.String("john"))
+s, ok := status.FromError(err)
+switch s.Code() {
+case codes.OK:
+case codes.InvalidArgument:
+    ...
+}
+```
+
+不过尽管grpc的code已经尽可能的涵盖了一些通用场景，不过有时候还是无法满足开发人员的需求，这个时候就可以使用Status中的Details字段，并且它还是一个切片，可以容纳多个信息。通过`Status.WithDetails`来传入一些自定义的信息
+
+```go
+func (s *Status) WithDetails(details ...proto.Message) (*Status, error)
+```
+
+通过`Status.Details`来获取信息
+
+```go
+func (s *Status) Details() []interface{}
+```
+
+需要注意的是，传入的信息最好是由protobuf定义的，这样才能方便服务端客户端两端都能解析，官方给出了几个示例
+
+```protobuf
+message ErrorInfo {
+  // 错误的原因
+  string reason = 1;
+
+  // 定义服务的主体
+  string domain = 2;
+
+  // 其他信息
+  map<string, string> metadata = 3;
+}
+
+// 重试信息
+message RetryInfo {
+  // 同一个请求的等待间隔时间
+  google.protobuf.Duration retry_delay = 1;
+}
+
+// 调试信息
+message DebugInfo {
+  // 堆栈
+  repeated string stack_entries = 1;
+
+  // 一些细节信息
+  string detail = 2;
+}
+
+...
+...
+```
+
+更多的例子可以前往[googleapis/google/rpc/error_details.proto at master · googleapis/googleapis (github.com)](https://github.com/googleapis/googleapis/blob/master/google/rpc/error_details.proto)查看。如果需要可以通过下面的代码来引入。
+
+```go
+import "google.golang.org/genproto/googleapis/rpc/errdetails"
+```
+
+使用`ErrorInfo`作为details
+
+```go
+notFound := status.Newf(codes.NotFound, "person not found: %s", name)
+	notFound.WithDetails(&errdetails.ErrorInfo{
+		Reason:   "person not found",
+		Domain:   "xxx",
+		Metadata: nil,
+	})
+```
+
+在客户端就可以拿到数据做出处理，不过上述只是gRPC推荐使用的一些例子，除此之外，同样也可以自己定义message，来更好的满足相应的业务需求，如果想做一些统一的错误处理，也可以放到拦截器里面操作。
+
+## 超时控制
+
+![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307261057987.png)
+
+在大多数情况下，通常不会只有一个服务，并且可能上游有很多服务，下游也有很多服务。客户端发起一次请求，从最上游的服务到最下游，就形成了一个服务调用链，就像图中那样，或许可能比图中的还要长。
+
+如此长的一个调用链，如果其中一个服务的逻辑处理需要花费很长时间，就会导致上游一直处于等待状态。为了减少不必要的资源浪费，因此有必要引入超时这一机制，这样一来最上游调用时传入的超时时间，便是整个调用链所允许的执行花费最大时间。而gRPC可以跨进程跨语言传递超时，它把一些需要跨进程传递的数据放在了HTTP2的`HEADERS Frame`帧中，如下图
+
+![](https://xiaomi-info.github.io/2019/12/30/grpc-deadline/2019-12-30-17-53-41.png)
+
+gRPC请求中的超时数据对应着`HEADERS Frame`中的`grpc-timeout`字段。需要注意的是，并不是所有的gRPC库都实现了这一超时传递机制，不过`gRPC-go`肯定是支持的，如果使用其他语言的库，并且使用了这一特性，则需要额外留意这一点。
+
+### 连接超时
+
+gRPC客户端在向服务端建立连接时，默认是异步建立的，如果连接建立失败只会返回一个空的Client。如果想要使连接同步进行，则可以使用`grpc.WithBlock()`来使连接未建立成功时阻塞等待。
+
+```go
+dial, err := grpc.Dial("localhost:9091",
+    grpc.WithBlock(),
+    grpc.WithTransportCredentials(insecure.NewCredentials()),
+    grpc.WithChainUnaryInterceptor(UnaryPersonClientInterceptor),
+    grpc.WithChainStreamInterceptor(StreamPersonClientInterceptor),
+)
+```
+
+如果想要控制一个超时时间，则只需要传入一个TimeoutContext，使用`grpc.DialContext`来替代`gprc.Dial`以传入context。
+
+```go
+timeout, cancelFunc := context.WithTimeout(context.Background(), time.Second)
+defer cancelFunc()
+dial, err := grpc.DialContext(timeout, "localhost:9091",
+    grpc.WithBlock(),
+    grpc.WithTransportCredentials(insecure.NewCredentials()),
+    grpc.WithChainUnaryInterceptor(UnaryPersonClientInterceptor),
+    grpc.WithChainStreamInterceptor(StreamPersonClientInterceptor),
+)
+```
+
+如此一来，如果连接建立超时，就会返回error
+
+```
+context deadline exceeded
+```
+
+在服务端同样也可以设置连接超时，在与客户端建立新连接的时候设置一个超时时间，默认是120秒，如果在规定时间内没有成功建立连接，服务端会主动断开连接。
+
+```go
+server := grpc.NewServer(
+    grpc.ConnectionTimeout(time.Second*3),
+)
+```
+
+::: tip
+
+`grpc.ConnectionTimeout`仍处于实验阶段，未来的API可能会被修改或删除。
+
+:::
+
+### 请求超时
+
+gRPC客户端在发起请求的时候，第一个参数就是`Context`类型，同样的，要想给RPC请求加上一个超时时间，只需要传入一个TimeoutContext即可
+
+```go
+timeout, cancel := context.WithTimeout(ctx, time.Second*3)
+defer cancel()
+info, err := client.GetPersonInfo(timeout, wrapperspb.String("john"))
+switch status.Code(err) {
+case codes.DeadlineExceeded:
+    // 超时逻辑处理
+}
+```
+
+经过gRPC的处理，超时时间被传递到了服务端，在传输过程中它以在帧字段的形式存在中，在go里面它以context的形式存在，就此在整个链路中进行传递。在链路传递过程中，不建议去修改超时时间，具体在请求时设置多长的超时时间，这应该是最上游应该考虑的问题。
+
+
+
+## 用户认证 
+
+## 安全传输
+
