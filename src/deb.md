@@ -41,7 +41,7 @@
 | kratos   | 云原生微服务框架（B站开源）            | https://github.com/go-kratos/kratos  |
 | go-kit   | 一个微服务开发的工具库                 | https://github.com/go-kit/kit        |
 | kitex    | 高性能和高拓展的微服务框架（字节开源） | https://github.com/cloudwego/kitex   |
-| go-zero  | 云原生微服务框架（好未来开源）         | https://github.com/zeromicro/go-zero |
+| go-zero  | 云原生微服务框架（七牛云开源）         | https://github.com/zeromicro/go-zero |
 | go-micro | 一个国外的微服务框架                   | https://github.com/go-micro/go-micro |
 | kite     | 微服务框架（很久没更新）               | https://github.com/koding/kite       |
 | dubbo-go | java dubbo在go实现（阿里开源）         | https://github.com/apache/dubbo-go   |
