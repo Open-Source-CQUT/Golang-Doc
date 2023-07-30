@@ -1,1 +1,0 @@
-import{_ as o,V as t,W as n,X as e,Y as a}from"./framework-44a66fc7.js";const c={},r=e("h1",{id:"mongodb",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#mongodb","aria-hidden":"true"},"#"),a(" MongoDB")],-1),s=[r];function _(d,i){return t(),n("div",null,s)}const l=o(c,[["render",_],["__file","MongoDB.html.vue"]]);export{l as default};
