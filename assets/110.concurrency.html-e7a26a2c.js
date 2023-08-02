@@ -113,7 +113,7 @@ strCh <span class="token operator">:=</span> <span class="token function">make</
 </code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div></div></div><p>管道中的数据流动方式与队列一样，即先进先出（FIFO），协程对于管道的操作是同步的，在某一个时刻，只有一个协程能够对其写入数据，同时也只有一个协程能够读取管道中的数据。</p><br><h3 id="无缓冲" tabindex="-1"><a class="header-anchor" href="#无缓冲" aria-hidden="true">#</a> 无缓冲</h3><p>对于无缓冲管道而言，因为缓冲区容量为0，所以不会临时存放任何数据。正因为无缓冲管道无法存放数据，在向管道写入数据时必须立刻有其他协程来读取数据，否则就会阻塞等待，读取数据时也是同理，这也解释了为什么下面看起来很正常的代码会发生死锁。</p><div class="language-go line-numbers-mode" data-ext="go"><pre class="language-go"><code><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 	<span class="token comment">// 创建无缓冲管道</span>
 	ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
-    <span class="token keyword">defer</span> <span class="token function">close</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span>
+	<span class="token keyword">defer</span> <span class="token function">close</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span>
 	<span class="token comment">// 写入数据</span>
 	ch <span class="token operator">&lt;-</span> <span class="token number">123</span>
 	<span class="token comment">// 读取数据</span>
@@ -370,11 +370,11 @@ fatal error: all goroutines are asleep - deadlock!
 4 true 
 0 false
 </code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>由于管道已经关闭了，即便缓冲区为空，再读取数据也不会导致当前协程阻塞，可以看到在第六次遍历的时候读取的是零值，并且<code>ok</code>为<code>false</code>。</p><div class="hint-container tip"><p class="hint-container-title">提示</p><p>关于管道关闭的时机，应该尽量在向管道发送数据的那一方关闭管道，而不要在接收方关闭管道，因为大多数情况下接收方只知道接收数据，并不知道该在什么时候关闭管道。</p></div><br><h3 id="select" tabindex="-1"><a class="header-anchor" href="#select" aria-hidden="true">#</a> select</h3><p><code>select</code>在Linux系统中，是一种IO多路复用的解决方案，类似的，在Go中，<code>select</code>是一种管道多路复用的控制结构。什么是多路复用，简单的用一句话概括：在某一时刻，同时监测多个元素是否可用，被监测的可以是网络请求，文件IO等。在Go中的<code>select</code>监测的元素就是管道，且只能是管道。<code>select</code>的语法与<code>switch</code>语句类似，下面看看一个<code>select</code>语句长什么样</p><div class="language-go line-numbers-mode" data-ext="go"><pre class="language-go"><code><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 创建三个管道</span>
+	<span class="token comment">// 创建三个管道</span>
 	chA <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
 	chB <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
 	chC <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
-    <span class="token keyword">defer</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">defer</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 		<span class="token function">close</span><span class="token punctuation">(</span>chA<span class="token punctuation">)</span>
 		<span class="token function">close</span><span class="token punctuation">(</span>chB<span class="token punctuation">)</span>
 		<span class="token function">close</span><span class="token punctuation">(</span>chC<span class="token punctuation">)</span>
@@ -425,7 +425,7 @@ fatal error: all goroutines are asleep - deadlock!
 	<span class="token keyword">go</span> <span class="token function">Send</span><span class="token punctuation">(</span>chA<span class="token punctuation">)</span>
 	<span class="token keyword">go</span> <span class="token function">Send</span><span class="token punctuation">(</span>chB<span class="token punctuation">)</span>
 	<span class="token keyword">go</span> <span class="token function">Send</span><span class="token punctuation">(</span>chC<span class="token punctuation">)</span>
-    <span class="token comment">// for循环</span>
+	<span class="token comment">// for循环</span>
 	<span class="token keyword">for</span> <span class="token punctuation">{</span>
 		<span class="token keyword">select</span> <span class="token punctuation">{</span>
 		<span class="token keyword">case</span> n<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>chA<span class="token punctuation">:</span>
@@ -433,7 +433,7 @@ fatal error: all goroutines are asleep - deadlock!
 		<span class="token keyword">case</span> n<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>chB<span class="token punctuation">:</span>
 			fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">&quot;B&quot;</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
 		<span class="token keyword">case</span> n<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>chC<span class="token punctuation">:</span>
-			fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">&quot;B&quot;</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
+			fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">&quot;C&quot;</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
 		<span class="token punctuation">}</span>
 	<span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
@@ -445,56 +445,56 @@ fatal error: all goroutines are asleep - deadlock!
 	<span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>这样确实三个管道都能用上了，但是死循环+<code>select</code>会导致主协程永久阻塞，所以可以将其单独放到新协程中，并且加上一些其他的逻辑。</p><div class="language-go line-numbers-mode" data-ext="go"><pre class="language-go"><code><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   chA <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
-   chB <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
-   chC <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
-   <span class="token keyword">defer</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token function">close</span><span class="token punctuation">(</span>chA<span class="token punctuation">)</span>
-      <span class="token function">close</span><span class="token punctuation">(</span>chB<span class="token punctuation">)</span>
-      <span class="token function">close</span><span class="token punctuation">(</span>chC<span class="token punctuation">)</span>
-   <span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	chA <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+	chB <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+	chC <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+	<span class="token keyword">defer</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">close</span><span class="token punctuation">(</span>chA<span class="token punctuation">)</span>
+		<span class="token function">close</span><span class="token punctuation">(</span>chB<span class="token punctuation">)</span>
+		<span class="token function">close</span><span class="token punctuation">(</span>chC<span class="token punctuation">)</span>
+	<span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-   l <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+	l <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-   <span class="token keyword">go</span> <span class="token function">Send</span><span class="token punctuation">(</span>chA<span class="token punctuation">)</span>
-   <span class="token keyword">go</span> <span class="token function">Send</span><span class="token punctuation">(</span>chB<span class="token punctuation">)</span>
-   <span class="token keyword">go</span> <span class="token function">Send</span><span class="token punctuation">(</span>chC<span class="token punctuation">)</span>
-    
-   <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   Loop<span class="token punctuation">:</span>
-      <span class="token keyword">for</span> <span class="token punctuation">{</span>
-         <span class="token keyword">select</span> <span class="token punctuation">{</span>
-         <span class="token keyword">case</span> n<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>chA<span class="token punctuation">:</span>
-            fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">&quot;A&quot;</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
-         <span class="token keyword">case</span> n<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>chB<span class="token punctuation">:</span>
-            fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">&quot;B&quot;</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
-         <span class="token keyword">case</span> n<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>chC<span class="token punctuation">:</span>
-            fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">&quot;B&quot;</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
-         <span class="token keyword">case</span> <span class="token operator">&lt;-</span>time<span class="token punctuation">.</span><span class="token function">After</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token comment">// 设置1秒的超时时间</span>
-            <span class="token keyword">break</span> Loop <span class="token comment">// 退出循环</span>
-         <span class="token punctuation">}</span>
-      <span class="token punctuation">}</span>
-      l <span class="token operator">&lt;-</span> <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token comment">// 告诉主协程可以退出了</span>
-   <span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    
-   <span class="token operator">&lt;-</span>l
+	<span class="token keyword">go</span> <span class="token function">Send</span><span class="token punctuation">(</span>chA<span class="token punctuation">)</span>
+	<span class="token keyword">go</span> <span class="token function">Send</span><span class="token punctuation">(</span>chB<span class="token punctuation">)</span>
+	<span class="token keyword">go</span> <span class="token function">Send</span><span class="token punctuation">(</span>chC<span class="token punctuation">)</span>
+
+	<span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	Loop<span class="token punctuation">:</span>
+		<span class="token keyword">for</span> <span class="token punctuation">{</span>
+			<span class="token keyword">select</span> <span class="token punctuation">{</span>
+			<span class="token keyword">case</span> n<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>chA<span class="token punctuation">:</span>
+				fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">&quot;A&quot;</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
+			<span class="token keyword">case</span> n<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>chB<span class="token punctuation">:</span>
+				fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">&quot;B&quot;</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
+			<span class="token keyword">case</span> n<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>chC<span class="token punctuation">:</span>
+				fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">&quot;C&quot;</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
+			<span class="token keyword">case</span> <span class="token operator">&lt;-</span>time<span class="token punctuation">.</span><span class="token function">After</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token comment">// 设置1秒的超时时间</span>
+				<span class="token keyword">break</span> Loop <span class="token comment">// 退出循环</span>
+			<span class="token punctuation">}</span>
+		<span class="token punctuation">}</span>
+		l <span class="token operator">&lt;-</span> <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token comment">// 告诉主协程可以退出了</span>
+	<span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+	<span class="token operator">&lt;-</span>l
 <span class="token punctuation">}</span>
 
 <span class="token keyword">func</span> <span class="token function">Send</span><span class="token punctuation">(</span>ch <span class="token keyword">chan</span><span class="token operator">&lt;-</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
-      time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Millisecond<span class="token punctuation">)</span>
-      ch <span class="token operator">&lt;-</span> i
-   <span class="token punctuation">}</span>
+	<span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+		time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Millisecond<span class="token punctuation">)</span>
+		ch <span class="token operator">&lt;-</span> i
+	<span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>上例中通过<code>for</code>循环配合<code>select</code>来一直监测三个管道是否可以用，并且第四个<code>case</code>是一个超时管道，超时过后便会退出循环，结束子协程。最终输出如下</p><div class="language-text line-numbers-mode" data-ext="text"><pre class="language-text"><code>B 0 true
-B 0 true
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>上例中通过<code>for</code>循环配合<code>select</code>来一直监测三个管道是否可以用，并且第四个<code>case</code>是一个超时管道，超时过后便会退出循环，结束子协程。最终输出如下</p><div class="language-text line-numbers-mode" data-ext="text"><pre class="language-text"><code>C 0 true
 A 0 true
+B 0 true
 A 1 true
 B 1 true
-B 1 true
+C 1 true
 B 2 true
+C 2 true
 A 2 true
-B 2 true
 </code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><br><p><strong>超时</strong></p><p>上一个例子用到了<code>time.After</code>函数，其返回值是一个只读的管道，该函数配合<code>select</code>使用可以非常简单的实现超时机制，例子如下</p><div class="language-go line-numbers-mode" data-ext="go"><pre class="language-go"><code><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 	chA <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
 	<span class="token keyword">defer</span> <span class="token function">close</span><span class="token punctuation">(</span>chA<span class="token punctuation">)</span>
@@ -1293,24 +1293,24 @@ mail 父级取消 context canceled
 
 <span class="token comment">// 遍历Map，当f()返回false时，就会停止遍历</span>
 <span class="token keyword">func</span> <span class="token punctuation">(</span>m <span class="token operator">*</span>Map<span class="token punctuation">)</span> <span class="token function">Range</span><span class="token punctuation">(</span>f <span class="token keyword">func</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value any<span class="token punctuation">)</span> <span class="token builtin">bool</span><span class="token punctuation">)</span> 
-</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>下面用一个简单的示例来演示下<code>sync.Map</code>的基本使用</p><div class="language-text line-numbers-mode" data-ext="text"><pre class="language-text"><code>func main() {
-	var syncMap sync.Map
-	// 存入数据
-	syncMap.Store(&quot;a&quot;, 1)
-	syncMap.Store(&quot;a&quot;, &quot;a&quot;)
-	// 读取数据
-	fmt.Println(syncMap.Load(&quot;a&quot;))
-	// 读取并删除
-	fmt.Println(syncMap.LoadAndDelete(&quot;a&quot;))
-	// 读取或存入
-	fmt.Println(syncMap.LoadOrStore(&quot;a&quot;, &quot;hello world&quot;))
-	syncMap.Store(&quot;b&quot;, &quot;goodbye world&quot;)
-	// 遍历map
-	syncMap.Range(func(key, value any) bool {
-		fmt.Println(key, value)
-		return true
-	})
-}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>下面用一个简单的示例来演示下<code>sync.Map</code>的基本使用</p><div class="language-go line-numbers-mode" data-ext="go"><pre class="language-go"><code><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">var</span> syncMap sync<span class="token punctuation">.</span>Map
+	<span class="token comment">// 存入数据</span>
+	syncMap<span class="token punctuation">.</span><span class="token function">Store</span><span class="token punctuation">(</span><span class="token string">&quot;a&quot;</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+	syncMap<span class="token punctuation">.</span><span class="token function">Store</span><span class="token punctuation">(</span><span class="token string">&quot;a&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;a&quot;</span><span class="token punctuation">)</span>
+	<span class="token comment">// 读取数据</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>syncMap<span class="token punctuation">.</span><span class="token function">Load</span><span class="token punctuation">(</span><span class="token string">&quot;a&quot;</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+	<span class="token comment">// 读取并删除</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>syncMap<span class="token punctuation">.</span><span class="token function">LoadAndDelete</span><span class="token punctuation">(</span><span class="token string">&quot;a&quot;</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+	<span class="token comment">// 读取或存入</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>syncMap<span class="token punctuation">.</span><span class="token function">LoadOrStore</span><span class="token punctuation">(</span><span class="token string">&quot;a&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;hello world&quot;</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+	syncMap<span class="token punctuation">.</span><span class="token function">Store</span><span class="token punctuation">(</span><span class="token string">&quot;b&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;goodbye world&quot;</span><span class="token punctuation">)</span>
+	<span class="token comment">// 遍历map</span>
+	syncMap<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token keyword">func</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value any<span class="token punctuation">)</span> <span class="token builtin">bool</span> <span class="token punctuation">{</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span>
+		<span class="token keyword">return</span> <span class="token boolean">true</span>
+	<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>输出</p><div class="language-text line-numbers-mode" data-ext="text"><pre class="language-text"><code>a true
 a true           
 hello world false
