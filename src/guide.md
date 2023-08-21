@@ -29,11 +29,13 @@ Go语言抛弃了继承，弱化了OOP，类，元编程，泛型，Lamda表达�
 
 <br>
 
-Go语言仓库地址：[golang/go: The Go programming language (github.com)](https://github.com/golang/go)
-
-Go语言官网：[The Go Programming Language](https://go.dev/)
-
 此外，Go还是一门完全开源的语言，由开源社区和官方共同维护Go语言的发展，官方地址是在谷歌仓库里，但是Github上有一份同样的镜像仓库。
+
+谷歌开源地址：[Go Google Open Source](https://cs.opensource.google/go)
+
+Github地址：[golang/go: The Go programming language (github.com)](https://github.com/golang/go)
+
+语言官网：[The Go Programming Language](https://go.dev/)
 
 <br/>
 
