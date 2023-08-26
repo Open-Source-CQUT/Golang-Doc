@@ -2024,9 +2024,198 @@ case codes.DeadlineExceeded:
 
 
 
-## 服务发现
+## 服务发现与注册
+
+客户端调用服务端的指定服务之前，需要知晓服务端的ip和port，在先前的案例中，服务端地址都是写死的。在实际的网络环境中不总是那么稳定，一些服务可能会因故障下线而无法访问，也有可能会因为业务发展进行机器迁移而导致地址变化，在这些情况下就不能使用静态地址访问服务了，而这些动态的问题就是服务发现与注册要解决的，服务发现负责监视服务地址的变化并更新，服务注册负责告诉外界自己的地址。gRPC中，提供了基础的服务发现功能，并且支持拓展和自定义。
+
+不能用静态地址，可以用一些特定的名称来进行代替，比如浏览器通过DNS解析域名来获取地址，同样的，gRPC默认的服务发现就是通过DNS来进行的，修改本地的host文件，添加如下映射
+
+```
+127.0.0.1 example.grpc.com
+```
+
+然后将helloworld示例中客户端Dial的地址改为对应的域名
+
+```go
+func main() {
+	// 建立连接，没有加密验证
+	conn, err := grpc.Dial("example.grpc.com:8080",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+	// 创建客户端
+	client := hello2.NewSayHelloClient(conn)
+	// 远程调用
+	helloRep, err := client.Hello(context.Background(), &hello2.HelloReq{Name: "client"})
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("received grpc resp: %+v", helloRep.String())
+}
+
+```
+
+同样能看到正常的输出
+
+```
+2023/08/26 15:52:52 received grpc resp: msg:"hello world! client"
+```
+
+在gRPC中，这类名称必须要遵守RFC 3986中定义的URI语法，格式为
+
+```
+                   hierarchical part
+        ┌───────────────────┴─────────────────────┐
+                    authority               path
+        ┌───────────────┴───────────────┐┌───┴────┐
+  abc://username:password@example.com:123/path/data?key=value&key2=value2#fragid1
+  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘
+scheme  user information     host     port                  query         fragment
+```
+
+上例中的URI就是如下形式，由于默认支持dns所以省略掉了前缀的scheme。
+
+```
+dns:example.grpc.com:8080
+```
+
+除此之外gRPC还默认支持Unix domain sockets，而对于其他的方式，需要我们根据gRPC的拓展来进行自定义实现，为此需要实现一个自定义的解析器`resolver.Resovler`，resolver负责监控目标地址和服务配置的更新。
+
+```go
+type Resolver interface {
+    // gRPC将调用ResolveNow来尝试再次解析目标名称。这只是一个提示，如果不需要，解析器可以忽略它，该方法可能被并发的调用
+	ResolveNow(ResolveNowOptions)
+	Close()
+}
+```
+
+gRPC要求我们传入一个Resolver构造器，也就是`resolver.Builder`，它负责构造Resolver实例。
+
+```go
+type Builder interface {
+	Build(target Target, cc ClientConn, opts BuildOptions) (Resolver, error)
+	Scheme() string
+}
+```
+
+Builder的Scheme方法返回它负责解析的Scheme类型，例如默认的dnsBuilder它返回的就是`dns`，构造器在初始化时应该使用`resolver.Register`注册到全局Builder中，又或者作为options，使用`grpc.WithResolver`传入ClientConn内部，后者的优先级高于前者。
+
+![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202308261926215.png)
+
+上图简单描述了一下resolver的工作流程，接下来就演示如何自定义resolver
+
+
+
+### 自定义服务解析
+
+下面编写一个自定义解析器，需要一个自定义的解析构造器来进行构造。
+
+```go
+package myresolver
+
+import (
+	"fmt"
+	"google.golang.org/grpc/resolver"
+)
+
+func NewBuilder(ads map[string][]string) *MyBuilder {
+	return &MyBuilder{ads: ads}
+}
+
+type MyBuilder struct {
+	ads map[string][]string
+}
+
+func (c *MyBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
+	if target.URL.Scheme != c.Scheme() {
+		return nil, fmt.Errorf("unsupported scheme: %s", target.URL.Scheme)
+	}
+	m := &MyResolver{ads: c.ads, t: target, cc: cc}
+    // 构建完毕后最好update，否则会产生死锁
+	m.start()
+	return m, nil
+}
+
+// 匹配的scheme
+func (c *MyBuilder) Scheme() string {
+	return "hello"
+}
+
+type MyResolver struct {
+	t   resolver.Target
+	cc  resolver.ClientConn
+	ads map[string][]string
+}
+
+func (m *MyResolver) start() {
+	addres := make([]resolver.Address, 0)
+	for _, ad := range m.ads[m.t.URL.Opaque] {
+		addres = append(addres, resolver.Address{Addr: ad})
+	}
+
+    // 找到匹配的地址后UpdateState
+	err := m.cc.UpdateState(resolver.State{
+		Addresses: addres,
+	})
+
+	if err != nil {
+		m.cc.ReportError(err)
+	}
+}
+
+func (m *MyResolver) ResolveNow(_ resolver.ResolveNowOptions) {}
+
+func (m *MyResolver) Close() {}
+```
+
+客户端代码如下
+
+```go
+func init() {
+	// 注册builder
+	resolver.Register(myresolver.NewBuilder(map[string][]string{
+		"myworld": {"127.0.0.1:8080"},
+	}))
+}
+
+func main() {
+	// 建立连接，没有加密验证
+	conn, err := grpc.Dial("hello:myworld",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+	// 创建客户端
+	client := hello2.NewSayHelloClient(conn)
+	// 远程调用
+	helloRep, err := client.Hello(context.Background(), &hello2.HelloReq{Name: "client"})
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("received grpc resp: %+v", helloRep.String())
+}
+```
+
+正常来说，流程应该是服务端向注册中心注册自身服务，然后客户端从注册中心中获取服务列表然后进行匹配，这里传入的map就是一个模拟的注册中心，数据是静态的就省略掉了服务注册这一环节，只剩下服务发现。客户端使用的target为`hello:myworld`，hello是自定义的scheme，myworld就是服务名，经过自定义的解析器解析后，就得到了127.0.0.1:8080的真实地址，在实际情况中，为了做负载均衡，一个服务名可能会匹配多个真实地址，所以这就是为什么服务名对应的是一个切片，运行后结果依旧是正常输出
+
+```
+2023/08/26 20:47:15 received grpc resp: msg:"hello world! client"
+```
+
+注册中心其实就是存放着的就是服务注册名与真实服务地址的映射集合，只要是能够进行数据存储的中间件都可以满足条件，甚至拿mysql来做注册中心也不是不可以（应该没有人会这么做）。一般来说注册中心都是KV存储的，redis就是一个很不错的选择，但如果使用redis来做注册中心的话，我们就需要自行实现很多逻辑，比如服务的心跳检查，服务下线等，服务调度等等，还是相当麻烦的，虽然redis在这方面有一定的应用但是较少。正所谓专业的事情交给专业的人做，这方面做的比较出名的有很多：Zookeeper，Consul，Eureka，ETCD，Nacos等，下面贴一张对比图。
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cec3502b6246497ebb0e3bd18eab0ffa~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp)
+
+可以前往[注册中心对比和选型：Zookeeper、Eureka、Nacos、Consul和ETCD - 掘金 (juejin.cn)](https://juejin.cn/post/7068065361312088095)来了解这几个中间件的一些区别。
 
 
 
 ## 负载均衡
+
+
 

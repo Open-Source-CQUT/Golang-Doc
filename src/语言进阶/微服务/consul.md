@@ -353,3 +353,6 @@ Error! No key exists at: name
 
 如果想要多数据中心数据同步的话，可以了解[hashicorp/consul-replicate: Consul cross-DC KV replication daemon](https://github.com/hashicorp/consul-replicate)。
 
+
+
+## 服务注册与发现
