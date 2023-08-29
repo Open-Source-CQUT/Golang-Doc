@@ -2024,7 +2024,7 @@ case codes.DeadlineExceeded:
 
 
 
-## 服务发现与注册
+## 服务注册与发现
 
 客户端调用服务端的指定服务之前，需要知晓服务端的ip和port，在先前的案例中，服务端地址都是写死的。在实际的网络环境中不总是那么稳定，一些服务可能会因故障下线而无法访问，也有可能会因为业务发展进行机器迁移而导致地址变化，在这些情况下就不能使用静态地址访问服务了，而这些动态的问题就是服务发现与注册要解决的，服务发现负责监视服务地址的变化并更新，服务注册负责告诉外界自己的地址。gRPC中，提供了基础的服务发现功能，并且支持拓展和自定义。
 
@@ -2134,12 +2134,11 @@ func (c *MyBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts r
 		return nil, fmt.Errorf("unsupported scheme: %s", target.URL.Scheme)
 	}
 	m := &MyResolver{ads: c.ads, t: target, cc: cc}
-    // 构建完毕后最好update，否则会产生死锁
+    // 这里必须要updatestate，否则会死锁
 	m.start()
 	return m, nil
 }
 
-// 匹配的scheme
 func (c *MyBuilder) Scheme() string {
 	return "hello"
 }
@@ -2156,9 +2155,11 @@ func (m *MyResolver) start() {
 		addres = append(addres, resolver.Address{Addr: ad})
 	}
 
-    // 找到匹配的地址后UpdateState
 	err := m.cc.UpdateState(resolver.State{
 		Addresses: addres,
+        // 配置，loadBalancingPolicy指的是负载均衡策略
+		ServiceConfig: m.cc.ParseServiceConfig(
+			`{"loadBalancingPolicy":"round_robin"}`),
 	})
 
 	if err != nil {
@@ -2169,19 +2170,47 @@ func (m *MyResolver) start() {
 func (m *MyResolver) ResolveNow(_ resolver.ResolveNowOptions) {}
 
 func (m *MyResolver) Close() {}
+
+```
+
+自定义解析器就是把map里面的匹配的地址传入到updatestate，同时还指定了负载均衡的策略，`round_robin`指的是轮询的意思。
+
+```go
+// service config 结构如下
+type jsonSC struct {
+    LoadBalancingPolicy *string
+    LoadBalancingConfig *internalserviceconfig.BalancerConfig
+    MethodConfig        *[]jsonMC
+    RetryThrottling     *retryThrottlingPolicy
+    HealthCheckConfig   *healthCheckConfig
+}
 ```
 
 客户端代码如下
 
 ```go
+package main
+
+import (
+	"context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/resolver"
+	"grpc_learn/helloworld/client/myresolver"
+	hello2 "grpc_learn/helloworld/hello"
+	"log"
+	"time"
+)
+
 func init() {
 	// 注册builder
 	resolver.Register(myresolver.NewBuilder(map[string][]string{
-		"myworld": {"127.0.0.1:8080"},
+		"myworld": {"127.0.0.1:8080", "127.0.0.1:8081"},
 	}))
 }
 
 func main() {
+
 	// 建立连接，没有加密验证
 	conn, err := grpc.Dial("hello:myworld",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -2192,19 +2221,35 @@ func main() {
 	defer conn.Close()
 	// 创建客户端
 	client := hello2.NewSayHelloClient(conn)
-	// 远程调用
-	helloRep, err := client.Hello(context.Background(), &hello2.HelloReq{Name: "client"})
-	if err != nil {
-		panic(err)
+   	// 每秒调用一次
+	for range time.Tick(time.Second) {
+		// 远程调用
+		helloRep, err := client.Hello(context.Background(), &hello2.HelloReq{Name: "client"})
+		if err != nil {
+			panic(err)
+		}
+		log.Printf("received grpc resp: %+v", helloRep.String())
 	}
-	log.Printf("received grpc resp: %+v", helloRep.String())
+
 }
 ```
 
-正常来说，流程应该是服务端向注册中心注册自身服务，然后客户端从注册中心中获取服务列表然后进行匹配，这里传入的map就是一个模拟的注册中心，数据是静态的就省略掉了服务注册这一环节，只剩下服务发现。客户端使用的target为`hello:myworld`，hello是自定义的scheme，myworld就是服务名，经过自定义的解析器解析后，就得到了127.0.0.1:8080的真实地址，在实际情况中，为了做负载均衡，一个服务名可能会匹配多个真实地址，所以这就是为什么服务名对应的是一个切片，运行后结果依旧是正常输出
+正常来说，流程应该是服务端向注册中心注册自身服务，然后客户端从注册中心中获取服务列表然后进行匹配，这里传入的map就是一个模拟的注册中心，数据是静态的就省略掉了服务注册这一环节，只剩下服务发现。客户端使用的target为`hello:myworld`，hello是自定义的scheme，myworld就是服务名，经过自定义的解析器解析后，就得到了127.0.0.1:8080的真实地址，在实际情况中，为了做负载均衡，一个服务名可能会匹配多个真实地址，所以这就是为什么服务名对应的是一个切片，这里开两个服务端，占用不同的端口，负载均衡策略为轮询，服务端输出分别如下，通过请求时间可以看到负载均衡策略确实是在起作用的，如果不指定策略的话默认只选取第一个服务。
 
 ```
-2023/08/26 20:47:15 received grpc resp: msg:"hello world! client"
+// server01
+2023/08/29 17:32:21 received grpc req: name:"client"
+2023/08/29 17:32:23 received grpc req: name:"client"
+2023/08/29 17:32:25 received grpc req: name:"client"
+2023/08/29 17:32:27 received grpc req: name:"client"
+2023/08/29 17:32:29 received grpc req: name:"client"
+
+// server02
+2023/08/29 17:32:20 received grpc req: name:"client"
+2023/08/29 17:32:22 received grpc req: name:"client"
+2023/08/29 17:32:24 received grpc req: name:"client"
+2023/08/29 17:32:26 received grpc req: name:"client"
+2023/08/29 17:32:28 received grpc req: name:"client"
 ```
 
 注册中心其实就是存放着的就是服务注册名与真实服务地址的映射集合，只要是能够进行数据存储的中间件都可以满足条件，甚至拿mysql来做注册中心也不是不可以（应该没有人会这么做）。一般来说注册中心都是KV存储的，redis就是一个很不错的选择，但如果使用redis来做注册中心的话，我们就需要自行实现很多逻辑，比如服务的心跳检查，服务下线等，服务调度等等，还是相当麻烦的，虽然redis在这方面有一定的应用但是较少。正所谓专业的事情交给专业的人做，这方面做的比较出名的有很多：Zookeeper，Consul，Eureka，ETCD，Nacos等，下面贴一张对比图。
@@ -2212,6 +2257,12 @@ func main() {
 ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cec3502b6246497ebb0e3bd18eab0ffa~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp)
 
 可以前往[注册中心对比和选型：Zookeeper、Eureka、Nacos、Consul和ETCD - 掘金 (juejin.cn)](https://juejin.cn/post/7068065361312088095)来了解这几个中间件的一些区别。
+
+
+
+### 结合consul
+结合consul使用的案例可以前往[consul](/语言进阶/微服务/consul#服务注册与发现)
+
 
 
 

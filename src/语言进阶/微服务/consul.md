@@ -260,7 +260,7 @@ $ curl http://192.168.48.140:8500/v1/kv/sys_confg
 [{"LockIndex":0,"Key":"sys_confg","Flags":0,"Value":"ewogICJuYW1lIjoiY29uc3VsIgp9","CreateIndex":2518,"ModifyIndex":2518}]
 ```
 
-事实上，consul提供的服务发现与注册功能，就是将注册的服务以KV形式存储的，并通过gossip协议广播给其他节点，并且当任意一个节点加入当前数据中心时，所有的节点都会感知到此变化。
+事实上，consul提供的服务发现与注册功能，通过gossip协议广播给其他节点，并且当任意一个节点加入当前数据中心时，所有的节点都会感知到此变化。
 
 
 
@@ -356,3 +356,231 @@ Error! No key exists at: name
 
 
 ## 服务注册与发现
+
+![](https://www.datocms-assets.com/2885/1531780995-consul-registering-services.png)
+
+consul服务注册的方式有两种，配置文件注册和API注册。为了方便进行测试，这里事先准备一个Hello World服务（gRPC文章中的示例），部署两份，分别在不同的位置。配置文件注册的方式可以前往[Register external services with Consul service discovery | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/tutorials/developer-discovery/service-registration-external-services#start-the-consul-agent)了解，这里只介绍通过HTTP API进行注册。
+
+::: tip
+
+对于本地服务（和consul client在一块）而言，可以直接使用agent service注册，否则的话应该使用catalog register来进行注册。
+
+:::
+
+consul提供了HTTP API的SDK，其他语言的SDK前往[Libraries and SDKs - HTTP API | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/api-docs/libraries-and-sdks)了解。这里下载go的依赖
+
+```sh
+go get github.com/hashicorp/consul/api
+```
+
+在服务启动时向consul主动注册服务，在服务关闭时，向consul注销服务，下面是一个示例。
+
+```go
+package main
+
+import (
+	consulapi "github.com/hashicorp/consul/api"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	pb "grpc_learn/helloworld/hello"
+	"log"
+	"net"
+)
+
+var (
+	server01 = &consulapi.AgentService{
+        // 必须保持唯一
+		ID:      "hello-service1",
+		Service: "hello-service",
+        // 部署两份，一份的端口是8080，一份的端口是8081
+		Port:    8080,
+	}
+)
+
+// 注册服务
+func Register() {
+	client, _ := consulapi.NewClient(&consulapi.Config{Address: "192.168.48.138:8500"})
+	_, _ = client.Catalog().Register(&consulapi.CatalogRegistration{
+		Node:    "hello-server",
+		Address: "192.168.2.10",
+		Service: server01,
+	}, nil)
+}
+
+// 注销服务
+func DeRegister() {
+	client, _ := consulapi.NewClient(&consulapi.Config{Address: "192.168.48.138:8500"})
+	_, _ = client.Catalog().Deregister(&consulapi.CatalogDeregistration{
+		Node:      "hello-server",
+		Address:   "192.168.2.10",
+		ServiceID: server01.ID,
+	}, nil)
+}
+
+func main() {
+	Register()
+	defer DeRegister()
+
+	// 监听端口
+	listen, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		panic(err)
+	}
+	// 创建gprc服务器
+	server := grpc.NewServer(
+		grpc.Creds(insecure.NewCredentials()),
+	)
+	// 注册服务
+	pb.RegisterSayHelloServer(server, &HelloRpc{})
+	log.Println("server running...")
+	// 运行
+	err = server.Serve(listen)
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+客户端代码使用consul自定义解析器，来向注册中心查询对应的服务，解析成真实地址。
+
+```go
+package myresolver
+
+import (
+    "fmt"
+    consulapi "github.com/hashicorp/consul/api"
+    "google.golang.org/grpc/resolver"
+)
+
+func NewConsulResolverBuilder(address string) ConsulResolverBuilder {
+    return ConsulResolverBuilder{consulAddress: address}
+}
+
+type ConsulResolverBuilder struct {
+    consulAddress string
+}
+
+func (c ConsulResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
+    consulResolver, err := newConsulResolver(c.consulAddress, target, cc)
+    if err != nil {
+       return nil, err
+    }
+    consulResolver.resolve()
+    return consulResolver, nil
+}
+
+func (c ConsulResolverBuilder) Scheme() string {
+    return "consul"
+}
+
+func newConsulResolver(address string, target resolver.Target, cc resolver.ClientConn) (ConsulResolver, error) {
+    var reso ConsulResolver
+    client, err := consulapi.NewClient(&consulapi.Config{Address: address})
+    if err != nil {
+       return reso, err
+    }
+    return ConsulResolver{
+       target: target,
+       cc:     cc,
+       client: client,
+    }, nil
+}
+
+type ConsulResolver struct {
+    target resolver.Target
+    cc     resolver.ClientConn
+    client *consulapi.Client
+}
+
+func (c ConsulResolver) resolve() {
+    service := c.target.URL.Opaque
+    services, _, err := c.client.Catalog().Service(service, "", nil)
+    if err != nil {
+       c.cc.ReportError(err)
+       return
+    }
+    var adds []resolver.Address
+    for _, catalogService := range services {
+       adds = append(adds, resolver.Address{Addr: fmt.Sprintf(fmt.Sprintf("%s:%d", catalogService.Address, catalogService.ServicePort))})
+    }
+
+    c.cc.UpdateState(resolver.State{
+       Addresses: adds,
+       // 轮询策略
+       ServiceConfig: c.cc.ParseServiceConfig(
+          `{"loadBalancingPolicy":"round_robin"}`),
+    })
+}
+
+func (c ConsulResolver) ResolveNow(options resolver.ResolveNowOptions) {
+    c.resolve()
+}
+
+func (c ConsulResolver) Close() {
+
+}
+```
+
+客户端在启动时注册解析器
+
+```go
+package main
+
+import (
+    "context"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
+    "google.golang.org/grpc/resolver"
+    "grpc_learn/helloworld/client/myresolver"
+    hello2 "grpc_learn/helloworld/hello"
+    "log"
+    "time"
+)
+
+func init() {
+    // 注册builder
+    resolver.Register(
+       // 注册自定义的consul解析器
+       myresolver.NewConsulResolverBuilder("192.168.48.138:8500"),
+    )
+}
+
+func main() {
+
+    // 建立连接，没有加密验证
+    conn, err := grpc.Dial("consul:hello-service",
+       grpc.WithTransportCredentials(insecure.NewCredentials()),
+    )
+    if err != nil {
+       panic(err)
+    }
+    defer conn.Close()
+    // 创建客户端
+    client := hello2.NewSayHelloClient(conn)
+    for range time.Tick(time.Second) {
+       // 远程调用
+       helloRep, err := client.Hello(context.Background(), &hello2.HelloReq{Name: "client"})
+       if err != nil {
+          panic(err)
+       }
+       log.Printf("received grpc resp: %+v", helloRep.String())
+    }
+
+}
+```
+
+先启动服务端，再启动客户端，服务端是有两个的，提供同一个服务，只是地址不一样，客户都的负载均衡策略是轮询，从服务端的日志间隔时间就能看出来策略生效了。
+
+```
+2023/08/29 17:39:54 server running...
+2023/08/29 21:03:46 received grpc req: name:"client"
+2023/08/29 21:03:48 received grpc req: name:"client"
+2023/08/29 21:03:50 received grpc req: name:"client"
+2023/08/29 21:03:52 received grpc req: name:"client"
+2023/08/29 21:03:54 received grpc req: name:"client"
+2023/08/29 21:03:56 received grpc req: name:"client"
+2023/08/29 21:03:58 received grpc req: name:"client"
+2023/08/29 21:04:00 received grpc req: name:"client"
+```
+
+以上就是一个简单的使用consul结合gRPC实现服务注册与发现的简单案例。
