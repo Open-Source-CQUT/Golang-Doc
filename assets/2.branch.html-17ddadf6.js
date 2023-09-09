@@ -1,1 +1,0 @@
-import{_ as a,V as t,W as c,X as e,Y as r}from"./framework-44a66fc7.js";const n={},s=e("h1",{id:"分支",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#分支","aria-hidden":"true"},"#"),r(" 分支")],-1),_=[s];function o(d,h){return t(),c("div",null,_)}const l=a(n,[["render",o],["__file","2.branch.html.vue"]]);export{l as default};
