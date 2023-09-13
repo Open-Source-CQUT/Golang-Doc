@@ -43,13 +43,49 @@ Github地址：[golang/go: The Go programming language (github.com)](https://git
 
 Go语言下载：[Downloads - The Go Programming Language](https://go.dev/dl/)
 
+![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202309131608448.png)
 
+### windows
 
-官方已经将所有打包好的安装包放在了`Featured downloads`一栏，根据自己的平台选择即可，由于安装包是自动配置所有的环境变量，如果修改了安装路径就需要后续自行配置所有的环境变量，安装完毕后在打开命令行输入`go version`，
+选择windows版本，有zip和msi可以选，前者是源文件，下载到本地后需要你自己配置环境变量，后者是安装引导程序，自动配置环境变量。
 
-```shell
+对于前者而言，你需要自己配置的环境变量有
+
+- GOROOT - 这是go的安装路径
+- GOPATH - 这是go的依赖存放路径
+
+无论哪种安装方式，最后能正常显示版本即可。
+
+```cmd
+PS C:\Users\someone> go version
+go version go1.21.0 windows/amd64
+```
+
+### linux
+
+拿ubuntu举例，复制想要的版本的链接，下载到本地
+
+```sh
+$ wget https://golang.google.cn/dl/go1.21.1.linux-amd64.tar.gz
+```
+
+解压文件
+
+```sh
+$ tar -C /usr/local/ -xzf go1.21.1.linux-amd64.tar.gz
+```
+
+导出环境变量
+
+```sh
+$ export PATH=$PATH:/usr/local/go/bin
+```
+
+ 查看安装版本
+
+```sh
 $ go version
-go version go1.19.3 windows/amd64
+go version go1.21.1 linux/amd64
 ```
 
 能够正确显示版本即可。
