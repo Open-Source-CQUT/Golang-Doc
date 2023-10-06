@@ -1,1 +1,0 @@
-import{_ as t,V as a,W as o,X as e,Y as c}from"./framework-44a66fc7.js";const r={},s=e("h1",{id:"go的并发模型",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#go的并发模型","aria-hidden":"true"},"#"),c(" Go的并发模型")],-1),n=[s];function _(d,i){return a(),o("div",null,n)}const l=t(r,[["render",_],["__file","gmp.html.vue"]]);export{l as default};

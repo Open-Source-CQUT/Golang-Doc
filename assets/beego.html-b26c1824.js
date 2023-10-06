@@ -1,1 +1,0 @@
-import{_ as o,V as t,W as a,X as e,Y as c}from"./framework-44a66fc7.js";const r={},s=e("h1",{id:"beego",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#beego","aria-hidden":"true"},"#"),c(" Beego")],-1),n=[s];function _(d,i){return t(),a("div",null,n)}const l=o(r,[["render",_],["__file","beego.html.vue"]]);export{l as default};
