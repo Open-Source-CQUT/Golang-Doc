@@ -8,7 +8,7 @@ export default hopeTheme({
     hostname: "https://golang.halfiisland.com/",
     author: {
         name: "寒江蓑笠翁",
-        url: "https://www.vegetableprogrammer.top/",
+        url: "https://246859.github.io/",
         email: "2633565580@qq.com"
     },
     iconAssets: "iconfont",
