@@ -2,6 +2,12 @@
 
 在go中与其它语言不同的是，映射表的支持是由`map`关键字提供的，而非将其封装为标准库。映射表是一种使用场景非常多的数据结构，底层有着许多的实现方式，最常见的两种方式就是红黑树和哈希表，go采用的是哈希表实现方式。
 
+::: tip
+
+map的实现中涉及到了大量的指针移动操作，所以阅读本文需要`unsafe`标准库的知识。
+
+:::
+
 
 
 ## 内部结构
@@ -42,7 +48,7 @@ type hmap struct {
     )
     ```
 
-- `B`，表示hamp中哈希桶的数量，通常是`2^n`。
+- `B`，表示hamp中哈希桶的数量，通常是`2^B`。
 
 - `noverflow`，hmap中溢出桶的大致数量。
 
@@ -59,15 +65,7 @@ hamp中的`bucket`也就是桶，在go中对应的结构为`runtime.bmap`，如�
 ```go
 // A bucket for a Go map.
 type bmap struct {
-	// tophash generally contains the top byte of the hash value
-	// for each key in this bucket. If tophash[0] < minTopHash,
-	// tophash[0] is a bucket evacuation state instead.
 	tophash [bucketCnt]uint8
-	// Followed by bucketCnt keys and then bucketCnt elems.
-	// NOTE: packing all the keys together and then all the elems together makes the
-	// code a bit more complicated than alternating key/elem/key/elem/... but it allows
-	// us to eliminate padding which would be needed for, e.g., map[int64]int8.
-	// Followed by an overflow pointer.
 }
 ```
 
@@ -96,6 +94,16 @@ type bmap struct {
 func MapBucketType(t *types.Type) *types.Type
 ```
 
+::: tip
+
+实际上，键值是存放在一个连续的内存地址中，类似于下面这种结构，这样做是为了避免内存对齐带来的空间浪费。
+
+```
+k1,k2,k3,k4,k5,k6...v1,v2,v3,v4,v5,v6...
+```
+
+:::
+
 
 
 ## 哈希冲突
@@ -113,7 +121,7 @@ type mapextra struct {
 }
 ```
 
-<img src="https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202310061622883.png" style="zoom: 50%;" />
+<img src="https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202310061929859.png" style="zoom:33%;" />
 
 上图就可以比较好的展示hmap的大致结构，`buckets`指向原有的桶切片，`extra`指向溢出桶切片，桶`bucket0`指向溢出桶`overflow0`，两种不同的桶分别存放在两个切片中，两种桶的内存都是连续的。当两个键通过哈希后被分配到了同一个bucket，这种情况就是发生了哈希冲突。go中解决哈希冲突的方式就是拉链法，当发生冲突的键的数量大于桶的容量后，一般是8个，其值取决于`internal/abi.MapBucketCount`。然后就会创建一个新的桶来存放这些键，而这个桶就叫溢出桶，意为原来的桶装不下了，元素溢出到这个新桶里来了，创建完毕后，原有的桶会有一个指针指向新的溢出桶，这些桶的指针连起来就形成了一个链表。
 
@@ -154,7 +162,7 @@ count > bucketCnt && uintptr(count) / 1 << B > (bucketCnt * 13 / 16)
 
 ## 创建
 
-map的初始化有两种方式，这一点已经在语言入门中阐述过了。不管用何种方式初始化，最后都是由`runtime.makemap`来创建map，该函数签名如下
+map的初始化有两种方式，这一点已经在语言入门中阐述过了，一种是使用关键字`map`直接创建，另一种是使用`make`函数，不管用何种方式初始化，最后都是由`runtime.makemap`来创建map，该函数签名如下
 
 ```go
 func makemap(t *maptype, hint int, h *hmap) *hmap
@@ -249,4 +257,101 @@ if base != nbuckets {
 }
 ```
 
-当两者不相等时，就说明分配了溢出桶，`nextoverflow`指针就是指向的第一个可用的溢出桶。由此可见，哈希桶与溢出桶其实是在同一块连续的内存中，这是为什么在之前的图中会将哈希桶与溢出桶放在一起的原因。
+当两者不相等时，就说明分配了溢出桶，`nextoverflow`指针就是指向的第一个可用的溢出桶。由此可见，哈希桶与溢出桶其实是在同一块连续的内存中。
+
+<img src="https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202310061929859.png" style="zoom:33%;" />
+
+
+
+## 访问
+
+<img src="https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202310062003736.png" style="zoom:33%;" />
+
+在语法入门当中讲到过，访问map总共有三种方式，如下所示
+
+```go
+# 直接访问值
+val := dict[key]
+# 访问值以及该键是否存在
+val, exist := dict[key]
+# 遍历map
+for key, val := range dict{
+    
+}
+```
+
+这三种方式所用到的函数都不相同，使用`for range`遍历map最为复杂。对于前两种方式而言，对应着两个函数，分别是`runtime.mapaccess1`和`runtime.mapaccess2`。函数签名如下
+
+```go
+func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer
+
+func mapaccess2(t *maptype, h *hmap, key unsafe.Pointer) (unsafe.Pointer, bool)
+```
+
+其中的key是指向访问map的键的指针，返回的时候也只会返回指针。在访问时，首先需要计算key的哈希值，定位key在哪个哈希桶，对应代码如下
+
+```go
+// 边界处理
+if h == nil || h.count == 0 {
+    if t.HashMightPanic() {
+        t.Hasher(key, 0) // see issue 23734
+    }
+    return unsafe.Pointer(&zeroVal[0])
+}
+// 防止并发读写
+if h.flags&hashWriting != 0 {
+    fatal("concurrent map read and map write")
+}
+// 使用指定类型的hasher计算哈希值
+hash := t.Hasher(key, uintptr(h.hash0))
+// (1 << B) - 1
+m := bucketMask(h.B)
+// 通过移动指针定位key所在的哈希桶
+b := (*bmap)(add(h.buckets, (hash&m)*uintptr(t.BucketSize)))
+```
+
+在访问的一开始先进行边界情况处理，并防止map并发读写，当map处于写入状态时，就会发生panic。然后计算哈希值，不同类型的计算方法不一样，`bucketMask`函数所干的事就是`(1 << B) - 1 `，`hash & m`就等于`hash & (1 << B) - 1 `，这是二进制取余操作，等价于`hash % (1 << B)`，使用位运算的好处就是更快。最后三行代码干的事就是将key计算得到的哈希值与当前map中的桶的数量取余，得到哈希桶的序号，然后根据序号移动指针获取key所在的哈希桶指针。
+
+在知晓了key在哪个哈希桶后，就可以展开查找了，这部分对应代码如下
+
+```go
+	// 获取哈希值的高八位
+	top := tophash(hash)
+bucketloop:
+	// 遍历bmap链表
+	for ; b != nil; b = b.overflow(t) {
+        // bmap中的元素
+		for i := uintptr(0); i < bucketCnt; i++ {
+            //  将计算得出的top与tophash中的元素进行对比
+			if b.tophash[i] != top {
+                // 后续都是空的，没有了。
+				if b.tophash[i] == emptyRest {
+					break bucketloop
+				}
+                // 不相等就继续遍历溢出桶
+				continue
+			}
+            // 根据i移动指针获取对应下标的键
+			k := add(unsafe.Pointer(b), dataOffset+i*uintptr(t.KeySize))
+            // 处理下指针
+			if t.IndirectKey() {
+				k = *((*unsafe.Pointer)(k))
+			}
+            // 比对两个键是否相等
+			if t.Key.Equal(key, k) {
+                // 如果相等的话，就移动指针返回k对应下标的元素
+                // 从这行代码就能看出来键值的内存地址是连续的
+				e := add(unsafe.Pointer(b), dataOffset+bucketCnt*uintptr(t.KeySize)+i*uintptr(t.ValueSize))
+				if t.IndirectElem() {
+					e = *((*unsafe.Pointer)(e))
+				}
+                
+				return e
+			}
+		}
+	}
+// 没找到，返回零值。
+return unsafe.Pointer(&zeroVal[0])
+```
+
+在定位哈希桶时，是进行的取余操作，所以key在哪个哈希桶取决于它的哈希值的低位，至于到底是低几位取决于B的大小，而找到了哈希桶后，其中的tophash存放的是哈希值的高八位，因为低位取余值都是相同的，这样做是为了加速访问。根据先前计算得到的哈希值获取其高八位，在bmap中的tophash数组一个个对比，如果高八位相等的话，再对比键是否相等，如果键也相等的话就说明找到了，不相等就继续遍历tophash数组，还找不到就继续遍历溢出桶bmap链表，直到bmap的`tophash[i]`为`emptyRest`退出循环，最后返回对应类型的零值。
