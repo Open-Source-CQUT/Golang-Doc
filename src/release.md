@@ -1,17 +1,21 @@
 # 更新日志
 
-Go官方采用语义化版本来标识更新，格式为v`主版本`.`次版本`.`补丁版本` （见[语义化版本 2.0.0 | Semantic Versioning (semver.org)](https://semver.org/lang/zh-CN/)），主版本的更新意味着发生了Breaking Change，即无法向下兼容的更新，此版本的更新意味着有新功能添加同时保持向下兼容，补丁版本的更新意味着有问题被修复同时保持向下兼容。
+**最新版本：1.21.2，发布于2023-10-05**
 
-Go2.0上一次提出草案是在2018年11月19日，那时还是处于go1.13版本，五年过后，版本已经迭代到了go1.21，Go2.0想法通过增量更新的方式体现在了Go1.0上，创始人之一也明确表示未来可能并不会有Go2.0，Go将一直为保持向下兼容而努力（见[Go 1 and the Future of Go Programs - The Go Programming Language](https://go.dev/doc/go1compat)）。
-
-Go团队每半年发布一个二级版本，并且只有最新的两个二级版本是长期维护，维护时间都是六个月，鉴于Go每一次更新都保持着相当高的兼容性，建议在新版本稳定后及时将Go升级到最新版。
-
-Go语言更新日志：[Release History - The Go Programming Language](https://go.dev/doc/devel/release)
-
-目前维护的两个最新版本：
+**维护版本：**
 
 - `go1.21` 发布于2023-08-08
 - `go1.20` 发布于2023-02-01
+
+<br>
+
+Go官方采用语义化版本来标识更新，格式为v`主版本`.`次版本`.`补丁版本` （见[语义化版本 2.0.0 | Semantic Versioning (semver.org)](https://semver.org/lang/zh-CN/)），主版本的更新意味着发生了Breaking Change，即无法向下兼容的更新，此版本的更新意味着有新功能添加同时保持向下兼容，补丁版本的更新意味着有问题被修复同时保持向下兼容。
+
+Go2.0上一次提出草案是在2018年11月19日，那时还是处于go1.13版本，五年过后，版本已经迭代到了go1.21，Go2.0的各种想法已经通过增量更新的方式体现在了Go1.0上，创始人之一也曾明确表示未来可能并不会有Go2.0，Go将一直为保持向下兼容而努力（见[Go 1 and the Future of Go Programs - The Go Programming Language](https://go.dev/doc/go1compat)）。
+
+Go团队每半年发布一个二级版本，并且只有最新的两个二级版本是长期维护，维护时间都是六个月，鉴于Go每一次更新都保持着相当高的兼容性，建议在新版本稳定后及时将Go升级到最新版。
+
+Go语言官方更新日志：[Release History - The Go Programming Language](https://go.dev/doc/devel/release)
 
 
 
@@ -57,6 +61,24 @@ Go1.21更新日志：[Release History - The Go Programming Language](https://go.
 7. 在1.21版本，编译速度提升了接近6%，这主要归功于编译器本身使用PGO来构建。
 
 以上是一些主要的更新信息，更多内容请访问[Go 1.21 Release Notes - The Go Programming Language](https://go.dev/doc/go1.21#introduction)
+
+
+
+### 1.21.1（2023-09-06）
+
+1. 修复了`cmd/go`, `crypto/tls`,  `html/template` 包的安全问题
+2. 修复了编译器，go命令行, linker, runtime, 以及包 `context`, `crypto/tls`, `encoding/gob`, `encoding/xml`, `go/types`, `net/http`, `os`,`path/filepath`的一些bug。
+
+更多细节前往：[1.21.1 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.21.1+label%3ACherryPickApproved)
+
+
+
+### 1.21.2（2023-10-05）
+
+1. 修复了`cmd/go`包的安全问题
+2. 修复了编译器, go命令行,linker,runtime,  以及包`runtime/metrics`的一些bug。 
+
+更多细节前往：[1.21.2 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.21.2+label%3ACherryPickApproved)
 
 
 
