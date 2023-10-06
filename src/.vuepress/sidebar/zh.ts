@@ -19,7 +19,6 @@ export const zhSidebar = sidebar({
             children: [
                 {icon: "engine", text: "原理解析", prefix: "原理解析/", collapsible: true, children: "structure"},
                 {icon: "diagram", text: "实用依赖", prefix: "实用依赖/", collapsible: true, children: "structure"},
-                {icon: "customize", text: "实用框架", prefix: "实用框架/", collapsible: true, children: "structure"},
                 {icon: "mysql", text: "数据操作", prefix: "数据操作/", collapsible: true, children: "structure"},
                 {icon: "change", text: "微服务", prefix: "微服务/", collapsible: true, children: "structure"},
             ]
