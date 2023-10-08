@@ -1,1 +1,0 @@
-import{_ as t,V as a,W as r,X as e,Y as o}from"./framework-44a66fc7.js";const c={},s=e("h1",{id:"内存管理",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#内存管理","aria-hidden":"true"},"#"),o(" 内存管理")],-1),n=[s];function _(d,i){return a(),r("div",null,n)}const l=t(c,[["render",_],["__file","memory.html.vue"]]);export{l as default};
