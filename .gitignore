@@ -4,3 +4,5 @@ src/.vuepress/.cache/
 src/.vuepress/.temp/
 src/.vuepress/dist/
 .idea
+.bkp
+.dtmp
