@@ -1,3 +1,6 @@
+---
+date: 2022-10-19
+---
 # sort
 
 在go中的`sort`包下提供了官方实现的排序方法，大部分可以直接开箱即用。倘若想要对结构体进行排序的话必须实现`sort.Interface`下的三个方法`Len()` `swap()` `Less()`。由于官方已经帮我们实现了`Float64Slice` `StringSlice` `IntSlice`三个类型，所以这三个类型可以不用我们自己实现直接使用即可。

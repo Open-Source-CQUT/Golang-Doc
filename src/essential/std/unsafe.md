@@ -1,3 +1,6 @@
+---
+date: 2022-10-24
+---
 # unsafe
 
 官方文档地址：[unsafe package - unsafe - Go Packages](https://pkg.go.dev/unsafe@go1.20)
