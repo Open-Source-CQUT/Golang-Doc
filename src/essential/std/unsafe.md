@@ -31,6 +31,8 @@ type IntegerType int
 
 `IntegerType`代表的是任意整数类型，实际上该类型并不属于`unsafe`包，出现在这里仅仅只是为了文档目的。
 
+上面这两个类型不需要太在意，它们仅仅只是一个代表而已，在使用`unsafe`包函数时编辑器甚至会提示你类型不匹配，它们的实际类型就是你传入的具体类型。
+
 <br>
 
 ## Sizeof
@@ -310,3 +312,103 @@ func main() {
 3
 ```
 
+
+
+## SliceData
+
+```go
+func SliceData(slice []ArbitraryType) *ArbitraryTyp
+```
+
+该函数接收一个切片，返回其底层数组的其实地址。如果不使用`SliceData`，那么只能通过取其第一个元素的指针来获取底层数组的地址，如下
+
+```go
+func main() {
+	nums := []int{1, 2, 3, 4}
+	for p, i := unsafe.Pointer(&nums[0]), 0; i < len(nums); p, i = unsafe.Add(p, unsafe.Sizeof(nums[0])), i+1 {
+		num := *(*int)(p)
+		fmt.Println(num)
+	}
+}
+```
+
+当然也可以通过`reflect.SliceHeader`类型来获取，不过在1.20版本以后它就已经被废弃了，`SliceData`就是为了替代它的，使用`SliceData`的例子如下
+
+```go
+func main() {
+	nums := []int{1, 2, 3, 4}
+	for p, i := unsafe.Pointer(unsafe.SliceData(nums)), 0; i < len(nums); p, i = unsafe.Add(p, unsafe.Sizeof(int(0))), i+1 {
+		num := *(*int)(p)
+		fmt.Println(num)
+	}
+}
+```
+
+
+
+
+
+## Slice
+
+```
+func Slice(ptr *ArbitraryType, len IntegerType) []ArbitraryType
+```
+
+`Slice`函数接收一个指针，以及长度偏移量，它会返回该段内存的切片表达形式，过程中不会涉及到内存拷贝，对切片进行修改将会直接影响该地址上的数据，反过来也是如此，它通常和`SliceData`配合起来使用。
+
+```go
+func main() {
+	nums := []int{1, 2, 3, 4}
+	numsRef1 := unsafe.Slice(unsafe.SliceData(nums), len(nums))
+	numsRef1[0] = 2
+	fmt.Println(nums)
+}
+```
+
+```
+[2 2 3 4]
+```
+
+修改`numsRef1`切片的数据，会导致`nums`的数据也会发生变化
+
+
+
+## StringData
+
+```
+func StringData(str string) *byte
+```
+
+同`SliceData`函数，只不过因为字符串转字节切片需求比较频繁，所以单独拿出来，使用例子如下
+
+```go
+func main() {
+	str := "hello,world!"
+	for ptr, i := unsafe.Pointer(unsafe.StringData(str)), 0; i < len(str); ptr, i = unsafe.Add(ptr, unsafe.Sizeof(byte(0))), i+1 {
+		char := *(*byte)(ptr)
+		fmt.Println(string(char))
+	}
+}
+```
+
+由于字符串字面量是存放在进程中的只读段，所以如果你在这里尝试修改字符串底层的数据，程序会直接崩掉报`fatal`。不过对于存放在堆栈上的字符串变量而言，在运行时修改其底层的数据是完全可行的。
+
+
+
+## String
+
+```go
+func String(ptr *byte, len IntegerType) string
+```
+
+同`Slice`函数，接收一个字节类型指针，以及其长度偏移量，返回其字符串表达形式，过程中不涉及内存拷贝。下面是一个字节切片转字符串的例子
+
+```go
+func main() {
+	bytes := []byte("hello world")
+	str := unsafe.String(unsafe.SliceData(bytes), len(bytes))
+	fmt.Println(str)
+}
+```
+
+`StringData`和`String`在字符串与字节切片的转换过程中不涉及内存拷贝，性能比直接类型转换要好，不过只适用于只读的情况下，如果你打算修改数据，就最好别用这个。
