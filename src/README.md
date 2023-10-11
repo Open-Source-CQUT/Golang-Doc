@@ -39,5 +39,5 @@ features:
   details: Go在自己擅长的领域有着非常不俗的表现，发展势头十分强劲，使用人数也在逐渐增多，未来的前景十分令人看好。
 
 copyright: false
-footer: MIT Licensed | Copyright © 2021-present 寒江
+footer: MIT LICENSE | Copyright © 2022-present 寒江
 ---
