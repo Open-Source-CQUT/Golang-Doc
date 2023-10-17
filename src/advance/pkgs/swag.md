@@ -63,7 +63,7 @@ go get github.com/swaggo/gin-swagger@latest
 
 
 
-## 简单使用
+## 使用
 
 使用go mod创建一个最基本的go项目，新建`main.go`，写入如下内容。
 
@@ -160,6 +160,143 @@ func Ping(ctx *gin.Context) {
 ![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202308132014682.png)
 
 如此便运行起了一个基本的接口文档。接下来除了一些特别要注意的点，基本上和其他语言使用起来没有什么太大的差别。
+
+
+
+## 参数
+
+定义参数的格式为
+
+```
+@param name paramtype datatype isRequired comment
+```
+
+一个例子如下
+
+```go
+@param userId query int true "user unique id"
+```
+
+其中支持的参数类型有
+
+- query
+- path
+- header
+- body
+- formData
+
+数据类型有
+
+- string (string)
+- integer (int, uint, uint32, uint64)
+- number (float32)
+- boolean (bool)
+- user defined struct
+
+参数类型也可以是你自己的类型，前提是能够被swagger扫描到。
+
+
+
+## 响应
+
+定义接口响应的基本格式如下
+
+```go
+// @Success      200  {array}   model.Account
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+```
+
+由状态码，基本类型，数据类型组成。`{array}`表示是一个数组，会展现数据类型的数组形式，`{object}`就会展现数据类型的原有形式。比如一般我们会定义一个统一的响应体
+
+```go
+type JSONResult struct {
+    Code    int          `json:"code" `
+    Message string       `json:"message"`
+    Data    interface{}  `json:"data"`
+}
+```
+
+`Data`字段的类型是不确定的，在描述响应用例时，可以将其组合，如下
+
+```go
+// 组合
+@success 200 {object} jsonresult.JSONResult{data=Account} "desc"
+
+// 数组
+@success 200 {object} jsonresult.JSONResult{data=[]Account} "desc"
+```
+
+
+
+## 模型
+
+给结构体字段加注释会被被swagger扫描为模型字段注释
+
+```go
+package model
+
+type Account struct {
+	// account id
+    ID   int    `json:"id" example:"1"`
+    // username
+    Name string `json:"name" example:"account name"`
+}
+```
+
+其中`example`标签的值会被作为示例值在页面中展示，当然它还支持字段限制
+
+```go
+type Foo struct {
+    Bar string `minLength:"4" maxLength:"16"`
+    Baz int `minimum:"10" maximum:"20" default:"15"`
+    Qux []string `enums:"foo,bar,baz"`
+}
+```
+
+所有的模型在使用时都要确保能被swagger扫描到，否则不会起作用。
+
+
+
+
+
+## 认证
+
+在认证这块支持
+
+- Basic Auth
+- API Key
+- OAuth2 app auth
+- OAuth2 implicit auth
+- OAuth2 password auth
+- OAuth2 access code auth
+
+
+
+假如接口认证用的是JWT，存放在header中的`Authorization`字段中，我们可以如下定义
+
+```go
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+```
+
+![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202310171234737.png)
+
+本质上这只是一个apikey，如果你传入的是bearer token的话，需要自己手动加上Bearer前缀。
+
+![](C:/Users/Stranger/AppData/Roaming/Typora/typora-user-images/image-20231017124607084.png)
+
+
+
+然后在你需要认证的接口上加上如下注释
+
+```go
+// @security Bearer
+```
+
+它的值是你的`securityDefinitions`定义的名称。
 
 
 
