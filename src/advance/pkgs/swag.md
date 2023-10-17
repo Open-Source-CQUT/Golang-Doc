@@ -286,7 +286,7 @@ type Foo struct {
 
 本质上这只是一个apikey，如果你传入的是bearer token的话，需要自己手动加上Bearer前缀。
 
-![](C:/Users/Stranger/AppData/Roaming/Typora/typora-user-images/image-20231017124607084.png)
+![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202310172158864.png)
 
 
 
