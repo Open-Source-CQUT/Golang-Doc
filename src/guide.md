@@ -43,23 +43,32 @@ Github地址：[golang/go: The Go programming language (github.com)](https://git
 
 Go语言下载：[Downloads - The Go Programming Language](https://go.dev/dl/)
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202309131608448.png)
+![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202311052223852.png)
+
+Stable Version指的是目前处于维护状态的两个稳定版本，Archived Version指的是不再维护的历史版本，关于历史信息可以前往[更新日志](/release.md)了解更多关于维护规则以及历史版本的信息。
 
 ### windows
 
-选择windows版本，有zip和msi可以选，前者是源文件，下载到本地后需要你自己配置环境变量，后者是安装引导程序，自动配置环境变量。
+对于windows平台而言，有installer和archive两种类型可选，前者就是安装包，只需要点点点，推荐使用后者，会让你更熟悉go语言的目录结构，未来出问题不至于手足无措。选择下载zip文件，压缩文件中包含go语言的源代码以及工具链和一些文档，将其解压指定的路径，然后需要配置两个系统环境变量。
 
-对于前者而言，你需要自己配置的环境变量有
+- GOROOT - go语言的安装路径
+- GOPATH - go语言依赖存放路径
 
-- GOROOT - 这是go的安装路径
-- GOPATH - 这是go的依赖存放路径
+设置好后，给系统环境变量`PATH`添加两条新的项
 
-无论哪种安装方式，最后能正常显示版本即可。
+- `%GOROOT%\bin`：这是go二进制程序地址
+- `%GOPATH%\bin`：这是未来会下载第三方依赖的二进制文件存放地址
 
-```cmd
-PS C:\Users\someone> go version
-go version go1.21.0 windows/amd64
+在`powershell`中执行`go version`命令，最后能正常显示版本就说明安装正确。
+
+```powershell
+PS C:\user\username> go version
+go version go1.21.3 windows/amd64
 ```
+
+更新的话只需要下载新的zip覆盖原安装目录即可。
+
+
 
 ### linux
 
@@ -69,48 +78,90 @@ go version go1.21.0 windows/amd64
 $ wget https://golang.google.cn/dl/go1.21.1.linux-amd64.tar.gz
 ```
 
-解压文件
+解压到指定目录
 
 ```sh
-$ tar -C /usr/local/ -xzf go1.21.1.linux-amd64.tar.gz
+$ tar -C ~/go -xzf go1.21.1.linux-amd64.tar.gz
 ```
 
-导出环境变量
+设置环境变量
 
 ```sh
-$ export PATH=$PATH:/usr/local/go/bin
+$ echo -e "export GOROOT=$HOME/go\nexport GOPATH=$HOME/gopath\nexport PATH=$PATH:$GOROOT/bin:$GOPATH/bin" >> ~/.bashrc && source ~/.bashrc 
 ```
 
- 查看安装版本
+ 查看安装版本，确认正确安装
 
 ```sh
 $ go version
 go version go1.21.1 linux/amd64
 ```
 
-能够正确显示版本即可。
+更新的话只需要下载新的tar.gz覆盖原安装目录即可。
 
 <br/>
 
 
 
-## 开发工具
+### 自定义
+
+只是基本使用而言，上面的安装方式对于基本使用已经够用了，个人推荐用以下的目录结构来存放go语言及其衍生文件
+
+```
+go/
+|
+|--root/
+|	|
+|	|--go1.21.3/
+|	|
+|	|--go1.20.10/
+|
+|--mod/
+|	|
+|	|--bin/
+|	|
+|	|--libs/
+|	|
+|	|--pkg/
+|	
+|--cache/
+|
+|--temp/
+|
+|--env
+```
+释义如下
+
+- `go/root`目录用于存放各个版本go语言源文件
+- `go/mod`对应`GOAPTH`
+- `go/mod/libs`对应`GOMODCACHE`，也就是下载的第三方依赖存放地址
+- `go/mod/bin`对应`GOBIN`，第三方依赖二进制文件存放地址
+- `go/cache`，对应`GOCACHE`，存放缓存文件
+- `go/temp`，对应`GOTMPDIR`，存放临时文件
+- `go/env`，对应`GOENV`，全局环境变量配置文件
+
+该方式更新时不需要覆盖原安装目录，只需要将其存放到`go/root`目录下，然后修改`GOROOT`系统环境变量为该目录下指定版本的文件夹即可。在默认情况下env文件是读取的路径`GOROOT/env`，通过设置`GOENV`系统变量将其与`GOROOT`分离开，避免了版本变更时go环境变量配置的变化，下面是`env`文件的初始设置。
+
+```ini
+GO111MODULE=on
+GOCACHE=go/cahce
+GOMODCACHE=go/mod/libs
+GOBIN=go/mod/bin
+GOTMPDIR=go/temp
+```
+
+这只是笔者比较喜欢的一个目录风格，前往[命令-环境变量](/cmd#env)了解更多关于环境变量的信息，你可以完全按照个人喜好来进行自定义。
 
 
 
-#### Vscode
+## 编辑器
 
-Vscode是一款开源的代码编辑器，有许多拓展和插件，支持许多语言，也包括Go语言。
+主流的go语言IDE目前个人只推荐下面两个
 
-教程：[(82条消息) VSCode搭建Go开发环境（2020-04-13更新）_闹闹吃鱼的博客-CSDN博客_vscode配置go语言开发环境](https://blog.csdn.net/AdolphKevin/article/details/105480530)
+1. goland：jetbrain出品，功能强大，全方位支持，不过需要付费，可以考虑IDEA社区版配合插件
+2. vscode：万能的编辑器，有插件加持什么语言都能写
 
-<br/>
-
-#### Goland
-
-Goland是JetBrain旗下的为Go语言打造的智能编辑器，不过由于要付费，请根据自身情况选择。
-
-教程：[(82条消息) Go语言下载安装教程|Goland配置教程|2021|Windows_付友友友的博客-CSDN博客_goland社区版](https://blog.csdn.net/m0_46685221/article/details/115051174)
+如果有其它的编辑器更符合自身的使用习惯也都可以用，用什么编辑器倒无所谓。如果只是写一些简短的练习代码，可以试试官方提供的[goplay](https://go.dev/play/)，可以在线运行go代码。
 
 
 
@@ -130,8 +181,6 @@ func main() {
 
 ```
 Hello, 世界
-
-Program exited.
 ```
 
 当一切准备好后，就可以开始学习Go的基础语法了。
