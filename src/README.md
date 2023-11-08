@@ -11,7 +11,7 @@ actions:
     type: primary
 
   - text: 文档 📚
-    link: guide/
+    link: /essential/base/0.ready.html
 
 features:
 - title: 简洁高效
