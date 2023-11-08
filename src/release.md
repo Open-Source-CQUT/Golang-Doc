@@ -1,6 +1,10 @@
 # 更新日志
 
-**最新版本：1.21.2，发布于2023-10-05**
+**最新版本：**
+
+- `go1.21.3`，发布于2023-10-10
+
+- `go.1.20.10`，发布于2023-10-10
 
 **维护版本：**
 
@@ -79,6 +83,14 @@ Go1.21更新日志：[Release History - The Go Programming Language](https://go.
 2. 修复了编译器, go命令行,linker,runtime,  以及包`runtime/metrics`的一些bug。 
 
 更多细节前往：[1.21.2 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.21.2+label%3ACherryPickApproved)
+
+
+
+### 1.21.3（2023-10-10）
+
+修复了`net/http`包的一个安全问题，是关于http2中handler的协程数量最大值的问题。
+
+更多细节前往：[1.21.3 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.21.3+label%3ACherryPickApproved)
 
 
 
@@ -187,3 +199,126 @@ Go1.20更新日志：[1.20 Release History - The Go Programming Language](https:
 2. 修复了assembler，编译器的bug。
 
 更多细节前往[1.20.7 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.20.7+label%3ACherryPickApproved)
+
+
+
+### 1.20.8 （2023-09-06）
+
+1. 修复了`html/template`包的两个安全问题
+2. 修复了编译器，命令行，运行时以及 `crypto/tls`, `go/types`, `net/http`,  `path/filepath` 包的一些bug
+
+更多细节前往[1.20.8 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.20.8+label%3ACherryPickApproved)
+
+
+
+### 1.20.9 （2023-10-05）
+
+1. 修复了`cmd/go`的一个安全问题
+2. 修复了命令行，链接器的一些bug。
+
+更多细节前往[1.20.9 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.20.9+label%3ACherryPickApproved)
+
+
+
+### 1.20.10（2023-10-10）
+
+修复了`net/http`包的一个安全问题，是关于http2中handler的协程数量最大值的问题。
+
+更多细节前往：[1.20.10 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.20.10+label%3ACherryPickApproved)
+
+
+
+## 1.19
+
+
+
+## 1.18
+
+
+
+## 1.17
+
+
+
+## 1.16
+
+
+
+## 1.15
+
+
+
+## 1.14
+
+
+
+## 1.13
+
+
+
+## 1.12
+
+
+
+## 1.11
+
+
+
+## 1.10
+
+
+
+## 1.9
+
+
+
+## 1.8
+
+
+
+## 1.7
+
+
+
+## 1.6
+
+
+
+## 1.5
+
+
+
+## 1.4
+
+
+
+## 1.3
+
+
+
+## 1.2
+
+
+
+## 1.1
+
+
+
+## 1.0
+
+
+
+## pre
+
+在go1正式发布之前，所有的版本都被称为预览版本，对于这些预览版本官方会每周发布一个快照版本，其中比较重要的版本有
+
+- r60（2011-09-07），规定了else块现在必须加括号
+- r59（2011-08-01），设计了新的结构体tag方案
+- r58（2011-06-29），修复了滥用goto而导致内存未初始化的问题，新增了gui，exec包
+- r57（2011-05-03），支持短变量多重赋值语法，重新设计了http，reflect包，将gotest作为一个go程序而非shell脚本
+- r56（2011-03-07），第一个稳定版本
+
+预览版本的开发始于2009年12月09日，在go1于2013年3月27日正式发布之后停止，持续了接近三年的时间，往后不再记录每周快照版本。前往[Pre-Go 1 Release History](https://go.dev/doc/devel/pre_go1)了解这些主要版本的信息，前往[Weekly Snapshot History](https://go.dev/doc/devel/weekly#2012-03-27)了解全部预览版本的每周快照版本信息。
+
+
+
