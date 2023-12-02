@@ -18,18 +18,6 @@ export const zhSidebar = sidebar({
             text: "语言进阶",
             prefix: "advance/",
             children: "structure",
-        },
-        {
-            icon: "study",
-            text: "理论思想",
-            prefix: "knowledge/",
-            children: "structure",
-        },
-        {
-            icon: "software",
-            text: "实用技术",
-            prefix: "technology/",
-            children: "structure",
         }
     ],
 });

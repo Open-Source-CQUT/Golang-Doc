@@ -64,6 +64,7 @@
 | apex/log | 结构化日志库           | https://github.com/apex/log        |
 
 
+
 ### 数据转换
 
 | 名称         | 描述                           | 仓库                                      |
@@ -74,6 +75,8 @@
 | copier       | 可以在结构体之间同名字段复制值 | https://github.com/jinzhu/copier          |
 | go-pinyin    | 汉字转拼音                     | https://github.com/mozillazg/go-pinyin    |
 
+
+
 ### 数据验证
 
 | 名称                        | 描述                     | 仓库                                       |
@@ -81,6 +84,8 @@
 | go-playground/validator/v10 | 数据验证器               | https://github.com/go-playground/validator |
 | go-cmp                      | 谷歌开源的用于比较值的库 | https://github.com/google/go-cmp           |
 | ozzo-validation             | 基于规则的数据校验库     | https://github.com/go-ozzo/ozzo-validation |
+
+
 
 ### 数据结构
 
@@ -112,6 +117,28 @@
 | quictemplate | 顾名思义，高性能的模板引擎 | https://github.com/valyala/quicktemplate |
 | amber        | 源于HAML和Jade的模板引擎   | https://github.com/eknkc/amber           |
 
+
+
+### 缓存
+
+| 名称       | 描述                           | 仓库                                    |
+| ---------- | ------------------------------ | --------------------------------------- |
+| golang-lru | 线程安全的LRU，以及LRU 2Q 缓存 | https://github.com/hashicorp/golang-lru |
+|            |                                |                                         |
+|            |                                |                                         |
+
+
+
+### 数据库
+
+| 名称      | 描述                         | 仓库                                |
+| --------- | ---------------------------- | ----------------------------------- |
+| badger    | 嵌入式的kv数据库，基于LSM    | https://github.com/dgraph-io/badger |
+| boltdb    | 嵌入式的kv数据库，基于B+Tree | https://github.com/boltdb/bolt      |
+| goleveldb | go语言实现的leveldb          | https://github.com/syndtr/goleveldb |
+
+
+
 ### 序列化
 
 ::: tip
@@ -120,7 +147,7 @@
 
 :::
 
-| 名称       | 描述                                         |                                          |
+| 名称       | 描述                                         | 仓库                                     |
 | ---------- | -------------------------------------------- | ---------------------------------------- |
 | go-ini     | ini文件序列化库                              | https://github.com/go-ini/ini            |
 | sonic      | 字节开源的高性能json序列化库                 | https://github.com/bytedance/sonic       |
@@ -135,14 +162,17 @@
 
 ### 命令行
 
-| 名称           | 描述                     | 仓库                                 |
-| -------------- | ------------------------ | ------------------------------------ |
-| pflag          | POSIX/GUN的风格的flag包  | https://github.com/spf13/pflag       |
-| go-flags       | 命令参数解析器           | https://github.com/jessevdk/go-flags |
-| cobra          | 现代命令行程序构建脚手架 | https://github.com/spf13/cobra       |
-| dimiro1/banner | 美观的banner构建库       | https://github.com/dimiro1/banner    |
+| 名称           | 描述                               | 仓库                                 |
+| -------------- | ---------------------------------- | ------------------------------------ |
+| pflag          | POSIX/GUN的风格的flag包            | https://github.com/spf13/pflag       |
+| go-flags       | 命令参数解析器                     | https://github.com/jessevdk/go-flags |
+| cobra          | 现代命令行程序构建脚手架           | https://github.com/spf13/cobra       |
+| dimiro1/banner | 美观的banner构建库                 | https://github.com/dimiro1/banner    |
+| go-pretty      | 输出美观的命令行表格，文字，进度条 | https://github.com/jedib0t/go-pretty |
 
-### 时间日期处理
+
+
+### 时期时间
 
 | 名称        | 描述                                   | 仓库                                         |
 | ----------- | -------------------------------------- | -------------------------------------------- |
@@ -152,13 +182,17 @@
 | jobrunner   | 异步定时任务框架                       | https://github.com/bamzi/jobrunner           |
 | dataparse   | 可以在不知道格式的情况下解析时间字符串 | https://github.com/araddon/dateparse         |
 
+
+
 ### 依赖注入
 
-| 名称 | 描述                 | 仓库                                                |
-| ---- | -------------------- | --------------------------------------------------- |
-| dig  | uber开源的依赖注入库 | https://darjun.github.io/2020/02/22/godailylib/dig/ |
-| wire | 谷歌开源的依赖注入库 | https://github.com/google/wire                      |
-|      |                      |                                                     |
+| 名称 | 描述                               | 仓库                                                |
+| ---- | ---------------------------------- | --------------------------------------------------- |
+| dig  | uber开源的依赖注入库，基于反射     | https://darjun.github.io/2020/02/22/godailylib/dig/ |
+| wire | 谷歌开源的依赖注入库，基于代码生成 | https://github.com/google/wire                      |
+|      |                                    |                                                     |
+
+
 
 ### 爬虫框架
 
@@ -197,21 +231,25 @@
 | gonet      | 一个游戏服务端框架       | https://github.com/xtaci/gonet        |
 | leaf       | 游戏服务端框架           | https://github.com/name5566/leaf      |
 
+
+
 ### GUI
 
-| 名称 | 描述                                | 仓库                            |
-| ---- | ----------------------------------- | ------------------------------- |
-| fyne | 跨平台的GUI开发工具箱（真有点东西） | https://github.com/fyne-io/fyne |
-|      |                                     |                                 |
-|      |                                     |                                 |
+| 名称       | 描述                                | 仓库                                             |
+| ---------- | ----------------------------------- | ------------------------------------------------ |
+| fyne       | 跨平台的GUI开发工具箱（真有点东西） | https://github.com/fyne-io/fyne                  |
+| go-flutter | 用go写flutter                       | https://github.com/go-flutter-desktop/go-flutter |
+|            |                                     |                                                  |
 
 ### 系统交互
 
-| 名称     | 描述                           | 仓库                               |
-| -------- | ------------------------------ | ---------------------------------- |
-| gopsutil | 获取操作系统信息，兼容主流系统 | https://github.com/shirou/gopsutil |
-|          |                                |                                    |
-|          |                                |                                    |
+| 名称     | 描述                           | 仓库                                  |
+| -------- | ------------------------------ | ------------------------------------- |
+| gopsutil | 获取操作系统信息，兼容主流系统 | https://github.com/shirou/gopsutil    |
+| flock    | 基于操作系统调用的文件锁       | https://github.com/gofrs/flock        |
+| sys      | 官方的操作系统交互库           | https://cs.opensource.google/go/x/sys |
+
+
 
 ### 跨语言交互
 
@@ -226,6 +264,8 @@
 | go-python  | go调用cpython2                                    | https://github.com/sbinet/go-python   |
 | go-pytyon3 | go调用cpython3                                    | https://github.com/DataDog/go-python3 |
 
+
+
 ### 图像处理
 
 | 名称    | 描述                         | 仓库                                      |
@@ -234,6 +274,8 @@
 | gg      | 2d绘图库                     | https://github.com/fogleman/gg            |
 | gocv    | 支持opencv4+                 | https://github.com/hybridgroup/gocv       |
 | imaging | 一个简单的图像处理库         | https://github.com/disintegration/imaging |
+
+
 
 ### 认证授权
 
@@ -251,7 +293,7 @@
 |          |            |                                  |
 |          |            |                                  |
 
-### 正则表达式
+### 正则处理
 
 | 名称       | 描述                           | 仓库                                      |
 | ---------- | ------------------------------ | ----------------------------------------- |
@@ -270,13 +312,15 @@
 | unioffice | office处理库                       | https://github.com/unidoc/unioffice         |
 | gooxml    | office处理库                       | https://github.com/carmel/gooxml            |
 
+
+
 ### 通用工具
 
-| 名称   | 描述                               | 仓库                               |
-| ------ | ---------------------------------- | ---------------------------------- |
-| lancet | 多功能工具库，类比java中的common包 | https://github.com/duke-git/lancet |
-|        |                                    |                                    |
-|        |                                    |                                    |
+| 名称           | 描述                               | 仓库                                      |
+| -------------- | ---------------------------------- | ----------------------------------------- |
+| lancet         | 多功能工具库，类比java中的common包 | https://github.com/duke-git/lancet        |
+| bytebufferpool | 字节缓存池                         | https://github.com/valyala/bytebufferpool |
+|                |                                    |                                           |
 
 ### 开发框架
 
@@ -285,3 +329,14 @@
 | goframe | 现代企业级go开发框架 | https://github.com/gogf/gf |
 |         |                      |                            |
 |         |                      |                            |
+
+
+
+### 共识协议
+
+| 名称                 | 描述                 | 仓库                                    |
+| -------------------- | -------------------- | --------------------------------------- |
+| hashicorp/raft       | consul开源的raft库   | https://github.com/hashicorp/raft       |
+| hashicorp/memberlist | consul开源的gossip库 | https://github.com/hashicorp/memberlist |
+| etcd-io/raft         | etcd开源的raft库     | https://github.com/etcd-io/raft         |
+
