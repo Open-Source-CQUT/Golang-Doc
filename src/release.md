@@ -2,9 +2,9 @@
 
 **最新版本：**
 
-- `go1.21.3`，发布于2023-10-10
+- `go1.21.5`，发布于2023-10-10
 
-- `go.1.20.10`，发布于2023-10-10
+- `go.1.20.12`，发布于2023-10-10
 
 **维护版本：**
 
@@ -20,6 +20,12 @@ Go2.0上一次提出草案是在2018年11月19日，那时还是处于go1.13版�
 Go团队每半年发布一个二级版本，并且只有最新的两个二级版本是长期维护，维护时间都是六个月，鉴于Go每一次更新都保持着相当高的兼容性，建议在新版本稳定后及时将Go升级到最新版。
 
 Go语言官方更新日志：[Release History - The Go Programming Language](https://go.dev/doc/devel/release)
+
+::: tip
+
+此页面只是对官方日志的一个简单搬运，不定期更新，想获取最新消息还请前往官网。
+
+:::
 
 
 
@@ -88,9 +94,28 @@ Go1.21更新日志：[Release History - The Go Programming Language](https://go.
 
 ### 1.21.3（2023-10-10）
 
-修复了`net/http`包的一个安全问题，是关于http2中handler的协程数量最大值的问题。
+1. 修复了`net/http`包关于http2中handler的协程数量最大值的问题。
+
 
 更多细节前往：[1.21.3 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.21.3+label%3ACherryPickApproved)
+
+
+
+### 1.21.4（2023-11-07）
+
+1. 修复了`path/filepath`的有关于解析windows路径的安全问题。
+2. 修复了`linker`，`compiler`，`runtime`，`http`，`cgo`的一些bug。
+
+更多细节前往：[1.21.4 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.21.4+label%3ACherryPickApproved)
+
+
+
+### 1.21.5（2023-12-05）
+
+1. 修复了命令行和`net/http`，`path/filepath`的安全问题
+2. 修复了 compiler, go command, the runtime, 以及包 `crypto/rand`, `net`, `os`,  `syscall` 的一些bug。
+
+更多细节前往：[1.21.5 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.21.5+label%3ACherryPickApproved)
 
 
 
@@ -228,83 +253,140 @@ Go1.20更新日志：[1.20 Release History - The Go Programming Language](https:
 
 
 
+### 1.20.11（2023-11-07）
+
+1. 修复了`path/filepath`的有关于解析windows路径的安全问题。
+2. 修复了linker，以及包`net/http`的bug。
+
+更多细节前往：[1.20.11 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.20.11+label%3ACherryPickApproved)
+
+
+
+### 1.20.12（2023-12-05）
+
+1. 修复了命令行和`net/http`，`path/filepath`的安全问题
+2. 修复了 compiler, go command的一些bug。
+
+更多细节前往：[1.20.12 Issues · golang/go (github.com)](https://github.com/golang/go/issues?q=milestone%3AGo1.20.12+label%3ACherryPickApproved)
+
+
+
 ## 1.19
+
+Go1.19更新日志：[Go 1.19 Release Notes - The Go Programming Language](https://go.dev/doc/go1.19)
 
 
 
 ## 1.18
 
+GO1.18更新日志：[Go 1.18 Release Notes - The Go Programming Language](https://go.dev/doc/go1.18)
+
 
 
 ## 1.17
+
+Go1.17更新日志：[Go 1.17 Release Notes - The Go Programming Language](https://go.dev/doc/go1.17)
 
 
 
 ## 1.16
 
+Go1.16更新日志：[Go 1.16 Release Notes - The Go Programming Language](https://go.dev/doc/go1.16)
+
+
 
 
 ## 1.15
+
+Go1.15更新日志：[Go 1.14 Release Notes - The Go Programming Language](https://go.dev/doc/go1.15)
 
 
 
 ## 1.14
 
+Go1.14更新日志：[Go 1.14 Release Notes - The Go Programming Language](https://go.dev/doc/go1.14)
+
 
 
 ## 1.13
+
+Go1.13更新日志：[Go 1.13 Release Notes - The Go Programming Language](https://go.dev/doc/go1.13)
 
 
 
 ## 1.12
 
+Go1.12更新日志：[Go 1.12 Release Notes - The Go Programming Language](https://go.dev/doc/go1.12)
+
 
 
 ## 1.11
+
+Go1.11更新日志：[Go 1.11 Release Notes - The Go Programming Language](https://go.dev/doc/go1.11)
 
 
 
 ## 1.10
 
-
-
-## 1.9
-
-
-
-## 1.8
+Go1.10更新日志：[Go 1.10 Release Notes - The Go Programming Language](https://go.dev/doc/go1.10)
 
 
 
-## 1.7
+## 1.9（2017-08-24）
+
+Go1.9更新日志：[Go 1.9 Release Notes - The Go Programming Language](https://go.dev/doc/go1.9)
+
+## 1.8（2017-02-16）
+
+Go1.8更新日志：[Go 1.8 Release Notes - The Go Programming Language](https://go.dev/doc/go1.8)
+
+## 1.7（2016-08-15）
+
+Go1.8更新日志：[Go 1.7 Release Notes - The Go Programming Language](https://go.dev/doc/go1.7)
+
+## 1.6（2016-02-17）
+
+Go1.6更新日志：[Go 1.6 Release Notes - The Go Programming Language](https://go.dev/doc/go1.6)
+
+## 1.5（2015-8-19）
+
+Go1.5更新日志：[Go 1.5 Release Notes - The Go Programming Language](https://go.dev/doc/go1.5)
+
+## 1.4（2014-12-10）
+
+Go1.4更新日志：[Go 1.4 Release Notes - The Go Programming Language](https://go.dev/doc/go1.4)
+
+## 1.3（2014-06-18）
+
+Go1.3更新日志：[Go 1.3 Release Notes - The Go Programming Language](https://go.dev/doc/go1.3)
+
+## 1.2（2013-12-01）
+
+Go1.2更新日志：[Go 1.2 Release Notes - The Go Programming Language](https://go.dev/doc/go1.2)
+
+## 1.1（2013-05-12）
+
+Go1.1更新日志：[Go 1.1 Release Notes - The Go Programming Language](https://go.dev/doc/go1.1)
 
 
 
-## 1.6
+**语言层面**：
+
+1. 一个数被0整除以前会抛出`panic`，到了1.1直接无法通过编译。
+2. 方法可以作为一个值存在。
+3. 引入了终止语句的概念，函数的返回规则更为宽松。
+
+**性能方面**：
+
+1. 使用go1.1的工具编译的go程序性能大概可以提升30%-40%
 
 
 
-## 1.5
+## 1.0（2013-03-28）
+
+Go1.0更新日志：[Go 1.0 Release Notes - The Go Programming Language](https://go.dev/doc/go1.0)
 
 
-
-## 1.4
-
-
-
-## 1.3
-
-
-
-## 1.2
-
-
-
-## 1.1
-
-
-
-## 1.0
 
 
 
@@ -318,7 +400,7 @@ Go1.20更新日志：[1.20 Release History - The Go Programming Language](https:
 - r57（2011-05-03），支持短变量多重赋值语法，重新设计了http，reflect包，将gotest作为一个go程序而非shell脚本
 - r56（2011-03-07），第一个稳定版本
 
-预览版本的开发始于2009年12月09日，在go1于2013年3月27日正式发布之后停止，持续了接近三年的时间，往后不再记录每周快照版本。前往[Pre-Go 1 Release History](https://go.dev/doc/devel/pre_go1)了解这些主要版本的信息，前往[Weekly Snapshot History](https://go.dev/doc/devel/weekly#2012-03-27)了解全部预览版本的每周快照版本信息。
+预览版本的开发始于2009年12月09日，在go1于2012年3月28日正式发布之后停止，持续了接近三年的时间，往后不再记录每周快照版本。前往[Pre-Go 1 Release History](https://go.dev/doc/devel/pre_go1)了解这些主要版本的信息，前往[Weekly Snapshot History](https://go.dev/doc/devel/weekly#2012-03-27)了解全部预览版本的每周快照版本信息。
 
 
 
