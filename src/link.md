@@ -1,6 +1,6 @@
 # 外链
 
-这里的链接是在学习过程中慢慢收集的，对作者的学习与成长有着非常大的帮助，并且在本站编写的教程中也借鉴了许多，在此列出以表示感谢，同时也希望能够对其他人提供一点点帮助。
+这里的链接是在学习过程中慢慢收集的，对作者的学习与成长有着非常大的帮助，并且在本站编写的文档中也借鉴了许多，在此列出以表示感谢，同时也希望能够对其他人提供一点点帮助。
 
 
 
@@ -24,7 +24,7 @@
 
 | 名称             | 网址                                                         |
 | ---------------- | ------------------------------------------------------------ |
-| Go语言设计与实现 | [Go 语言设计与实现 Go 语言设计与实现 (draveness.me)](https://draveness.me/golang/) (质量非常过硬的Go语言教程，不适合小白，进阶专用) |
+| Go语言设计与实现 | [Go 语言设计与实现 Go 语言设计与实现 (draveness.me)](https://draveness.me/golang/) |
 | Go语言圣经       | [Go语言圣经 - Go语言圣经 (gopl-zh.github.io)](https://gopl-zh.github.io/) |
 | Effective Go     | [《高效的 Go 编程 Effective Go》 Go 技术论坛 (learnku.com)](https://learnku.com/docs/effective-go/2020) |
 | Go标准库教程     | [简介 · Go语言标准库 (studygolang.com)](https://books.studygolang.com/The-Golang-Standard-Library-by-Example/) |

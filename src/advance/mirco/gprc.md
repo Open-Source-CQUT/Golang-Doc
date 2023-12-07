@@ -38,7 +38,7 @@ ProtocBuf官网：[Reference Guides | Protocol Buffers Documentation (protobuf.d
 
 
 
-虽然GRPC是语言无关的，但是本站的内容大部分都是go相关的，所以本文也会使用go作为主要语言进行讲解，后续用到的pb编译器和生成器如果是其他语言的使用者可以自行到Protobuf官网查找。为了方便起见，接下来会直接省略项目的创建过程（如果不会请先阅读基础教程）。
+虽然GRPC是语言无关的，但是本站的内容大部分都是go相关的，所以本文也会使用go作为主要语言进行讲解，后续用到的pb编译器和生成器如果是其他语言的使用者可以自行到Protobuf官网查找。为了方便起见，接下来会直接省略项目的创建过程。
 
 
 
@@ -117,7 +117,7 @@ grpc_learn\helloworld
 
 ### 定义protobuf文件
 
-其中，在`pb/hello.proto`中，写入如下内容，这是一个相当简单的示例，如果不会protoc语法，请移步相关教程。
+其中，在`pb/hello.proto`中，写入如下内容，这是一个相当简单的示例，如果不会protoc语法，请移步相关文档。
 
 ```protobuf
 syntax = "proto3";
