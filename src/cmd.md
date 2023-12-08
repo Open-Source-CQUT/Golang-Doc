@@ -1012,6 +1012,97 @@ build_win:
 
 
 
+#### 编译控制
+
+`build`命令可以通过`tags`来达到控制编译的效果，它以一种指令的方式存在于源代码中，看个例子，`product.go`文件
+
+```go
+// +build product
+
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("product")
+}
+```
+
+`debug.go`文件
+
+```go
+// +build debug
+
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("debug")
+}
+```
+
+它们都有一个`// +build`指令，表示它们在什么情况下才会被编译。其基本格式为
+
+```go
+// +build tag1 tag2
+
+package pkg_name
+```
+
+有几个必须遵守的规则
+
+1. `//`与`+build`必须隔一个空格
+2. 它必须位于包声明的上方
+3. 与包声明必须隔一行空行
+
+除此之外，它还可以通过简单的间隔来达到逻辑控制的目的，空格表示OR，逗号表示AND，！表示NOT。比如下面这个例子
+
+```go
+// +build windows linux
+
+package pkg_name
+```
+
+表示在windows或者linux平台下会将当前文件编译进去。
+
+```go
+// +build windows,amd64,!cgo linux,i386,cgo
+
+package pkg_name
+```
+
+这个例子表示的是在windows平台amd64架构且未启用cgo或者是linux平台i386架构且启用了cgo才会将其编译。如果你只是单纯的不想让某个文件不参加编译，可以使用`ignore`。
+
+```go
+// +build ignore
+
+package pkg_name
+```
+
+也可以存在多行指令
+
+```go
+// +build windows
+// +build amd64
+
+package pkg_name
+```
+
+多行指令以AND方式进行处理。对于平台和架构这些tag，在编译时go会自动传入，我们也可以传入自定义的tag，就拿最开始的拿两个文件举例
+
+```sh
+$ go build -tags="debug" . && ./golearn.exe
+debug
+
+$ go build -tags="product" . && ./golearn.exe
+product
+```
+
+可以看到传入不同tag时输出不同，编译控制的目的也就达到了。
+
+
+
 ### run
 
 `run`命令与`build`都会将源代码进行编译，不同的是`run`命令在编译完成后会直接运行。 `run`命令为了加快编译速度，在编译过程中不会生成调试信息，所以也就不支持调试，并且只是生成一个临时的二进制文件，通常存放在`GOTMEPDIR`目录下，例如`/temp/go-build2822241271/b001/exe/main.exe`。
@@ -1946,7 +2037,6 @@ $ mkdir gotour
 
 $ cd gotour
 
-Stranger@LAPTOP-9VDMJGFL MINGW64 /d/WorkSpace/Code/GoLeran/gotour
 $ go mod init "github.com/jack/gotour"
 go: creating new go.mod: module github.com/jack/gotour
 ```
@@ -2189,6 +2279,8 @@ gopkg.in/yaml.v3
     |
     |--modules.txt
 ```
+
+其中的`modules.txt`是描述所有依赖项的文件，就类似于现在的`go.mod`。
 
 
 
@@ -2495,7 +2587,7 @@ $ go test -v -count=1 ./...
 
 编译器和链接器会因为它们改变自身的行为从而达到控制编译的效果，就有点类似于c语言中的宏，当然并非所有指令都是用来影响编译的，部分用于其它功能性行为，比如`generate`指令通常用于代码生成的功能。这些指令通常以注释的形式存在，并且以`//go:`作为前缀，中间不能包含任何的空格，比如`//go:generate`指令。所有指令类型总共分为两种
 
-- 功能性指令，这类是go提供的功能性指令可以随意使用，比如`generate`，`embed`
+- 功能性指令，这类是go提供的功能性指令可以随意使用，比如`generate`，`embed`，`build`。
 - 编译器指令，这类指令需要谨慎使用，胡乱使用可能导致无法预测的结果。
 
 除了功能性指令外，大多数指令都只能作用于函数签名上。对于编译器指令可以执行命令`go doc compile`查看其指令。对于全部指令，可以在`cmd/compile/internal/ir/node.go: 440`找到有关它们的信息。
@@ -2690,6 +2782,20 @@ $ curl -s -GET 127.0.0.1:8080
 </body>
 </html>
 ```
+
+
+
+### build
+
+在[build-编译控制](#编译控制)部分，讲到了用`// +build`指令来控制编译行为。而`//go:build`指令是在1.17新出的，意在取代先前的指令，不过现在都1.21也还没有取代，估计以后会以共存的方式存在，关于这个新指令，官方文档也有介绍：[build constraints](https://pkg.go.dev/cmd/go#hdr-Build_constraints)。它的功能与前者没什么区别，但是语法更加严格，支持布尔表达式，看一个例子
+
+```go
+//go:build (linux && 386) || (darwin && !cgo)
+
+package pkg_name
+```
+
+这种方式可读性要比原来那种高得多。
 
 
 
@@ -2950,7 +3056,7 @@ func low_level_code(ptr uintptr) uintptr
 
 ::: tip
 
-还有部分指令只能由`runtime`包使用， 它们则会涉及到更深的东西，想要了解可以在`runtime/HACKING.md#Runtime-only compiler directives`中看到有关它们的介绍。
+还有部分指令限制了只能由`runtime`包使用，我们是没法用的， 它们会涉及到更深的东西，想要了解可以在`runtime/HACKING.md#Runtime-only compiler directives`中看到有关它们的介绍。
 
 :::
 
