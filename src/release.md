@@ -2,9 +2,9 @@
 
 **最新版本：**
 
-- `go1.21.5`，发布于2023-10-10
+- `go1.21.5`，发布于2023-12-05
 
-- `go.1.20.12`，发布于2023-10-10
+- `go.1.20.12`，发布于2023-12-05
 
 **维护版本：**
 
@@ -382,7 +382,7 @@ Go1.1更新日志：[Go 1.1 Release Notes - The Go Programming Language](https:/
 
 
 
-## 1.0（2013-03-28）
+## 1.0（2012-03-28）
 
 Go1.0更新日志：[Go 1.0 Release Notes - The Go Programming Language](https://go.dev/doc/go1.0)
 
