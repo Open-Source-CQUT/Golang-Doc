@@ -2468,7 +2468,7 @@ usage: go test [build/test flags] [packages] [build/test flags & test binary fla
 Run 'go help test' and 'go help testflag' for details.
 ```
 
- `test`命令是go语言工具链中提供测试功能的命令，这个功能相当的重要，对于一个软件而言，完善的测试的是必不可少的。这里只是简单的介绍下如何使用`test`命令，如果要了解更多测试相关，前往：[测试](/essentail/senoir/120.test.md)
+ `test`命令是go语言工具链中提供测试功能的命令，这个功能相当的重要，对于一个软件而言，完善的测试的是必不可少的。这里只是简单的介绍下如何使用`test`命令，如果要了解更多测试相关，前往：[测试](/essential/senoir/120.test.md)
 
 它除了支持`build`命令的编译参数之外，`test`还支持下面几个参数
 
