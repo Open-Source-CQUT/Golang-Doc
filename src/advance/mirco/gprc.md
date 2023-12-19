@@ -2252,16 +2252,12 @@ func main() {
 2023/08/29 17:32:28 received grpc req: name:"client"
 ```
 
-注册中心其实就是存放着的就是服务注册名与真实服务地址的映射集合，只要是能够进行数据存储的中间件都可以满足条件，甚至拿mysql来做注册中心也不是不可以（应该没有人会这么做）。一般来说注册中心都是KV存储的，redis就是一个很不错的选择，但如果使用redis来做注册中心的话，我们就需要自行实现很多逻辑，比如服务的心跳检查，服务下线等，服务调度等等，还是相当麻烦的，虽然redis在这方面有一定的应用但是较少。正所谓专业的事情交给专业的人做，这方面做的比较出名的有很多：Zookeeper，Consul，Eureka，ETCD，Nacos等，下面贴一张对比图。
-
-![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cec3502b6246497ebb0e3bd18eab0ffa~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp)
+注册中心其实就是存放着的就是服务注册名与真实服务地址的映射集合，只要是能够进行数据存储的中间件都可以满足条件，甚至拿mysql来做注册中心也不是不可以（应该没有人会这么做）。一般来说注册中心都是KV存储的，redis就是一个很不错的选择，但如果使用redis来做注册中心的话，我们就需要自行实现很多逻辑，比如服务的心跳检查，服务下线等，服务调度等等，还是相当麻烦的，虽然redis在这方面有一定的应用但是较少。正所谓专业的事情交给专业的人做，这方面做的比较出名的有很多：Zookeeper，Consul，Eureka，ETCD，Nacos等。
 
 可以前往[注册中心对比和选型：Zookeeper、Eureka、Nacos、Consul和ETCD - 掘金 (juejin.cn)](https://juejin.cn/post/7068065361312088095)来了解这几个中间件的一些区别。
 
-
-
 ### 结合consul
-结合consul使用的案例可以前往[consul](/语言进阶/微服务/consul#服务注册与发现)
+结合consul使用的案例可以前往[consul](advance/mirco/consul.mdl#服务注册与发现)
 
 
 
