@@ -1,6 +1,4 @@
-# 在线运行
-
-## Playground
+# Playground
 
 对于一些简单的单文件演示代码，go提供了playground来在线运行go代码，不需要安装go环境，只需要一个浏览器即可。
 
@@ -8,36 +6,15 @@ Playground开源地址：[go-playground (github.com)](https://github.com/golang/
 
 官方Playground地址：[Go Playground - The Go Programming Language](https://go.dev/play/)
 
+![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202312232013851.png)
+
 第三方Playground地址：[The Go Play Space](https://goplay.space/)
 
-Playground命令行客户端：[Cmd - 246859/goplay (github.com)](https://github.com/246859/goplay/releases)
+![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202312232013414.png)
 
-Playground go客户端：[Client - 246859/goplay (github.com)](https://github.com/246859/goplay)
+由于它是一个开源项目，你也可以选择在自己的服务器上搭建个人playground，安装方法见官方文档。Playground服务器会将上传的代码段存储到谷歌云存储，所以不建议分享敏感代码。对于国内用户，建议使用第二个因为不需要魔法上网，但它依旧是基于官方的Playground服务器，代码也会同步到官方那边的服务器里面。
 
-
-
-由于它是一个开源项目，你也可以选择在自己的服务器上搭建个人playground，安装方法见官方文档。Playground服务器会将上传的代码段存储到谷歌云存储，所以不建议分享敏感代码。对于国内用户，建议使用第二个，它的界面更加美观，人性化，类vscode风格，而且不需要魔法上网，但它依旧是基于官方的Playground服务器，代码也会同步到官方那边的服务器里面。
-
-
-
-如果在使用官方服务器的过程中，提示你无法访问或者出现下面这种信息
-
-```
-Viewing and/or sharing code snippets is not available in your country for legal reasons.
-```
-
-因为某种不可抗力中国大陆地区的用户无法访问服务器，并且在playground源代码中也有这么一个函数
-
-```go
-func allowShare(r *http.Request) bool {
-	if r.Header.Get("X-AppEngine-Country") == "CN" {
-		return false
-	}
-	return true
-}
-```
-
-懂的都懂就不用多说了，如果是自建的话可以把这段删了。
+笔者自己整了一个玩具[goplay](https://github.com/246859/goplay)，用于在命令行内与playground服务器交互，也可以当作playground HTTP客户端库来使用。
 
 
 
@@ -214,6 +191,23 @@ func main() {
 
 ::: tip
 
-还有一个`/vet`的http api，不过已经被弃用。
+如果在使用官方服务器的过程中，提示你无法访问或者出现下面这种信息
+
+```
+Viewing and/or sharing code snippets is not available in your country for legal reasons.
+```
+
+这是因为某种不可抗力中国大陆地区的用户无法访问服务器，并且在playground源代码中也有这么一个函数
+
+```go
+func allowShare(r *http.Request) bool {
+	if r.Header.Get("X-AppEngine-Country") == "CN" {
+		return false
+	}
+	return true
+}
+```
+
+懂的都懂，就不用多说了，如果是自建的话可以把这段删了。
 
 :::
