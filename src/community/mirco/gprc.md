@@ -2257,7 +2257,7 @@ func main() {
 可以前往[注册中心对比和选型：Zookeeper、Eureka、Nacos、Consul和ETCD - 掘金 (juejin.cn)](https://juejin.cn/post/7068065361312088095)来了解这几个中间件的一些区别。
 
 ### 结合consul
-结合consul使用的案例可以前往[consul](advance/mirco/consul.mdl#服务注册与发现)
+结合consul使用的案例可以前往[consul](community/mirco/consul.mdl#服务注册与发现)
 
 
 

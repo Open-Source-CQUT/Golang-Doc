@@ -16,8 +16,8 @@ export const zhSidebar = sidebar({
         },
         {
             icon: "software",
-            text: "社区生态",
-            prefix: "advance/",
+            text: "社区工具",
+            prefix: "community/",
             children: "structure",
         }
     ],
