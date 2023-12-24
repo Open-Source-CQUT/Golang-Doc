@@ -4,7 +4,7 @@ export const zhSidebar = sidebar({
     "/": [
         {
             icon: "activity",
-            text: "语言基础",
+            text: "语言入门",
             prefix: "essential/",
             // 没法给目录排序，所以这里只能手动指定顺序
             children: [
