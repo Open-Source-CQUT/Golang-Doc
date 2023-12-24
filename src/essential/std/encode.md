@@ -374,7 +374,7 @@ func main() {
 
 ### Protocol Buffers
 
-protocol是谷歌2008开源的语言中立，协议中立，可扩展的结构化数据序列化机制。相比于以上三种更加的轻便，而且在解包封包的时候更加的快速，多用于RPC领域通信相关，有关`Protobuf`的讲解可以前往[Protobuf](/advance/mirco/protoc.md)。
+protocol是谷歌2008开源的语言中立，协议中立，可扩展的结构化数据序列化机制。相比于以上三种更加的轻便，而且在解包封包的时候更加的快速，多用于RPC领域通信相关，有关`Protobuf`的讲解可以前往[Protobuf](/community/mirco/protoc.md)。
 
 安装依赖
 
