@@ -1,1 +1,0 @@
-import{_ as t,V as s,W as r,X as e,Y as o}from"./framework-f06be456.js";const a={},c=e("h1",{id:"postgresql",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#postgresql","aria-hidden":"true"},"#"),o(" PostgreSQL")],-1),n=[c];function _(d,l){return s(),r("div",null,n)}const h=t(a,[["render",_],["__file","PostgreSQL.html.vue"]]);export{h as default};
