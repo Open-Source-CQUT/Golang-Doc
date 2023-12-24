@@ -11,6 +11,7 @@ export const zhSidebar = sidebar({
                 {icon: "bit", text: "语法基础", prefix: "base/", collapsible: true, children: "structure"},
                 {icon: "alias", text: "语法进阶", prefix: "senior/", collapsible: true, children: "structure"},
                 {icon: "module", text: "标准库", prefix: "std/", collapsible: true, children: "structure"},
+                {icon: "template", text: "实现原理", prefix: "impl/", collapsible: true, children: "structure"},
             ],
         },
         {
