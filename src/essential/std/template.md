@@ -2,7 +2,7 @@
 date: 2022-09-07
 ---
 
-# 模板引擎
+# template
 
 官方文档：[template package - text/template - Go Packages](https://pkg.go.dev/text/template)
 
