@@ -36,17 +36,18 @@
 
 ### 微服务
 
-| 名称     | 描述                                   | 仓库                                 |
-| -------- | -------------------------------------- | ------------------------------------ |
-| kratos   | 云原生微服务框架（B站开源）            | https://github.com/go-kratos/kratos  |
-| go-kit   | 一个微服务开发的工具库                 | https://github.com/go-kit/kit        |
-| kitex    | 高性能和高拓展的微服务框架（字节开源） | https://github.com/cloudwego/kitex   |
-| go-zero  | 云原生微服务框架（七牛云开源）         | https://github.com/zeromicro/go-zero |
-| go-micro | 一个国外的微服务框架                   | https://github.com/go-micro/go-micro |
-| kite     | 微服务框架（很久没更新）               | https://github.com/koding/kite       |
-| dubbo-go | java dubbo在go实现（阿里开源）         | https://github.com/apache/dubbo-go   |
-| tarsgo   | tars在go中的实现（腾讯开源）           | https://github.com/TarsCloud/TarsGo  |
-| juptiers | 面向治理的微服务框架（斗鱼开源）       | https://github.com/douyu/jupiter     |
+| 名称     | 描述                                   | 仓库                                  |
+| -------- | -------------------------------------- | ------------------------------------- |
+| kratos   | 云原生微服务框架（B站开源）            | https://github.com/go-kratos/kratos   |
+| go-kit   | 一个微服务开发的工具库                 | https://github.com/go-kit/kit         |
+| kitex    | 高性能和高拓展的微服务框架（字节开源） | https://github.com/cloudwego/kitex    |
+| go-zero  | 云原生微服务框架（七牛云开源）         | https://github.com/zeromicro/go-zero  |
+| go-micro | 一个国外的微服务框架                   | https://github.com/go-micro/go-micro  |
+| kite     | 微服务框架（很久没更新）               | https://github.com/koding/kite        |
+| dubbo-go | java dubbo在go实现（阿里开源）         | https://github.com/apache/dubbo-go    |
+| tarsgo   | tars在go中的实现（腾讯开源）           | https://github.com/TarsCloud/TarsGo   |
+| juptiers | 面向治理的微服务框架（斗鱼开源）       | https://github.com/douyu/jupiter      |
+| redsync  | redis分布式锁                          | https://github.com/go-redsync/redsync |
 
 ::: tip 彩蛋
 
@@ -277,13 +278,25 @@
 
 
 
+### 文字处理
+
+| 名称 | 描述                   | 仓库                              |
+| ---- | ---------------------- | --------------------------------- |
+| vale | 语法感知的文本校对工具 | https://github.com/errata-ai/vale |
+|      |                        |                                   |
+|      |                        |                                   |
+
+
+
 ### 认证授权
 
-| 名称   | 描述                 | 仓库                             |
-| ------ | -------------------- | -------------------------------- |
-| casbin | 灵活强大的权限管理库 | https://github.com/casbin/casbin |
-|        |                      |                                  |
-|        |                      |                                  |
+| 名称    | 描述                                  | 仓库                               |
+| ------- | ------------------------------------- | ---------------------------------- |
+| casbin  | 灵活强大的权限管理库                  | https://github.com/casbin/casbin   |
+| openfga | 高性能权限/授权库，源于oogle Zanzibar | https://github.com/openfga/openfga |
+|         |                                       |                                    |
+
+
 
 ### 代码生成
 
@@ -293,6 +306,8 @@
 |          |            |                                  |
 |          |            |                                  |
 
+
+
 ### 正则处理
 
 | 名称       | 描述                           | 仓库                                      |
@@ -300,6 +315,8 @@
 | commonregx | 一个收集了常用的正则表达式的库 | https://github.com/mingrammer/commonregex |
 |            |                                |                                           |
 |            |                                |                                           |
+
+
 
 ### 文件处理
 
@@ -311,6 +328,7 @@
 | pdfcpu    | pdf处理器                          | https://github.com/pdfcpu/pdfcpu            |
 | unioffice | office处理库                       | https://github.com/unidoc/unioffice         |
 | gooxml    | office处理库                       | https://github.com/carmel/gooxml            |
+| pdfcpu    | PDF处理库                          | https://github.com/pdfcpu/pdfcpu            |
 
 
 
@@ -321,6 +339,8 @@
 | lancet         | 多功能工具库，类比java中的common包 | https://github.com/duke-git/lancet        |
 | bytebufferpool | 字节缓存池                         | https://github.com/valyala/bytebufferpool |
 |                |                                    |                                           |
+
+
 
 ### 开发框架
 
