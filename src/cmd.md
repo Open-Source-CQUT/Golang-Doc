@@ -2005,7 +2005,7 @@ Use "go help mod <command>" for more information about a command.
 - `graph`：输出依赖图
 - `verify`：验证本地的依赖
 - `why`：解释为什么会依赖这些模块
-- `verdor`：导出项目依赖到vendor目录
+- `vendor`：导出项目依赖到vendor目录
 
 
 
