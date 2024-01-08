@@ -790,13 +790,21 @@ Run 'go help build' for details.
 它接收三个参数，一个是`-o`标志所指示的文件输出路径，一个是用于定义编译行为的构建标志`build flas`，最后一个就是要编译的包，**该参数必须放在最后**。下面是一个简单的例子，没用到构建标志。
 
 ```sh
-$ go build -o ./bin/golearn.exe golearn
+# Windows
+$ go build -o .\bin\golearn.exe golearn
+
+# macOS / Linux
+$ go build -o ./bin/golearn golearn
 ```
 
-`./bin/golearn.exe`是表示输出路径，`golearn`表示要编译的模块，也可以是一个入口文件，或是一个文件夹。
+`./bin/golearn.exe`是表示输出路径，`golearn`表示要编译的模块，也可以是一个`入口文件`，或是一个`文件夹`。比如下面简单的例子是以`main.go`入口文件作为编译目标。
 
 ```sh
-$ go build -o ./bin/golearn.exe main.go
+# Windows
+$ go build -o .\bin\golearn.exe main.go
+
+# macOS / Linux
+$ go build -o ./bin/golearn main.go
 ```
 
 在编译的时候它会忽略掉所有以`_test.go`结尾的文件，因为些文件按照约定都是测试文件。
