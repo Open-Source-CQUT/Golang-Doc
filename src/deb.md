@@ -97,7 +97,7 @@
 | biset             | go中bitsets的实现       | https://github.com/bits-and-blooms/bitset    |
 | bloom             | go中bloom filters的实现 | https://github.com/bits-and-blooms/bloom     |
 | deque             | 高性能双端队列的实现    | https://github.com/edwingeng/deque           |
-|                   |                         |                                              |
+| concurrent-map    | 并发安全的分片map实现   | https://github.com/orcaman/concurrent-map    |
 
 ### 数学计算
 
@@ -137,6 +137,7 @@
 | badger    | 嵌入式的kv数据库，基于LSM    | https://github.com/dgraph-io/badger |
 | boltdb    | 嵌入式的kv数据库，基于B+Tree | https://github.com/boltdb/bolt      |
 | goleveldb | go语言实现的leveldb          | https://github.com/syndtr/goleveldb |
+| qmgo      | 七牛云开源的mongodb操作库    | https://github.com/qiniu/qmgo       |
 
 
 
