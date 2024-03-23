@@ -137,7 +137,7 @@ sum <span class="token operator">:=</span> <span class="token keyword">func</spa
 
 <span class="token keyword">type</span> Number <span class="token keyword">interface</span> <span class="token punctuation">{</span>
 	SignedInt
-	Int
+	Integer
 <span class="token punctuation">}</span>
 </code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>例子中的交集肯定就是<code>SignedInt</code>，</p><div class="language-go line-numbers-mode" data-ext="go"><pre class="language-go"><code><span class="token keyword">func</span> Do<span class="token punctuation">[</span>T Number<span class="token punctuation">]</span><span class="token punctuation">(</span>n T<span class="token punctuation">)</span> T <span class="token punctuation">{</span>
    <span class="token keyword">return</span> n
