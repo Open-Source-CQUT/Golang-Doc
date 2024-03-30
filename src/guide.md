@@ -144,7 +144,7 @@ go/
 
 ```ini
 GO111MODULE=on
-GOCACHE=go/cahce
+GOCACHE=go/cache
 GOMODCACHE=go/mod/libs
 GOBIN=go/mod/bin
 GOTMPDIR=go/temp
