@@ -8,7 +8,7 @@
 
 :::
 
-### Web
+### Web框架
 
 | 名称    | 描述                                               | 仓库                                 |
 | ------- | -------------------------------------------------- | ------------------------------------ |
@@ -22,6 +22,8 @@
 | hertz   | 具有高性能和强扩展性的微服务 HTTP 框架（字节开源） | https://github.com/cloudwego/hertz   |
 | dotweb  | 一个简单的微型web框架                              | https://github.com/devfeel/dotweb    |
 
+
+
 ### ORM
 
 | 名称      | 描述              | 仓库                                             |
@@ -34,7 +36,9 @@
 | rel       | 可拓展的现代ORM   | https://github.com/go-rel/rel                    |
 | bun       | SQL优先的ORM      | https://github.com/uptrace/bun                   |
 
-### 微服务
+
+
+### 微服务框架
 
 | 名称     | 描述                                   | 仓库                                  |
 | -------- | -------------------------------------- | ------------------------------------- |
@@ -54,15 +58,16 @@
 斗鱼的jupiter是宙斯的名字，是众神之神，而B站的kratos是战神奎托斯的名字，奎托斯后来杀掉了众神之神宙斯。
 
 :::
-### 日志
+### 日志组件
 
-| 名称     | 描述                   | 仓库                               |
-| -------- | ---------------------- | ---------------------------------- |
-| logrus   | 结构化日志库           | https://github.com/sirupsen/logrus |
-| zap      | uber开源的高性能日志库 | https://github.com/uber-go/zap     |
-| glog     | 分级执行日志           | https://github.com/golang/glog     |
-| zerolog  | 零内存分配的json日志   | https://github.com/rs/zerolog      |
-| apex/log | 结构化日志库           | https://github.com/apex/log        |
+| 名称       | 描述                                         | 仓库                                    |
+| ---------- | -------------------------------------------- | --------------------------------------- |
+| logrus     | 结构化日志库                                 | https://github.com/sirupsen/logrus      |
+| zap        | uber开源的高性能日志库                       | https://github.com/uber-go/zap          |
+| glog       | 分级执行日志                                 | https://github.com/golang/glog          |
+| zerolog    | 零内存分配的json日志                         | https://github.com/rs/zerolog           |
+| apex/log   | 结构化日志库                                 | https://github.com/apex/log             |
+| lumberjack | 日志分割库，支持大小分割，日期分割，文件压缩 | https://github.com/natefinch/lumberjack |
 
 
 
@@ -90,14 +95,15 @@
 
 ### 数据结构
 
-| 名称              | 描述                    | 仓库                                         |
-| ----------------- | ----------------------- | -------------------------------------------- |
-| gods              | 常见数据结构的实现      | https://github.com/emirpasic/gods            |
-| go-datastructures | 常见数据结构的实现      | https://github.com/Workiva/go-datastructures |
-| biset             | go中bitsets的实现       | https://github.com/bits-and-blooms/bitset    |
-| bloom             | go中bloom filters的实现 | https://github.com/bits-and-blooms/bloom     |
-| deque             | 高性能双端队列的实现    | https://github.com/edwingeng/deque           |
-| concurrent-map    | 并发安全的分片map实现   | https://github.com/orcaman/concurrent-map    |
+| 名称              | 描述                             | 仓库                                         |
+| ----------------- | -------------------------------- | -------------------------------------------- |
+| gods              | 常见数据结构的实现               | https://github.com/emirpasic/gods            |
+| go-datastructures | 常见数据结构的实现               | https://github.com/Workiva/go-datastructures |
+| biset             | go中bitsets的实现                | https://github.com/bits-and-blooms/bitset    |
+| bloom             | go中bloom filters的实现          | https://github.com/bits-and-blooms/bloom     |
+| deque             | 高性能双端队列的实现             | https://github.com/edwingeng/deque           |
+| concurrent-map    | 并发安全的分片map实现            | https://github.com/orcaman/concurrent-map    |
+| samber/lo         | Lodash风格的数据处理库，支持泛型 | https://github.com/samber/lo                 |
 
 ### 数学计算
 
@@ -120,24 +126,34 @@
 
 
 
-### 缓存
+### 缓存组件
 
-| 名称       | 描述                           | 仓库                                    |
-| ---------- | ------------------------------ | --------------------------------------- |
-| golang-lru | 线程安全的LRU，以及LRU 2Q 缓存 | https://github.com/hashicorp/golang-lru |
-|            |                                |                                         |
-|            |                                |                                         |
+| 名称       | 描述                                    | 仓库                                    |
+| ---------- | --------------------------------------- | --------------------------------------- |
+| golang-lru | 线程安全的LRU，以及LRU 2Q 缓存          | https://github.com/hashicorp/golang-lru |
+| ttlcache   | 基于内存的缓存，支持TTL，泛型           | https://github.com/jellydator/ttlcache  |
+| gocache    | 缓存中间件管理器                        | https://github.com/eko/gocache          |
+| go-cache   | 基于内存的缓存，适用于单机应用，支持TTL | https://github.com/patrickmn/go-cache   |
+| ristretto  | 高性能的内存缓存                        | https://github.com/dgraph-io/ristretto  |
+| bigcache   | 基于内存的高效率的大key缓存             | https://github.com/allegro/bigcache     |
 
 
 
-### 数据库
+### 数据库&驱动
 
-| 名称      | 描述                         | 仓库                                |
-| --------- | ---------------------------- | ----------------------------------- |
-| badger    | 嵌入式的kv数据库，基于LSM    | https://github.com/dgraph-io/badger |
-| boltdb    | 嵌入式的kv数据库，基于B+Tree | https://github.com/boltdb/bolt      |
-| goleveldb | go语言实现的leveldb          | https://github.com/syndtr/goleveldb |
-| qmgo      | 七牛云开源的mongodb操作库    | https://github.com/qiniu/qmgo       |
+| 名称                  | 描述                                            | 仓库                                       |
+| --------------------- | ----------------------------------------------- | ------------------------------------------ |
+| modernc.org/sqlite    | sqlite驱动，纯go编写，不需要cgo                 | https://gitlab.com/cznic/sqlite            |
+| mattn/go-sqlite3      | sqlite驱动，需要cgo                             | https://github.com/mattn/go-sqlite3        |
+| denisenkom/go-mssqldb | sqlserver驱动，不怎么更新了，建议使用微软的版本 | https://github.com/denisenkom/go-mssqldb   |
+| microsoft/go-mssqldb  | sqlserver驱动，微软fork的新分支并维护           | https://github.com/microsoft/go-mssqldb    |
+| pgx                   | postgreSQL驱动                                  | https://github.com/jackc/pgx/              |
+| mysql                 | mysql驱动                                       | https://github.com/go-sql-driver/mysql     |
+| badger                | 嵌入式的kv数据库，基于LSM                       | https://github.com/dgraph-io/badger        |
+| boltdb                | 嵌入式的kv数据库，基于B+Tree                    | https://github.com/boltdb/bolt             |
+| goleveldb             | go语言实现的leveldb                             | https://github.com/syndtr/goleveldb        |
+| qmgo                  | 七牛云开源的mongodb操作库                       | https://github.com/qiniu/qmgo              |
+| mongo-go-driver       | mongodb官方的go驱动                             | https://github.com/mongodb/mongo-go-driver |
 
 
 
@@ -193,6 +209,16 @@
 | dig  | uber开源的依赖注入库，基于反射     | https://darjun.github.io/2020/02/22/godailylib/dig/ |
 | wire | 谷歌开源的依赖注入库，基于代码生成 | https://github.com/google/wire                      |
 |      |                                    |                                                     |
+
+
+
+### 地理位置
+
+| 名称           | 描述         | 仓库                                          |
+| -------------- | ------------ | --------------------------------------------- |
+| geoip2-golang  | IP转地理信息 | https://github.com/oschwald/geoip2-golang     |
+| ip2location-go | IP转地理信息 | https://github.com/ip2location/ip2location-go |
+|                |              |                                               |
 
 
 
