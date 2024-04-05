@@ -71,6 +71,19 @@
 
 
 
+### 测试组件
+
+| 名称              | 描述                                     | 仓库                                         |
+| ----------------- | ---------------------------------------- | -------------------------------------------- |
+| testify           | 最流行的测试工具包                       | https://github.com/stretchr/testify          |
+| ginkgo            | 现代化的测试框架                         | https://github.com/onsi/ginkgo               |
+| ramsql            | 基于内存的SQL引擎，主要用于SQL的单元测试 | https://github.com/proullon/ramsql           |
+| go-sqlmock        | 用于测试的SQL Mock                       | https://github.com/DATA-DOG/go-sqlmock       |
+| goconvey          | 在浏览器可视化中测试                     | https://github.com/smartystreets/goconvey    |
+| go-stress-testing | 压测工具                                 | https://github.com/link1st/go-stress-testing |
+
+
+
 ### 数据转换
 
 | 名称         | 描述                           | 仓库                                      |
@@ -149,6 +162,8 @@
 | microsoft/go-mssqldb  | sqlserver驱动，微软fork的新分支并维护           | https://github.com/microsoft/go-mssqldb    |
 | pgx                   | postgreSQL驱动                                  | https://github.com/jackc/pgx/              |
 | mysql                 | mysql驱动                                       | https://github.com/go-sql-driver/mysql     |
+| oci-go-sdk            | oracle官方驱动                                  | https://github.com/oracle/oci-go-sdk       |
+| go-ora                | oracle驱动，纯go编写                            | https://github.com/sijms/go-ora            |
 | badger                | 嵌入式的kv数据库，基于LSM                       | https://github.com/dgraph-io/badger        |
 | boltdb                | 嵌入式的kv数据库，基于B+Tree                    | https://github.com/boltdb/bolt             |
 | goleveldb             | go语言实现的leveldb                             | https://github.com/syndtr/goleveldb        |
