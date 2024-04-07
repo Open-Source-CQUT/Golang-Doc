@@ -9,7 +9,7 @@ date: 2023-1-10
 
 ![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202312071456443.png)
 
-下面介绍一些Go的常用命令，熟悉这些命令还是挺重要的，如下。
+Go中的命令包含了一整套工具链，这些命令涵盖了文档，格式化，代码检查，编译，测试，依赖管理等多个方面，可以说是涉及到了Go开发的方方面面。
 
 ```text
 bug         报告漏洞
@@ -17,12 +17,12 @@ build       编译包和依赖
 clean       清除对象文件
 doc         展示源代码中的文档
 env         查看Go环境变量信息
-fix         更新packages以使用新的API
+fix         修复因go版本变化而导致的API兼容问题
 fmt         源代码格式化
 generate    代码生成
 get         添加依赖
 install     安装并编译包
-list        列出所有的包或模块
+list        包/模块列表命令
 mod         模块维护命令
 work        工作区维护命令
 run         编译并运行
@@ -32,7 +32,9 @@ version     展示go的版本信息
 vet         扫描并输出源代码中可能存在的问题
 ```
 
-上述这些命令代表着go语言从编译，文档、测试、到模块管理等一系列功能整合而成一整套工具链，本文只是简单的叙述与介绍它们的使用，所有内容参考自官方文档，所以想要了解更多细节可以前往[cmd/go](https://pkg.go.dev/cmd/go)。
+本文只是简单的叙述与介绍它们的使用，所有内容参考自官方文档，想要了解更多细节可以前往[cmd/go](https://pkg.go.dev/cmd/go)。
+
+
 
 ### help
 
@@ -1619,8 +1621,8 @@ var (
 回到正题，`get`命令会将指定的包的源代码下载到本地的全局依赖目录中，也就是`GOCACHE`对应的目录，然后将信息记录到`go.mod`和`go.sum`文件中，前者负责记录版本，后者负责记录sha1校验和确保安全性。`get`命令实际上是基于VCS，也就是本地的版本控制系统，总共支持下面几个
 
 - git
-- hg
-- bzr
+- hg (Mercurial)
+- bzr (Bazaar)
 - svn
 - fossil
 
@@ -2215,7 +2217,7 @@ $ go help mod vendor
 usage: go mod vendor [-e] [-v] [-o outdir]
 ```
 
-vendor是早期gomod没有推出之前的一个gopath的替代方案，每一个go项目下都会有一个vendor目录，按照`domain/user/project`这种格式单独存放每一个项目的依赖，就像隔壁nodeJs臃肿的`nodemodule`一样每一个项目的依赖分开放，这种依赖管理方式现在看起来确实很愚蠢，但是在那个时候确实没有更好的方案了，之所以保留vendor是因为go秉承的向下兼容的承诺，有一些老项目包括go源代码里面可能还在使用vendor。
+vendor是早期gomod没有推出之前的一个gopath的替代方案，每一个go项目下都会有一个vendor目录，按照`domain/user/project`这种格式单独存放每一个项目的依赖，就像隔壁nodeJs臃肿的`node_module`一样每一个项目的依赖分开放，这种依赖管理方式现在看起来确实很愚蠢，但是在那个时候确实没有更好的方案了，之所以保留vendor是因为go秉承的向下兼容的承诺，有一些老项目包括go源代码里面可能还在使用vendor。
 
 回到正题，`vendor`是`go mod`的一个子命令，它可以将当前模块所引用的全局依赖导出到vendor目录中。
 
@@ -2336,6 +2338,182 @@ gorm.io/gorm
 
 
 ### work
+
+命令work是一个用于go多模块管理的本地开发工具
+
+```bash
+$ go work help
+Work provides access to operations on workspaces.
+
+Note that support for workspaces is built into many other commands, not
+just 'go work'.
+
+The commands are:
+
+        edit        edit go.work from tools or scripts
+        init        initialize workspace file
+        sync        sync workspace build list to modules
+        use         add modules to workspace file
+        vendor      make vendored copy of dependencies
+
+Use "go help work <command>" for more information about a command.
+```
+
+
+
+#### init
+
+`init`子命令用于初始化一个workspace，该命令会创建一个名为`go.work`的文件
+
+```bash
+$ go work init -h                                             
+usage: go work init [moddirs]       
+Run 'go help work init' for details.
+```
+
+接收参数`[moddirs]`指定将哪些模块纳入管理，例如
+
+```bash
+$ go work init ./service ./api
+```
+
+
+
+#### use
+
+`use`子命令用于向`go.work`中添加纳入管理的模块目录
+
+```bash
+$ go help work use
+usage: go work use [-r] [moddirs]
+
+Use provides a command-line interface for adding
+directories, optionally recursively, to a go.work file.
+```
+
+接收`[moddirs]`作为参数，还有一个`-r`表示在`[moddirs]`路径下递归搜索模块，例如
+
+```bash
+$ go work use -r ./oss-api ./multi_modules
+```
+
+
+
+#### edit
+
+`edit`子命令的作用同`go mod edit`，都是留给命令行接口给其它工具和脚本操作的。
+
+```
+$ go help work edit
+usage: go work edit [editing flags] [go.work]
+
+Edit provides a command-line interface for editing go.work,
+for use primarily by tools or scripts. It only reads go.work;
+it does not look up information about the modules involved.
+If no file is specified, Edit looks for a go.work file in the current
+directory and its parent directories
+```
+
+参数有如下
+
+- `-fmt`，格式化`go.work`文件
+
+- `-use`，`-dropuse`，添加和移除模块路径
+
+- `-replace=old[@v]=new[@v]`，`-dropreplace=old[@v]=new[@v]`，用于添加和移除要替换的模块
+
+- `-go`，`-toolchain=name`，指定go版本，以及指定要使用的工具链
+
+- `-print`，将最后的修改打印出来，不写回文件
+
+- `-json`，以`json`格式输出，无法与`-print`同时存在，对应类型结构如下所示
+
+    ```go
+    type GoWork struct {
+            Go        string
+            Toolchain string
+            Use       []Use
+            Replace   []Replace
+    }
+    
+    type Use struct {
+            DiskPath   string
+            ModulePath string
+    }
+    
+    type Replace struct {
+            Old Module
+            New Module
+    }
+    
+    type Module struct {
+            Path    string
+            Version string
+    }
+    ```
+
+一些使用示例如下，格式化输出
+
+```bash
+$ go work edit -fmt -print
+go 1.22.0
+
+use (
+        ./ab/cd
+        ./auth
+        ./user
+)
+```
+
+json输出
+
+```bash
+$ go work edit -fmt -json
+{
+        "Go": "1.22.0",
+        "Use": [
+                {
+                        "DiskPath": "./ab/cd"
+                },
+                {
+                        "DiskPath": "./auth"
+                },
+                {
+                        "DiskPath": "./user"
+                }
+        ],
+        "Replace": null
+}
+```
+
+
+
+#### sync
+
+`sync`子命令用于将`go.work`中的模块列表回到workspace中的各个模块中。
+
+```bash
+$ go help work sync
+usage: go work sync
+
+Sync syncs the workspace's build list back to the
+workspace's modules
+```
+
+这个过程主要发生在**本地开发完成后**，各个模块**已经完成发版工作**，此时使用`sync`，它会根据各个模块的依赖关系来更新worksapce所有模块的`go.mod`中的依赖，从而不需要我们去手动更新。
+
+
+
+#### vendor
+
+`vendor`命令会将workspace中所有模块依赖的库做一份复制到`vendor`目录下。
+
+```bash
+$ go work help vendor
+usage: go work vendor [-e] [-v] [-o outdir]
+```
+
+功能同`go mod vendor`，不再做过多的赘述。
 
 
 
@@ -3064,7 +3242,7 @@ func low_level_code(ptr uintptr) uintptr
 
 ::: tip
 
-还有部分指令限制了只能由`runtime`包使用，我们是没法用的， 它们会涉及到更深的东西，想要了解可以在`runtime/HACKING.md#Runtime-only compiler directives`中看到有关它们的介绍。
+还有部分指令限制了只能由`runtime`包使用，外部是无法使用的， 它们会涉及到更深的东西，想要了解可以在[Runtime-only compiler directives](https://github.com/golang/go/blob/master/src/runtime/HACKING.md#runtime-only-compiler-directives)中看到有关它们的介绍。
 
 :::
 
