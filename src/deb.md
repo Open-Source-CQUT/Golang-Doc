@@ -257,22 +257,33 @@
 
 ### 电子邮件
 
-| 名称                | 描述             | 仓库                                   |
-| ------------------- | ---------------- | -------------------------------------- |
-| jordan-wright/email | 健壮灵活的邮件库 | https://github.com/jordan-wright/email |
-|                     |                  |                                        |
-|                     |                  |                                        |
+| 名称                | 描述                                   | 仓库                                        |
+| ------------------- | -------------------------------------- | ------------------------------------------- |
+| jordan-wright/email | 健壮灵活的邮件发送库                   | https://github.com/jordan-wright/email      |
+| gomail              | 邮件发送库                             | https://github.com/go-gomail/gomail         |
+| go-simple-mail      | 简单的邮件发送库                       | https://github.com/xhit/go-simple-mail      |
+| go-mail             | 易于使用，全面的邮件发送库             | https://github.com/wneessen/go-mail         |
+| email-verifier      | 验证邮箱是否有效，且不需要发送邮件     | https://github.com/AfterShip/email-verifier |
+| maddy               | 组合式的邮件服务器                     | https://github.com/foxcpp/maddy             |
+| mox                 | 全面开源，高维护性，自托管的邮件服务端 | https://github.com/mjl-/mox                 |
+| hermes              | 邮件模板生成库                         | https://github.com/matcornic/hermes         |
+| listmonk            | 高性能，子托管，可视化的邮件列表管理   | https://github.com/knadh/listmonk           |
+| go-smtp             | go编写的SMTP客户端与服务端             | https://github.com/emersion/go-smtp         |
+| go-imap             | go编写的IMAP客户端与服务端             | https://github.com/emersion/go-imap         |
+
+
 
 ### 游戏开发
 
-| 名称       | 描述                     | 仓库                                  |
-| ---------- | ------------------------ | ------------------------------------- |
-| ebitengine | 一个超级简单的2d游戏引擎 | https://github.com/hajimehoshi/ebiten |
-| Azul3D     | 一个由go编写的3d游戏引擎 | https://github.com/azul3d/engine      |
-| engo       | 由go编写的开源2d游戏引擎 | https://github.com/EngoEngine/engo    |
-| g3n/engine | go3d游戏引擎             | https://github.com/g3n/engine         |
-| gonet      | 一个游戏服务端框架       | https://github.com/xtaci/gonet        |
-| leaf       | 游戏服务端框架           | https://github.com/name5566/leaf      |
+| 名称       | 描述                     | 仓库                                    |
+| ---------- | ------------------------ | --------------------------------------- |
+| ebitengine | 一个超级简单的2d游戏引擎 | https://github.com/hajimehoshi/ebiten   |
+| Azul3D     | 一个由go编写的3d游戏引擎 | https://github.com/azul3d/engine        |
+| engo       | 由go编写的开源2d游戏引擎 | https://github.com/EngoEngine/engo      |
+| g3n/engine | go3d游戏引擎             | https://github.com/g3n/engine           |
+| gonet      | 一个游戏服务端框架       | https://github.com/xtaci/gonet          |
+| leaf       | 游戏服务端框架           | https://github.com/name5566/leaf        |
+| cloud-game | 基于web的云游戏服务      | https://github.com/giongto35/cloud-game |
 
 
 
