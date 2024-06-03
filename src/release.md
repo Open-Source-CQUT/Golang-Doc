@@ -4,7 +4,7 @@
 
 - go1.22，首次发布：2024-02-08，最后更新：go1.22.3 (2024-05-07)
 
-- go1.21 ，首次发布：2023-08-08，最后更新：go1.21.6 (2024-01-09)
+- go1.21 ，首次发布：2023-08-08，最后更新：go1.21.10 (2024-05-07)
 
 Go语言官方更新日志：[Release History - The Go Programming Language](https://go.dev/doc/devel/release)
 
@@ -54,7 +54,7 @@ go1.22版本的详细更新日志可以前往[Go 1.22 Release Notes](https://go.
 
 首次发布：2023-08-08
 
-最后更新：go1.21.6(released 2024-01-09)
+最后更新：go1.21.10(released 2024-05-07)
 
 go1.21版本的详细更新日志可以前往[Go 1.21 Release Notes](https://go.dev/doc/go1.21)查看，在其维护期间发布的所有补丁版本可以前往[Go1.21 - Release Patch](https://go.dev/doc/devel/release#go1.21.0)了解。
 
@@ -101,7 +101,7 @@ go1.21版本的详细更新日志可以前往[Go 1.21 Release Notes](https://go.
 
 首次发布：2023-02-01
 
-最后更新：go1.20.13 (released 2024-01-09)
+最后更新：go1.20.14 (released 2024-02-06)
 
 go1.20版本的详细更新日志可以前往[Go 1.20 Release Notes](https://go.dev/doc/go1.20)查看，在其维护期间发布的所有补丁版本可以前往[Go1.20 - Release Patch](https://go.dev/doc/devel/release#go1.20)了解。
 
