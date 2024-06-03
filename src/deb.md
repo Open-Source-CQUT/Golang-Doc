@@ -169,6 +169,7 @@
 | goleveldb             | go语言实现的leveldb                             | https://github.com/syndtr/goleveldb        |
 | qmgo                  | 七牛云开源的mongodb操作库                       | https://github.com/qiniu/qmgo              |
 | mongo-go-driver       | mongodb官方的go驱动                             | https://github.com/mongodb/mongo-go-driver |
+| rqlite                | 基于sqlite的轻量级分布式关系数据库              | https://github.com/rqlite/rqlite/          |
 
 
 
