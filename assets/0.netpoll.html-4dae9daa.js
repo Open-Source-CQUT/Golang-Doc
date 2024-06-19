@@ -1,0 +1,1 @@
+import{_ as t,V as o,W as n,X as e,Y as a}from"./framework-f06be456.js";const l={},c=e("h1",{id:"netpoll",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#netpoll","aria-hidden":"true"},"#"),a(" netpoll")],-1),r=[c];function s(_,d){return o(),n("div",null,r)}const h=t(l,[["render",s],["__file","0.netpoll.html.vue"]]);export{h as default};
