@@ -1,5 +1,5 @@
 ---
 index: false
-title: 语言基础
+title: 语法基础
 icon: bit
 ---
