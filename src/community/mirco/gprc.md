@@ -1,10 +1,11 @@
 # gPRC
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307161153673.png)
+![](/images/grpc/cover.png)
 
 远程过程调用rpc应该是微服务当中必须要学习的一个点了，在学习的过程中会遇到各式各样的rpc框架，不过在go这个领域，几乎所有的rpc框架都是基于gRPC的，并且它还成为了云原生领域的一个基础协议，为什么选择它，官方如下回答：
 
-> gRPC 是一个现代化的开源高性能远程过程调用(Remote Process Call，RPC)框架，可以在任何环境中运行。它可以通过可插拔的负载平衡、跟踪、健康检查和身份验证支持，有效地连接数据中心内和数据中心之间的服务。它还适用于连接设备、移动应用程序和浏览器到后端服务的最后一英里分布式计算。
+> gRPC 是一个现代化的开源高性能远程过程调用(Remote Process Call，RPC)
+> 框架，可以在任何环境中运行。它可以通过可插拔的负载平衡、跟踪、健康检查和身份验证支持，有效地连接数据中心内和数据中心之间的服务。它还适用于连接设备、移动应用程序和浏览器到后端服务的最后一英里分布式计算。
 
 官方网址：[gRPC](https://grpc.io/)
 
@@ -16,7 +17,7 @@ ProtocBuf官网：[Reference Guides | Protocol Buffers Documentation (protobuf.d
 
 它也是CNCF基金会下一个的开源项目，CNCF全名CLOUD NATIVE COMPUTING FOUNDATION，译名云原生计算基金会
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307161210568.png)
+![](/images/grpc/title.png)
 
 ## 特点
 
@@ -36,11 +37,7 @@ ProtocBuf官网：[Reference Guides | Protocol Buffers Documentation (protobuf.d
 
 基于HTTP/2的双向流和可插拔的认证授权
 
-
-
 虽然GRPC是语言无关的，但是本站的内容大部分都是go相关的，所以本文也会使用go作为主要语言进行讲解，后续用到的pb编译器和生成器如果是其他语言的使用者可以自行到Protobuf官网查找。为了方便起见，接下来会直接省略项目的创建过程。
-
-
 
 ::: tip
 
@@ -52,17 +49,16 @@ ProtocBuf官网：[Reference Guides | Protocol Buffers Documentation (protobuf.d
 
 [gRPC 系列——grpc 超时传递原理 | 小米信息部技术团队 (xiaomi-info.github.io)](https://xiaomi-info.github.io/2019/12/30/grpc-deadline/)
 
-[gRPC API 设计指南  | Google Cloud](https://cloud.google.com/apis/design?hl=zh-cn)
+[gRPC API 设计指南 | Google Cloud](https://cloud.google.com/apis/design?hl=zh-cn)
 
 :::
 
-
-
 ## 依赖安装
 
-先下载Protocol Buffer编译器，下载地址：[Releases · protocolbuffers/protobuf (github.com)](https://github.com/protocolbuffers/protobuf/releases)
+先下载Protocol
+Buffer编译器，下载地址：[Releases · protocolbuffers/protobuf (github.com)](https://github.com/protocolbuffers/protobuf/releases)
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307161253131.png)
+![](/images/grpc/proto_dl.png)
 
 根据自己的情况选择系统和版本即可，下载完成后需要将bin目录添加到环境变量中。
 
@@ -130,13 +126,13 @@ message HelloReq {
   string name = 1;
 
 
-// 响应
-message HelloRep {
-  string msg = 1;
-}
+  // 响应
+  message HelloRep {
+    string msg = 1;
+  }
 
-// 定义服务
-service SayHello {
+  // 定义服务
+  service SayHello {
   rpc Hello(HelloReq) returns (HelloRep) {}
 }
 ```
@@ -288,9 +284,8 @@ func main() {
 2023/07/16 16:26:51 received grpc resp: msg:"hello world! client"
 ```
 
-在本例中，客户端建立好连接后，在调用远程方法时就跟调用本地方法一样，直接访问`client`的`Hello`方法并获取结果，这就是一个最简单的GRPC例子，许多开源的框架也都是对这一个流程进行了封装。
-
-
+在本例中，客户端建立好连接后，在调用远程方法时就跟调用本地方法一样，直接访问`client`的`Hello`
+方法并获取结果，这就是一个最简单的GRPC例子，许多开源的框架也都是对这一个流程进行了封装。
 
 ## bufbuild
 
@@ -309,8 +304,6 @@ func main() {
 - 依赖管理
 
 有了这个工具可以相当方便的管理protobuf文件。
-
-
 
 文档中提供了相当多的安装方式，可以自己选择。如果本地安装了go环境的话，直接使用`go install`安装即可
 
@@ -366,17 +359,16 @@ $ buf generate
 
 完成后就可以看到生成的文件了，当然buf不止这点功能，其他的功能可以自己去文档学习。
 
-
-
 ## 流式RPC
 
 grpc的调用方式有两大类，一元RPC（Unary RPC）和流式RPC（Stream RPC）。Hello World中的示例就是一个典型的一元RPC。
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307162029789.png)
+![](/images/grpc/unary_rpc.png)
 
-一元rpc（或者叫普通rpc更能理解些，实在不知道怎么翻译这个`unary`了）用起来就跟普通的http一样，客户端请求，服务端返回数据，一问一答的方式。而流式RPC的请求和响应都 可以是流式的，如下图
+一元rpc（或者叫普通rpc更能理解些，实在不知道怎么翻译这个`unary`了）用起来就跟普通的http一样，客户端请求，服务端返回数据，一问一答的方式。而流式RPC的请求和响应都
+可以是流式的，如下图
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307162033200.png)
+![](/images/grpc/stream.png)
 
 使用流式请求时，只返回一次响应，客户端可以通过流来多次发送参数给服务端，服务端可以不需要像一元RPC那样等到所有参数都接收完毕再处理，具体处理逻辑可以由服务端决定。正常情况下，只有客户端可以主动关闭流式请求，一旦流被关闭，当前RPC请求也就会结束。
 
@@ -451,7 +443,8 @@ service MessageService {
 $ buf generate
 ```
 
-这里演示是消息服务，`receiveMessage`接收一个指定的用户名，类型为字符串，返回消息流，`sendMessage`接收消息流，返回成功发送的消息数目，类型为64位整型。接下来创建`server/message_service.go`，自己实现默认的代码生成的服务
+这里演示是消息服务，`receiveMessage`接收一个指定的用户名，类型为字符串，返回消息流，`sendMessage`
+接收消息流，返回成功发送的消息数目，类型为64位整型。接下来创建`server/message_service.go`，自己实现默认的代码生成的服务
 
 ```go
 package main
@@ -507,7 +500,10 @@ type ServerStream interface {
 }
 ```
 
-可以看到，流式RPC并不像一元RPC那样入参和返回值都可以很明确的体现在函数签名上，这些方法乍一看是看不出来入参和返回值是什么类型的，需要调用传入的Stream类型完成流式传输，接下来开始编写服务端的具体逻辑。在编写服务端逻辑的时候，用了一个`sync.map`来模拟消息队列，当客户端发送`ReceiveMessage`请求时，服务端通过流式响应不断返回客户端想要的消息，直到超时过后断开请求。当客户端请求`SendMessage`时，通过流式请求不断发送消息过来，服务端不断的将消息放入队列中，直到客户端主动断开请求，并返回给客户端消息发送条数。
+可以看到，流式RPC并不像一元RPC那样入参和返回值都可以很明确的体现在函数签名上，这些方法乍一看是看不出来入参和返回值是什么类型的，需要调用传入的Stream类型完成流式传输，接下来开始编写服务端的具体逻辑。在编写服务端逻辑的时候，用了一个`sync.map`
+来模拟消息队列，当客户端发送`ReceiveMessage`
+请求时，服务端通过流式响应不断返回客户端想要的消息，直到超时过后断开请求。当客户端请求`SendMessage`
+时，通过流式请求不断发送消息过来，服务端不断的将消息放入队列中，直到客户端主动断开请求，并返回给客户端消息发送条数。
 
 ```go
 package main
@@ -1006,9 +1002,11 @@ client 2023/07/19 17:26:32 end chat mike
 
 ## metadata
 
-metadata本质上是一个map，它的value是一个字符串切片，就类似http1的header一样，并且它在gRPC中扮演的角色也和http header类似，提供一些本次RPC调用的一些信息，同时metadata的生命周期跟随着一次rpc调用的整个过程，调用结束，它的生命周期也就结束了。
+metadata本质上是一个map，它的value是一个字符串切片，就类似http1的header一样，并且它在gRPC中扮演的角色也和http
+header类似，提供一些本次RPC调用的一些信息，同时metadata的生命周期跟随着一次rpc调用的整个过程，调用结束，它的生命周期也就结束了。
 
-它在gRPC中主要通过`context`来进行传输和存储，不过gRPC提供了`metadata`包，里面有相当多的方便函数来简化操作，不需要我们去手动操作`context `。metadata在gRPC中对应的类型为`metadata.MD`，如下所示。
+它在gRPC中主要通过`context`来进行传输和存储，不过gRPC提供了`metadata`
+包，里面有相当多的方便函数来简化操作，不需要我们去手动操作`context `。metadata在gRPC中对应的类型为`metadata.MD`，如下所示。
 
 ```go
 // MD is a mapping from metadata keys to values. Users should use the following
@@ -1120,7 +1118,8 @@ func (m *ChatService) Chat(chatServer message.ChatService_ChatServer) error {
 func SendHeader(ctx context.Context, md metadata.MD) error
 ```
 
-该函数最多调用一次，在一些导致header被自动发送的事件发生后使用则不会生效。在一些情况下，如果不想直接发送header，这时可以使用`grpc.SetHeader`函数。
+该函数最多调用一次，在一些导致header被自动发送的事件发生后使用则不会生效。在一些情况下，如果不想直接发送header，这时可以使用`grpc.SetHeader`
+函数。
 
 ```go
 func SetHeader(ctx context.Context, md metadata.MD) error 
@@ -1197,7 +1196,8 @@ trailer := Stream.Trailer()
 
 **发送metadata**
 
-客户端想要发送metadata很简单，之前提到过metadata的表现形式就是valueContext，将metadata结合到context中，然后在请求的时候把context传入即可，`metadata`包提供了两个函数来方便构造context。
+客户端想要发送metadata很简单，之前提到过metadata的表现形式就是valueContext，将metadata结合到context中，然后在请求的时候把context传入即可，`metadata`
+包提供了两个函数来方便构造context。
 
 ```go
 func NewOutgoingContext(ctx context.Context, md MD) context.Context 
@@ -1237,9 +1237,7 @@ stream,err := client.StreamRPC(appendContext)
 
 gRPC的拦截器就类似于gin中的Middleware一样，都是为了在请求前或者请求后做一些特殊的工作并且不影响到本身的业务逻辑。在gRPC中，拦截器有两大类，服务端拦截器和客户端拦截器，根据请求类型来分则有一元RPC拦截器，和流式RPC拦截器，下图
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307201503603.png)
-
-
+![](/images/grpc/interceptor.png)
 
 为了能更好的理解拦截器，下面会根据一个非常简单的示例来进行描述。
 
@@ -1380,7 +1378,8 @@ func StreamPersonLogInterceptor(srv interface{}, stream grpc.ServerStream, info 
 }
 ```
 
-对于流式RPC而言，拦截器拦截的是每一个流对象的`Send`和`Recve`方法被调用的时机，如果拦截器返回error，并不会导致本次RPC请求的结束，仅仅只是代表着本次`send `或`recv`出现了错误。
+对于流式RPC而言，拦截器拦截的是每一个流对象的`Send`和`Recve`
+方法被调用的时机，如果拦截器返回error，并不会导致本次RPC请求的结束，仅仅只是代表着本次`send `或`recv`出现了错误。
 
 **使用拦截器**
 
@@ -1631,11 +1630,13 @@ client 2023/07/20 17:27:57 after unary request path: /person/getPersonInfotream 
 client 2023/07/20 17:27:57 <nil> rpc error: code = Unknown desc = person not found
 ```
 
-可以看到两边的输出都符合预期，起到了拦截的效果，这个案例只是一个很简单的示例，利用gRPC的拦截器可以做很多事情比如授权，日志，监控等等其他功能，可以选择自己造轮子，也可以选择使用开源社区现成的轮子，[gRPC Ecosystem](https://github.com/grpc-ecosystem)专门收集了一系列开源的gRPC拦截器中间件，地址：[grpc-ecosystem/go-grpc-middleware](https://github.com/grpc-ecosystem/go-grpc-middleware)。
+可以看到两边的输出都符合预期，起到了拦截的效果，这个案例只是一个很简单的示例，利用gRPC的拦截器可以做很多事情比如授权，日志，监控等等其他功能，可以选择自己造轮子，也可以选择使用开源社区现成的轮子，[gRPC Ecosystem](https://github.com/grpc-ecosystem)
+专门收集了一系列开源的gRPC拦截器中间件，地址：[grpc-ecosystem/go-grpc-middleware](https://github.com/grpc-ecosystem/go-grpc-middleware)。
 
 ## 错误处理
 
-在开始之前先来看一个例子，在上一个拦截器案例中，如果用户查询不到，会向客户端返回错误`person not found`，那么问题来了，客户端能不能根据返回的错误做特殊的处理呢？接下来试一试，在客户端代码中，尝试使用`errors.Is`来判断错误。
+在开始之前先来看一个例子，在上一个拦截器案例中，如果用户查询不到，会向客户端返回错误`person not found`
+，那么问题来了，客户端能不能根据返回的错误做特殊的处理呢？接下来试一试，在客户端代码中，尝试使用`errors.Is`来判断错误。
 
 ```go
 func main() {
@@ -1702,7 +1703,9 @@ if errors.Is(err, person.PersonNotFoundErr) {
 }
 ```
 
-为此，gRPC提供了`status`包来解决这类问题，这也是为什么客户端接收到的错误会有code和desc字段的原因，因为gRPC实际上返回给客户端的是一个`Status`，其具体类型如下，可以看出也是一个protobuf定义的message。
+为此，gRPC提供了`status`
+包来解决这类问题，这也是为什么客户端接收到的错误会有code和desc字段的原因，因为gRPC实际上返回给客户端的是一个`Status`
+，其具体类型如下，可以看出也是一个protobuf定义的message。
 
 ```go
 type Status struct {
@@ -1734,11 +1737,10 @@ message Status {
 }
 ```
 
-
-
 ### 错误码
 
-Status结构体中的Code，是一种类似Http Status形式的存在，用于表示当前rpc请求的状态，gRPC定义了16个code位于`grpc/codes`，涵盖了大部分的场景，分别如下所示
+Status结构体中的Code，是一种类似Http Status形式的存在，用于表示当前rpc请求的状态，gRPC定义了16个code位于`grpc/codes`
+，涵盖了大部分的场景，分别如下所示
 
 ```go
 // A Code is an unsigned 32-bit error code as defined in the gRPC spec.
@@ -1852,7 +1854,8 @@ func (p *PersonService) GetPersonInfo(ctx context.Context, name *wrapperspb.Stri
 }
 ```
 
-在此之前，服务端返回的所有的code都是unknown，现在经过修改后有了更加明确的语义。于是在客户端就可以通过`status.FromError`或者使用下面的函数从error中获取status，从而根据不同的code来做出响应的处理
+在此之前，服务端返回的所有的code都是unknown，现在经过修改后有了更加明确的语义。于是在客户端就可以通过`status.FromError`
+或者使用下面的函数从error中获取status，从而根据不同的code来做出响应的处理
 
 ```go
 func FromError(err error) (s *Status, ok bool)
@@ -1874,7 +1877,8 @@ case codes.InvalidArgument:
 }
 ```
 
-不过尽管grpc的code已经尽可能的涵盖了一些通用场景，不过有时候还是无法满足开发人员的需求，这个时候就可以使用Status中的Details字段，并且它还是一个切片，可以容纳多个信息。通过`Status.WithDetails`来传入一些自定义的信息
+不过尽管grpc的code已经尽可能的涵盖了一些通用场景，不过有时候还是无法满足开发人员的需求，这个时候就可以使用Status中的Details字段，并且它还是一个切片，可以容纳多个信息。通过`Status.WithDetails`
+来传入一些自定义的信息
 
 ```go
 func (s *Status) WithDetails(details ...proto.Message) (*Status, error)
@@ -1915,11 +1919,12 @@ message DebugInfo {
   string detail = 2;
 }
 
-...
-...
+    ...
+    ...
 ```
 
-更多的例子可以前往[googleapis/google/rpc/error_details.proto at master · googleapis/googleapis (github.com)](https://github.com/googleapis/googleapis/blob/master/google/rpc/error_details.proto)查看。如果需要可以通过下面的代码来引入。
+更多的例子可以前往[googleapis/google/rpc/error_details.proto at master · googleapis/googleapis (github.com)](https://github.com/googleapis/googleapis/blob/master/google/rpc/error_details.proto)
+查看。如果需要可以通过下面的代码来引入。
 
 ```go
 import "google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -1940,19 +1945,22 @@ notFound := status.Newf(codes.NotFound, "person not found: %s", name)
 
 ## 超时控制
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307261057987.png)
+![](/images/grpc/chain.png)
 
 在大多数情况下，通常不会只有一个服务，并且可能上游有很多服务，下游也有很多服务。客户端发起一次请求，从最上游的服务到最下游，就形成了一个服务调用链，就像图中那样，或许可能比图中的还要长。
 
-如此长的一个调用链，如果其中一个服务的逻辑处理需要花费很长时间，就会导致上游一直处于等待状态。为了减少不必要的资源浪费，因此有必要引入超时这一机制，这样一来最上游调用时传入的超时时间，便是整个调用链所允许的执行花费最大时间。而gRPC可以跨进程跨语言传递超时，它把一些需要跨进程传递的数据放在了HTTP2的`HEADERS Frame`帧中，如下图
+如此长的一个调用链，如果其中一个服务的逻辑处理需要花费很长时间，就会导致上游一直处于等待状态。为了减少不必要的资源浪费，因此有必要引入超时这一机制，这样一来最上游调用时传入的超时时间，便是整个调用链所允许的执行花费最大时间。而gRPC可以跨进程跨语言传递超时，它把一些需要跨进程传递的数据放在了HTTP2的`HEADERS Frame`
+帧中，如下图
 
-![](https://xiaomi-info.github.io/2019/12/30/grpc-deadline/2019-12-30-17-53-41.png)
+![](/images/gprc/http2.png)
 
-gRPC请求中的超时数据对应着`HEADERS Frame`中的`grpc-timeout`字段。需要注意的是，并不是所有的gRPC库都实现了这一超时传递机制，不过`gRPC-go`肯定是支持的，如果使用其他语言的库，并且使用了这一特性，则需要额外留意这一点。
+gRPC请求中的超时数据对应着`HEADERS Frame`中的`grpc-timeout`
+字段。需要注意的是，并不是所有的gRPC库都实现了这一超时传递机制，不过`gRPC-go`肯定是支持的，如果使用其他语言的库，并且使用了这一特性，则需要额外留意这一点。
 
 ### 连接超时
 
-gRPC客户端在向服务端建立连接时，默认是异步建立的，如果连接建立失败只会返回一个空的Client。如果想要使连接同步进行，则可以使用`grpc.WithBlock()`来使连接未建立成功时阻塞等待。
+gRPC客户端在向服务端建立连接时，默认是异步建立的，如果连接建立失败只会返回一个空的Client。如果想要使连接同步进行，则可以使用`grpc.WithBlock()`
+来使连接未建立成功时阻塞等待。
 
 ```go
 dial, err := grpc.Dial("localhost:9091",
@@ -2012,17 +2020,13 @@ case codes.DeadlineExceeded:
 
 经过gRPC的处理，超时时间被传递到了服务端，在传输过程中它以在帧字段的形式存在中，在go里面它以context的形式存在，就此在整个链路中进行传递。在链路传递过程中，不建议去修改超时时间，具体在请求时设置多长的超时时间，这应该是最上游应该考虑的问题。
 
-
-
 ## 认证授权
 
 在微服务领域中，每一个服务都需要对请求验证用户身份和权限，如果和单体应用一样，每个服务都要自己实现一套认证逻辑，这显然是不太现实的。所以需要一个统一的认证与授权服务，而常见的解决方案是使用OAuth2，分布式Session，和JWT，这其中，OAuth2使用最为广泛，一度已经成为了业界标准，OAuth2最常用的令牌类型就是是JWT。下面是一张OAuth2授权码模式的流程图，基本流程如图所示。
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202307281752290.png)
+![](/images/grpc/auth.png)
 
 ## 安全传输
-
-
 
 ## 服务注册与发现
 
@@ -2082,7 +2086,9 @@ scheme  user information     host     port                  query         fragme
 dns:example.grpc.com:8080
 ```
 
-除此之外gRPC还默认支持Unix domain sockets，而对于其他的方式，需要我们根据gRPC的拓展来进行自定义实现，为此需要实现一个自定义的解析器`resolver.Resovler`，resolver负责监控目标地址和服务配置的更新。
+除此之外gRPC还默认支持Unix domain
+sockets，而对于其他的方式，需要我们根据gRPC的拓展来进行自定义实现，为此需要实现一个自定义的解析器`resolver.Resovler`
+，resolver负责监控目标地址和服务配置的更新。
 
 ```go
 type Resolver interface {
@@ -2101,13 +2107,13 @@ type Builder interface {
 }
 ```
 
-Builder的Scheme方法返回它负责解析的Scheme类型，例如默认的dnsBuilder它返回的就是`dns`，构造器在初始化时应该使用`resolver.Register`注册到全局Builder中，又或者作为options，使用`grpc.WithResolver`传入ClientConn内部，后者的优先级高于前者。
+Builder的Scheme方法返回它负责解析的Scheme类型，例如默认的dnsBuilder它返回的就是`dns`
+，构造器在初始化时应该使用`resolver.Register`注册到全局Builder中，又或者作为options，使用`grpc.WithResolver`
+传入ClientConn内部，后者的优先级高于前者。
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202308261926215.png)
+![](/images/grpc/discover.png)
 
 上图简单描述了一下resolver的工作流程，接下来就演示如何自定义resolver
-
-
 
 ### 自定义服务解析
 
@@ -2234,7 +2240,9 @@ func main() {
 }
 ```
 
-正常来说，流程应该是服务端向注册中心注册自身服务，然后客户端从注册中心中获取服务列表然后进行匹配，这里传入的map就是一个模拟的注册中心，数据是静态的就省略掉了服务注册这一环节，只剩下服务发现。客户端使用的target为`hello:myworld`，hello是自定义的scheme，myworld就是服务名，经过自定义的解析器解析后，就得到了127.0.0.1:8080的真实地址，在实际情况中，为了做负载均衡，一个服务名可能会匹配多个真实地址，所以这就是为什么服务名对应的是一个切片，这里开两个服务端，占用不同的端口，负载均衡策略为轮询，服务端输出分别如下，通过请求时间可以看到负载均衡策略确实是在起作用的，如果不指定策略的话默认只选取第一个服务。
+正常来说，流程应该是服务端向注册中心注册自身服务，然后客户端从注册中心中获取服务列表然后进行匹配，这里传入的map就是一个模拟的注册中心，数据是静态的就省略掉了服务注册这一环节，只剩下服务发现。客户端使用的target为`hello:myworld`
+，hello是自定义的scheme，myworld就是服务名，经过自定义的解析器解析后，就得到了127.0.0.1:
+8080的真实地址，在实际情况中，为了做负载均衡，一个服务名可能会匹配多个真实地址，所以这就是为什么服务名对应的是一个切片，这里开两个服务端，占用不同的端口，负载均衡策略为轮询，服务端输出分别如下，通过请求时间可以看到负载均衡策略确实是在起作用的，如果不指定策略的话默认只选取第一个服务。
 
 ```
 // server01
@@ -2254,13 +2262,12 @@ func main() {
 
 注册中心其实就是存放着的就是服务注册名与真实服务地址的映射集合，只要是能够进行数据存储的中间件都可以满足条件，甚至拿mysql来做注册中心也不是不可以（应该没有人会这么做）。一般来说注册中心都是KV存储的，redis就是一个很不错的选择，但如果使用redis来做注册中心的话，我们就需要自行实现很多逻辑，比如服务的心跳检查，服务下线等，服务调度等等，还是相当麻烦的，虽然redis在这方面有一定的应用但是较少。正所谓专业的事情交给专业的人做，这方面做的比较出名的有很多：Zookeeper，Consul，Eureka，ETCD，Nacos等。
 
-可以前往[注册中心对比和选型：Zookeeper、Eureka、Nacos、Consul和ETCD - 掘金 (juejin.cn)](https://juejin.cn/post/7068065361312088095)来了解这几个中间件的一些区别。
+可以前往[注册中心对比和选型：Zookeeper、Eureka、Nacos、Consul和ETCD - 掘金 (juejin.cn)](https://juejin.cn/post/7068065361312088095)
+来了解这几个中间件的一些区别。
 
 ### 结合consul
+
 结合consul使用的案例可以前往[consul](community/mirco/consul.mdl#服务注册与发现)
-
-
-
 
 ## 负载均衡
 

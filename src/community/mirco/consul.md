@@ -1,14 +1,12 @@
 # Consul
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202308251536825.png)
+![](/images/consul/cover.png)
 
->consul是一个能够让团队在服务与跨预置和多云环境中安全管理网络连接的解决方案，它提供了服务发现，服务网格，流量治理，网络基础设施自动更新等一系列功能。
+> consul是一个能够让团队在服务与跨预置和多云环境中安全管理网络连接的解决方案，它提供了服务发现，服务网格，流量治理，网络基础设施自动更新等一系列功能。
 
 官方文档：[Consul by HashiCorp](https://www.consul.io/)
 
 开源地址：[hashicorp/consul](https://github.com/hashicorp/consul)
-
-
 
 Consul是HashiCorp公司开源的一款服务发现与注册工具，采用Raft选举算法，工具本身使用Go语言进行开发，因此部署起来十分的轻便。Consul总共有以下特点：
 
@@ -20,8 +18,6 @@ Consul是HashiCorp公司开源的一款服务发现与注册工具，采用Raft�
 
 实际上consul能做的事情不止服务发现，还可以做分布式配置中心，同类型的开源工具也有很多，比如zookeeper，nacos，这里就不再做过多的介绍。
 
-
-
 ## 安装
 
 对于Ubuntu而言的话，执行下面的命令使用apt安装即可
@@ -32,7 +28,8 @@ $ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https:
 $ sudo apt update && sudo apt install consul
 ```
 
-或者也可以在官网下载[Install Consul](https://developer.hashicorp.com/consul/downloads)对应的安装包，由于consul是由go开发的，安装包本身也就只有一个二进制可执行文件，安装起来也相当的方便，安装成功后，执行如下命令查看版本。
+或者也可以在官网下载[Install Consul](https://developer.hashicorp.com/consul/downloads)
+对应的安装包，由于consul是由go开发的，安装包本身也就只有一个二进制可执行文件，安装起来也相当的方便，安装成功后，执行如下命令查看版本。
 
 ```sh
 $ consul version
@@ -46,8 +43,6 @@ Revision e0ab4d29
 Build Date 2023-08-05T21:56:29Z
 Protocol 2 spoken by default, understands 2 to 3 (agent will automatically use protocol >2 when speaking to compatible agents)
 ```
-
-
 
 ## 快速开始
 
@@ -112,7 +107,8 @@ $ consul agent -dev -bind=192.168.48.141 -data-dir=/tmp/consul -ui -node=dev01
 
 ::: tip
 
-关于更多的agent参数释义，前往[Agents - CLI Reference | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/docs/agent/config/cli-flags#usage)，需要注意的是有些参数只有企业版能用。
+关于更多的agent参数释义，前往[Agents - CLI Reference | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/docs/agent/config/cli-flags#usage)
+，需要注意的是有些参数只有企业版能用。
 
 :::
 
@@ -136,38 +132,37 @@ consul force-leave
 
 也可以`ctrl+c`，让consul agent 优雅退出。
 
-
-
 ## 概念
 
-![](https://developer.hashicorp.com/_next/image?url=https%3A%2F%2Fcontent.hashicorp.com%2Fapi%2Fassets%3Fproduct%3Dconsul%26version%3Drefs%252Fheads%252Frelease%252F1.16.x%26asset%3Dwebsite%252Fpublic%252Fimg%252Fconsul-arch%252Fconsul-arch-overview-control-plane.svg%26width%3D960%26height%3D540&w=1920&q=75)
+![](/images/consul/overview.svg)
 
 这是一张consul集群的示意图，图中分为了两部分，控制面和数据面。consul只负责控制面，分为服务集群和客户端，服务集群中又分为追随者和领导者，总体而言，图中consul集群就构成了一个数据中心。下面对一些术语进行讲解
 
 - Agent（代理）：或者称为节点更合适，每一个agent都是一个长时间运行的守护进程，它们对外暴露HTTP和DNS接口，负责健康检查和服务同步。
 - Server（服务代理）：作为一个consul server，它的职责主要有参与Raft选举，维护集群状态，响应查询，与其他数据中心交换数据，以及向领导者和其他数据中心转发查询。
-- Client（客户代理）：client相对server来说是无状态的，它不参与Raft选举，所做的事情仅仅只是将所有的请求转发给server，它唯一参与的与后台有关的事情就是局域网流言转发（LAN gossip pool）。
-- Leader（领导者）：leader是所有server的领导，而且领导只能有一个，leader是通过Raft选举算法进行选举的，每一个leader有自己的任期，在任期内，其他的server收到了不管什么请求都要告诉leader，所以leader的数据是最及时最新的。
+- Client（客户代理）：client相对server来说是无状态的，它不参与Raft选举，所做的事情仅仅只是将所有的请求转发给server，它唯一参与的与后台有关的事情就是局域网流言转发（LAN
+  gossip pool）。
+-
+Leader（领导者）：leader是所有server的领导，而且领导只能有一个，leader是通过Raft选举算法进行选举的，每一个leader有自己的任期，在任期内，其他的server收到了不管什么请求都要告诉leader，所以leader的数据是最及时最新的。
 - Gossi（流言）：Consul是基于Serf（该公司其下的另一个产品）而构建的，它使用gossip协议，该协议专用于节点间的随机通信，类似UDP，consul使用此协议来在服务集群间进行互相通知。
-- Data Center（数据中心）：一个局域网内的consul集群被称为一个数据中心，consul支持多数据中心，多数据中心的沟通方式就是WAN gossip。
+- Data Center（数据中心）：一个局域网内的consul集群被称为一个数据中心，consul支持多数据中心，多数据中心的沟通方式就是WAN
+  gossip。
 
 ::: tip
 
-更多词汇和术语可以前往[Glossary | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/docs/install/glossary#consul-vocabulary)进行了解。
+更多词汇和术语可以前往[Glossary | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/docs/install/glossary#consul-vocabulary)
+进行了解。
 
 :::
 
-
-
-在consul集群中，server的数量应该严格控制，因为它们直接参与到LAN gossip和WAN gossip，raft选举，并且要存储数据，server越多，通信成本越高。而client的数量多一点没什么问题，它只负责转发，不参与选举，占用资源很低，在图中的集群中，各个服务通过client将自身注册到server中，如果有server挂了的话，client会自行寻找其他可用的server。
-
-
+在consul集群中，server的数量应该严格控制，因为它们直接参与到LAN gossip和WAN
+gossip，raft选举，并且要存储数据，server越多，通信成本越高。而client的数量多一点没什么问题，它只负责转发，不参与选举，占用资源很低，在图中的集群中，各个服务通过client将自身注册到server中，如果有server挂了的话，client会自行寻找其他可用的server。
 
 ## 集群搭建示例
 
 下面搭建一个简单的consul多节点集群示例，先准备四台虚拟机
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202308251754483.png)
+![](/images/consul/nodes.png)
 
 四台虚拟机中，三个server，一个client，官方建议server的数量最好是奇数，并且最好大于等于三个。这里将vm00-vm02作为server，vm03作为client，
 
@@ -209,7 +204,10 @@ consul agent -bind=192.168.48.140 -client=0.0.0.0 -data-dir=/tmp/consul/ -node=a
 $ consul join 192.168.48.138
 ```
 
-join完成后，各个节点都知晓了对方的存在，由于vm00指定了bootstrap模式，所以它就是默认的leader，如果没有指定bootstrap模式，所有节点在join时指定的节点为默认leader，**在leader没有选举出来之前，集群无法正常工作，访问web界面会返回500，一些命令也无法正常工作**。如果集群中有节点制定了bootstrap模式，那么集群中其他节点就不应该再有其他节点指定bootstrap模式，同时其他节点也不应该再使用`bootstrap-expect`参数，如果使用了会自动禁用。
+join完成后，各个节点都知晓了对方的存在，由于vm00指定了bootstrap模式，所以它就是默认的leader，如果没有指定bootstrap模式，所有节点在join时指定的节点为默认leader，
+**在leader没有选举出来之前，集群无法正常工作，访问web界面会返回500，一些命令也无法正常工作**
+。如果集群中有节点制定了bootstrap模式，那么集群中其他节点就不应该再有其他节点指定bootstrap模式，同时其他节点也不应该再使用`bootstrap-expect`
+参数，如果使用了会自动禁用。
 
 这时在leader节点上（实际上这时无论哪个节点都可以查看）运行查看data center的成员信息，运行如下命令
 
@@ -262,13 +260,11 @@ $ curl http://192.168.48.140:8500/v1/kv/sys_confg
 
 事实上，consul提供的服务发现与注册功能，通过gossip协议广播给其他节点，并且当任意一个节点加入当前数据中心时，所有的节点都会感知到此变化。
 
-
-
 ## 多数据中心搭建示例
 
 准备五台虚拟机，vm00-vm02是上一个示例的集群，属于dc1数据中心，不去动它，vm03-vm04属于dc2数据中心，数据中心在agent启动时，默认为dc1。
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202308261221865.png)
+![](/images/consul/datacenters.png)
 
 ::: tip
 
@@ -305,7 +301,8 @@ agent04  192.168.48.141:8301  alive   server  1.16.1  2         dc2  default    
 agent05  192.168.48.142:8301  alive   server  1.16.1  2         dc2  default    <all>
 ```
 
-可以看到DC字段不同，因为这里是虚拟机演示，所以都是在同一个网段中，现实中两个数据中心可能是异地的服务器集群。接下来让dc1的任意一个节点join到dc2的任意一个节点，这里让vm01 join vm03
+可以看到DC字段不同，因为这里是虚拟机演示，所以都是在同一个网段中，现实中两个数据中心可能是异地的服务器集群。接下来让dc1的任意一个节点join到dc2的任意一个节点，这里让vm01
+join vm03
 
 ```sh
 $ consul join -wan 192.168.48.141
@@ -337,7 +334,7 @@ $ consul kv put name consul
 Success! Data written to: name
 ```
 
- 在vm01节点尝试读取数据，可以看到同一数据中心的数据是同步的
+在vm01节点尝试读取数据，可以看到同一数据中心的数据是同步的
 
 ```sh
 $ consul kv get name
@@ -353,13 +350,13 @@ Error! No key exists at: name
 
 如果想要多数据中心数据同步的话，可以了解[hashicorp/consul-replicate: Consul cross-DC KV replication daemon](https://github.com/hashicorp/consul-replicate)。
 
-
-
 ## 服务注册与发现
 
-![](https://www.datocms-assets.com/2885/1531780995-consul-registering-services.png)
+![](/images/consul/discover.png)
 
-consul服务注册的方式有两种，配置文件注册和API注册。为了方便进行测试，这里事先准备一个Hello World服务（gRPC文章中的示例），部署两份，分别在不同的位置。配置文件注册的方式可以前往[Register external services with Consul service discovery | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/tutorials/developer-discovery/service-registration-external-services#start-the-consul-agent)了解，这里只介绍通过HTTP API进行注册。
+consul服务注册的方式有两种，配置文件注册和API注册。为了方便进行测试，这里事先准备一个Hello
+World服务（gRPC文章中的示例），部署两份，分别在不同的位置。配置文件注册的方式可以前往[Register external services with Consul service discovery | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/tutorials/developer-discovery/service-registration-external-services#start-the-consul-agent)
+了解，这里只介绍通过HTTP API进行注册。
 
 ::: tip
 
@@ -367,7 +364,9 @@ consul服务注册的方式有两种，配置文件注册和API注册。为了�
 
 :::
 
-consul提供了HTTP API的SDK，其他语言的SDK前往[Libraries and SDKs - HTTP API | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/api-docs/libraries-and-sdks)了解。这里下载go的依赖
+consul提供了HTTP
+API的SDK，其他语言的SDK前往[Libraries and SDKs - HTTP API | Consul | HashiCorp Developer](https://developer.hashicorp.com/consul/api-docs/libraries-and-sdks)
+了解。这里下载go的依赖
 
 ```sh
 go get github.com/hashicorp/consul/api

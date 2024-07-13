@@ -40,7 +40,7 @@ func main() {
 
 ## 描点
 
-![](/gg/points.png =400x400)
+![](/images/gg/points.png =400x400)
 
 ```go
 func TestDot(t *testing.T) {
@@ -58,7 +58,7 @@ func TestDot(t *testing.T) {
 
 ## 画线
 
-![](/gg/lines.png =400x400)
+![](/images/gg/lines.png =400x400)
 
 ```go
 func TestLines(t *testing.T) {

@@ -1,6 +1,6 @@
 # Kong
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202308251538573.png)
+![](/images/kong/cover.png)
 
 文档地址：[(konghq.com)](https://konghq.com/)
 

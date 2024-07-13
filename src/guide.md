@@ -4,7 +4,7 @@
 
 Go语言诞生于2007年9月30日，由三位大佬共同创造，他们分别是Ken Thompson(贝尔实验室成员，Unix系统系统先驱，B语言创始人，C语言创始人)，Rob Pike （贝尔实验室成员，Unix系统先驱，UTF-8发明者之一，Go语言设计领头人），Robert Griesemer(JS V8引擎研发者，三人之中最年轻)，对了还有一位是领头人的妻子Renee French，她主导设计了Go语言的Logo，就是一只憨憨的土拨鼠，经过了三年的初步设计与研发，Go语言由谷歌公司于2009年11月10日正式以`BSD-3-Clause`协议开源，并推出了最初的版本，每半年发布一个二级版本，被称为21世纪的C语言。
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202403301810401.png)
+![](/images/eggs.png)
 
 ::: tip
 
@@ -42,7 +42,7 @@ Github仓库：[golang/go: The Go programming language (github.com)](https://git
 
 Go语言下载：[Downloads - The Go Programming Language](https://go.dev/dl/)
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202311052223852.png)
+![](/images/download.png)
 
 Stable Version指的是目前处于维护状态的两个稳定版本，Archived Version指的是不再维护的历史版本，关于历史信息可以前往[更新日志](/release.md)了解更多关于维护规则以及历史版本的信息。
 
