@@ -157,7 +157,7 @@ func Ping(ctx *gin.Context) {
 
 运行程序，访问`127.0.0.1/swagger/index.html`，界面如下
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202308132014682.png)
+![](/images/swag/example.png)
 
 如此便运行起了一个基本的接口文档。接下来除了一些特别要注意的点，基本上和其他语言使用起来没有什么太大的差别。
 
@@ -282,11 +282,11 @@ type Foo struct {
 // @name Authorization
 ```
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202310171234737.png)
+![](/images/swag/auth.png)
 
 本质上这只是一个apikey，如果你传入的是bearer token的话，需要自己手动加上Bearer前缀。
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202310172158864.png)
+![](/images/swag/auth2.png)
 
 
 

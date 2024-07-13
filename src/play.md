@@ -6,11 +6,11 @@ Playground开源地址：[go-playground (github.com)](https://github.com/golang/
 
 官方Playground地址：[Go Playground - The Go Programming Language](https://go.dev/play/)
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202312232013851.png)
+![](/images/play.png)
 
 第三方Playground地址：[The Go Play Space](https://goplay.space/)
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202312232013414.png)
+![](/images/goplay.png)
 
 由于它是一个开源项目，你也可以选择在自己的服务器上搭建个人playground，安装方法见官方文档。Playground服务器会将上传的代码段存储到谷歌云存储，所以不建议分享敏感代码。对于国内用户，建议使用第二个因为不需要魔法上网，但它依旧是基于官方的Playground服务器，代码也会同步到官方那边的服务器里面。
 

@@ -344,7 +344,7 @@ File | Settings | Languages & Frameworks | Protocol Buffers
 
 在`Import Paths`中手动添加扫描路径，这个扫描路径应该跟你编译时指定的路径是一致的。
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202312191556376.png)
+![](/images/protoc/setting.png)
 
 :::
 
@@ -478,7 +478,7 @@ option optimize_for = SPEED;
 
 编译也就是代码生成，上面只是定义了`protobuf`文件，实际使用时需要将其转化为某种特定的语言源代码才能使用，我们通过`protoc`编译器来完成此时，它支持多种语言。
 
-![](https://public-1308755698.cos.ap-chongqing.myqcloud.com//img/202312191617613.png)
+![](/images/protoc/languages.png)
 
 
 
