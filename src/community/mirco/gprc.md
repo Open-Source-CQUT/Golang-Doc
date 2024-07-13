@@ -1952,7 +1952,7 @@ notFound := status.Newf(codes.NotFound, "person not found: %s", name)
 如此长的一个调用链，如果其中一个服务的逻辑处理需要花费很长时间，就会导致上游一直处于等待状态。为了减少不必要的资源浪费，因此有必要引入超时这一机制，这样一来最上游调用时传入的超时时间，便是整个调用链所允许的执行花费最大时间。而gRPC可以跨进程跨语言传递超时，它把一些需要跨进程传递的数据放在了HTTP2的`HEADERS Frame`
 帧中，如下图
 
-![](/images/gprc/http2.png)
+![](/images/grpc/http2.png)
 
 gRPC请求中的超时数据对应着`HEADERS Frame`中的`grpc-timeout`
 字段。需要注意的是，并不是所有的gRPC库都实现了这一超时传递机制，不过`gRPC-go`肯定是支持的，如果使用其他语言的库，并且使用了这一特性，则需要额外留意这一点。
