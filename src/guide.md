@@ -122,8 +122,6 @@ go/
 |	|--bin/
 |	|
 |	|--libs/
-|	|
-|	|--pkg/
 |	
 |--cache/
 |
@@ -163,6 +161,12 @@ GOTMPDIR=go/temp
 2. vscode：无需付费，万能的编辑器，有插件加持什么语言都能写
 
 如果有其它的编辑器更符合自身的使用习惯也都可以用，用什么编辑器倒无所谓，如果只是写一些简短的练习代码，可以试试官方提供的[goplay](https://go.dev/play/)，可以在线运行go代码。
+
+::: tip
+
+如果你正在使用JetBrains Toolbox，可以尝试我写的一个命令行工具[AutoToolBox](https://github.com/246859/AutoToolBox)，可以为Toolbox生成windows右键菜单，它是用Go语言编写的，也可以给入门学习带来一定参考。
+
+:::
 
 
 
