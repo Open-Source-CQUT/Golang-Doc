@@ -21,6 +21,7 @@
 | buffalo | 可以简单的构建全栈项目web框架                      | https://github.com/gobuffalo/buffalo |
 | hertz   | 具有高性能和强扩展性的微服务 HTTP 框架（字节开源） | https://github.com/cloudwego/hertz   |
 | dotweb  | 一个简单的微型web框架                              | https://github.com/devfeel/dotweb    |
+| fiber   | Node.js Express风格的Web框架                       | https://github.com/gofiber/fiber     |
 
 
 
@@ -84,7 +85,7 @@
 
 
 
-### 数据转换
+### 数据处理
 
 | 名称         | 描述                           | 仓库                                      |
 | ------------ | ------------------------------ | ----------------------------------------- |
@@ -93,6 +94,9 @@
 | deepcopy     | 深度复制                       | https://github.com/mohae/deepcopy         |
 | copier       | 可以在结构体之间同名字段复制值 | https://github.com/jinzhu/copier          |
 | go-pinyin    | 汉字转拼音                     | https://github.com/mozillazg/go-pinyin    |
+| go-streams   | 流式数据处理                   | https://github.com/reugn/go-streams       |
+| stream       | 流式处理                       | https://github.com/xyctruth/stream        |
+| go-humanize  | 将数据转换成人类可以阅读的格式 | https://github.com/dustin/go-humanize     |
 
 
 
@@ -103,6 +107,7 @@
 | go-playground/validator/v10 | 数据验证器               | https://github.com/go-playground/validator |
 | go-cmp                      | 谷歌开源的用于比较值的库 | https://github.com/google/go-cmp           |
 | ozzo-validation             | 基于规则的数据校验库     | https://github.com/go-ozzo/ozzo-validation |
+| go-tagexpr                  | 结构体tag验证库          | https://github.com/bytedance/go-tagexpr    |
 
 
 
@@ -117,14 +122,21 @@
 | deque             | 高性能双端队列的实现             | https://github.com/edwingeng/deque           |
 | concurrent-map    | 并发安全的分片map实现            | https://github.com/orcaman/concurrent-map    |
 | samber/lo         | Lodash风格的数据处理库，支持泛型 | https://github.com/samber/lo                 |
+| google/btree      | 谷歌实现的BTree库，支持泛型      | https://github.com/google/btree              |
+| gostl             | 像C++STL一样的数据结构库         | https://github.com/liyue201/gostl            |
+
+
 
 ### 数学计算
 
-| 名称    | 描述                     | 仓库                                    |
-| ------- | ------------------------ | --------------------------------------- |
-| gonum   | 类比numpy                | https://github.com/gonum/gonum          |
-| decimal | 高精度浮点数操作库       | https://github.com/shopspring/decimal   |
-| crunch  | 一个简化字节和位操作的库 | https://github.com/superwhiskers/crunch |
+| 名称        | 描述                     | 仓库                                    |
+| ----------- | ------------------------ | --------------------------------------- |
+| gonum       | 类比numpy                | https://github.com/gonum/gonum          |
+| decimal     | 高精度浮点数操作库       | https://github.com/shopspring/decimal   |
+| crunch      | 一个简化字节和位操作的库 | https://github.com/superwhiskers/crunch |
+| math-engine | 数学表达式解析计算引擎库 | https://github.com/dengsgo/math-engine  |
+
+
 
 ### 模板引擎
 
@@ -194,15 +206,30 @@
 | configor   | gorm作者写的多种数据格式序列化器，配置管理器 | https://github.com/jinzhu/configor       |
 
 
+
 ### 命令行
 
-| 名称           | 描述                               | 仓库                                 |
-| -------------- | ---------------------------------- | ------------------------------------ |
-| pflag          | POSIX/GUN的风格的flag包            | https://github.com/spf13/pflag       |
-| go-flags       | 命令参数解析器                     | https://github.com/jessevdk/go-flags |
-| cobra          | 现代命令行程序构建脚手架           | https://github.com/spf13/cobra       |
-| dimiro1/banner | 美观的banner构建库                 | https://github.com/dimiro1/banner    |
-| go-pretty      | 输出美观的命令行表格，文字，进度条 | https://github.com/jedib0t/go-pretty |
+| 名称           | 描述                                                | 仓库                                   |
+| -------------- | --------------------------------------------------- | -------------------------------------- |
+| pflag          | POSIX/GUN的风格的flag包                             | https://github.com/spf13/pflag         |
+| go-flags       | 命令参数解析器                                      | https://github.com/jessevdk/go-flags   |
+| cobra          | 现代命令行程序构建脚手架                            | https://github.com/spf13/cobra         |
+| dimiro1/banner | 美观的banner构建库                                  | https://github.com/dimiro1/banner      |
+| go-pretty      | 输出美观的命令行表格，文字，进度条                  | https://github.com/jedib0t/go-pretty   |
+| progressbar    | 线程安全的命令行进度条                              | https://github.com/schollz/progressbar |
+| go-ansi        | 用于 Go 语言的 Windows 便携式 ANSI 转义序列实用程序 | https://github.com/k0kubun/go-ansi     |
+
+
+
+### 压缩解压
+
+| 名称               | 描述                                           | 仓库                                  |
+| ------------------ | ---------------------------------------------- | ------------------------------------- |
+| klauspost/compress | 对compress标准库的优化改造                     | https://github.com/klauspost/compress |
+| alexmullins/zip    | archive/zip标准库的fork分支，支持密码          | https://github.com/alexmullins/zip    |
+| mholt/archiver     | 支持很多格式的压缩解压缩工具库（个人非常推荐） | https://github.com/mholt/archiver     |
+| go-car             | CAR归档文件在go中的实现                        | https://github.com/ipld/go-car        |
+| go-unarr           | 一个压缩解压缩库                               | https://github.com/gen2brain/go-unarr |
 
 
 
@@ -215,6 +242,7 @@
 | gron        | 定时任务库                             | https://github.com/roylee0704/gron           |
 | jobrunner   | 异步定时任务框架                       | https://github.com/bamzi/jobrunner           |
 | dataparse   | 可以在不知道格式的情况下解析时间字符串 | https://github.com/araddon/dateparse         |
+| jinzhu/now  | 日期工具库                             | https://github.com/jinzhu/now                |
 
 
 
@@ -250,11 +278,13 @@
 
 ### 网络工具
 
-| 名称      | 描述                         | 仓库                                            |
-| --------- | ---------------------------- | ----------------------------------------------- |
-| gentleman | 插件驱动，可拓展的http客户端 | https://github.com/h2non/gentleman              |
-| resty     | restful http 客户端          | https://pkg.go.dev/github.com/go-resty/resty/v2 |
-|           |                              |                                                 |
+| 名称      | 描述                                          | 仓库                                            |
+| --------- | --------------------------------------------- | ----------------------------------------------- |
+| gentleman | 插件驱动，可拓展的http客户端                  | https://github.com/h2non/gentleman              |
+| resty     | restful http 客户端                           | https://pkg.go.dev/github.com/go-resty/resty/v2 |
+| gopeed    | 支持所有平台的现代下载管理器，基于go和flutter | https://github.com/GopeedLab/gopeed             |
+
+
 
 ### 电子邮件
 
