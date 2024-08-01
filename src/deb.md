@@ -87,16 +87,17 @@
 
 ### 数据处理
 
-| 名称         | 描述                           | 仓库                                      |
-| ------------ | ------------------------------ | ----------------------------------------- |
-| mapstructure | map与结构体互转                | https://github.com/mitchellh/mapstructure |
-| cast         | 可以很方便的数据类型转换       | https://github.com/spf13/cast             |
-| deepcopy     | 深度复制                       | https://github.com/mohae/deepcopy         |
-| copier       | 可以在结构体之间同名字段复制值 | https://github.com/jinzhu/copier          |
-| go-pinyin    | 汉字转拼音                     | https://github.com/mozillazg/go-pinyin    |
-| go-streams   | 流式数据处理                   | https://github.com/reugn/go-streams       |
-| stream       | 流式处理                       | https://github.com/xyctruth/stream        |
-| go-humanize  | 将数据转换成人类可以阅读的格式 | https://github.com/dustin/go-humanize     |
+| 名称         | 描述                                                  | 仓库                                      |
+| ------------ | ----------------------------------------------------- | ----------------------------------------- |
+| mapstructure | map与结构体互转                                       | https://github.com/mitchellh/mapstructure |
+| cast         | 可以很方便的数据类型转换                              | https://github.com/spf13/cast             |
+| deepcopy     | 深度复制                                              | https://github.com/mohae/deepcopy         |
+| copier       | 可以在结构体之间同名字段复制值                        | https://github.com/jinzhu/copier          |
+| go-pinyin    | 汉字转拼音                                            | https://github.com/mozillazg/go-pinyin    |
+| go-streams   | 流式数据处理                                          | https://github.com/reugn/go-streams       |
+| stream       | 流式处理                                              | https://github.com/xyctruth/stream        |
+| go-humanize  | 将数据转换成人类可以阅读的格式                        | https://github.com/dustin/go-humanize     |
+| uniseg       | 在 Go 中进行 Unicode 文本分段、字包装和字符串宽度计算 | https://github.com/rivo/uniseg            |
 
 
 
@@ -218,6 +219,7 @@
 | go-pretty      | 输出美观的命令行表格，文字，进度条                  | https://github.com/jedib0t/go-pretty   |
 | progressbar    | 线程安全的命令行进度条                              | https://github.com/schollz/progressbar |
 | go-ansi        | 用于 Go 语言的 Windows 便携式 ANSI 转义序列实用程序 | https://github.com/k0kubun/go-ansi     |
+| go-isatty      | 用于判断tty的库                                     | https://github.com/mattn/go-isatty     |
 
 
 
@@ -230,6 +232,7 @@
 | mholt/archiver     | 支持很多格式的压缩解压缩工具库（个人非常推荐） | https://github.com/mholt/archiver     |
 | go-car             | CAR归档文件在go中的实现                        | https://github.com/ipld/go-car        |
 | go-unarr           | 一个压缩解压缩库                               | https://github.com/gen2brain/go-unarr |
+| xz                 | 用于读写 xz 压缩文件的纯 Golang 库             | https://github.com/ulikunitz/xz       |
 
 
 
