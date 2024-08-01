@@ -36,6 +36,12 @@ Github仓库：[golang/go: The Go programming language (github.com)](https://git
 
 官方网站：[The Go Programming Language](https://go.dev/)
 
+::: tip
+
+如果你想了解有关如何向Go提交代码的信息，可以看看我写的这篇文章：[如何向Go贡献代码](https://246859.github.io/posts/code/go/contribute2go.html)。
+
+:::
+
 <br/>
 
 ## 安装
