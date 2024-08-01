@@ -208,6 +208,6 @@ func allowShare(r *http.Request) bool {
 }
 ```
 
-懂的都懂，就不用多说了，如果是自建的话可以把这段删了。
+具体原因看这里[ Issue #20065 · golang/go (github.com)](https://github.com/golang/go/issues/20065)。
 
 :::
