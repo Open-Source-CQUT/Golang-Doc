@@ -16,7 +16,7 @@ actions:
 features:
 - title: 简洁高效
   icon: light
-  details: Go语言语法简洁明了，开发效率高，运行性能非常可观，支持静态编译和交叉编译，无需任何额外环境，被誉为21世纪的C语言。
+  details: Go语言语法简洁明了，开发效率高，运行性能良好，支持静态编译和交叉编译，不依赖运行环境，被誉为21世纪的C语言。
 
 - title: 并发而生
   icon: process
@@ -36,8 +36,8 @@ features:
 
 - title: 前景可期
   icon: network
-  details: Go在自己擅长的领域有着非常不俗的表现，发展势头十分强劲，使用人数也在逐渐增多，未来的前景十分令人看好。
+  details: Go在许多领域有着不俗的表现，发展势头强劲，使用人数也在逐渐增多，未来的前景十分令人看好。
 
 copyright: false
-footer: MIT LICENSE | Copyright © 2022-present 寒江
+footer: MIT LICENSE | Copyright © 2022-present 寒江蓑笠翁
 ---
