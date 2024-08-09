@@ -2,7 +2,13 @@
 
 ## 背景
 
-Go语言诞生于2007年9月30日，由三位大佬共同创造，他们分别是Ken Thompson(贝尔实验室成员，Unix系统系统先驱，B语言创始人，C语言创始人)，Rob Pike （贝尔实验室成员，Unix系统先驱，UTF-8发明者之一，Go语言设计领头人），Robert Griesemer(JS V8引擎研发者，三人之中最年轻)，对了还有一位是领头人的妻子Renee French，她主导设计了Go语言的Logo，就是一只憨憨的土拨鼠，经过了三年的初步设计与研发，Go语言由谷歌公司于2009年11月10日正式以`BSD-3-Clause`协议开源，并推出了最初的版本，每半年发布一个二级版本，被称为21世纪的C语言。
+Go语言诞生于2007年9月30日，由三位大佬共同创造，他们分别是
+
+- [Ken Thompson](https://github.com/ken)，图灵奖获得者，Unix系统创始人，B语言创始人，C语言创始人
+- [Rob Pike](https://github.com/robpike)，Plan9操作系统作者之一，UTF-8发明者之一，Go语言设计领头人
+- [Robert Griesemer](https://github.com/griesemer)，JS V8引擎研发者，三人之中最年轻
+
+对了还有一位是领头人的妻子Renee French，她主导设计了Go语言的Logo，就是一只蓝色的土拨鼠。在经过了三年的初步设计与研发，Go语言由谷歌公司于2009年11月10日以BSD-3-Clause协议正式开源，并推出了最初的版本，此后每半年发布一个二级版本，被称为21世纪的C语言。
 
 ![](/images/eggs.png)
 
@@ -11,6 +17,10 @@ Go语言诞生于2007年9月30日，由三位大佬共同创造，他们分别�
 图中便是三位大佬设计Go语言的情景，里面不少典故和彩蛋。
 
 :::
+
+不过三位创始人在很早以前就退隐了，在大部分时间里，团队领头人是[Russ Cox](https://github.com/rsc)，他早在Go语言未对外发布时就已经参与到了开发工作当中，此后一直管理Go团队长达12年，直到2024年8月卸任，由[Austin Clements](https://github.com/aclements)接手并领导后续的开发工作。
+
+
 
 
 
@@ -26,19 +36,21 @@ Go语言诞生于2007年9月30日，由三位大佬共同创造，他们分别�
 
 
 
-Go语言抛弃了继承，弱化了OOP，类，元编程，泛型，Lamda表达式等这些特性，拥有良好的性能和较低的上手难度，它非常适合用于云服务开发，应用服务端开发，甚至可以进行部分Linux嵌入式开发，不过由于带有垃圾回收，其性能始终无法媲美C/C++这类系统级语言。Go在其擅长的领域表现十分出色，虽然面世只有十余年不到，但已经有大量的行业将Go作为了首选语言。Go语言仍有不少的缺点，比如令人诟病的错误处理，残缺的泛型，标准库虽然很丰富但内置的数据结构却没几个等等，不过总的来说这是一门非常年轻且具有活力的现代语言，目前发展的劲头正盛。
+Go语言抛弃了继承，弱化了OOP，类，元编程，泛型，Lamda表达式等这些特性，拥有良好的性能和较低的上手难度，它非常适合用于云服务开发，应用服务端开发，甚至可以进行部分Linux嵌入式开发，不过由于带有垃圾回收，其性能始终无法媲美C/C++这类系统级语言。Go在其擅长的领域表现十分出色，虽然面世只有十余年不到，但已经有大量的行业将Go作为了首选语言。
+
+不过Go语言仍有不少的缺点，比如令人诟病的错误处理，畸形的泛型，标准库虽然很丰富但内置的数据结构却没几个等等，不过总的来说这是一门非常年轻且具有活力的现代语言，目前发展的劲头正盛。
 
 此外，Go还是一门完全开源的语言，由社区和谷歌共同维护Go语言的发展，官方地址是在谷歌仓库里，Github上有一份同样的镜像仓库，如果有心你也可以参与到语言的设计当中。
 
-谷歌仓库：[google/go](https://cs.opensource.google/go)
-
-Github仓库：[golang/go: The Go programming language (github.com)](https://github.com/golang/go)
-
 官方网站：[The Go Programming Language](https://go.dev/)
+
+谷歌开源仓库：[google/go: Google Open Source](https://cs.opensource.google/go)
+
+Github仓库：[golang/go: The Go programming language](https://github.com/golang/go)
 
 ::: tip
 
-如果你想了解有关如何向Go提交代码的信息，可以看看我写的这篇文章：[如何向Go贡献代码](https://246859.github.io/posts/code/go/contribute2go.html)。
+如果你想了解如何向Go贡献代码，可以看看我写的这篇文章：[如何向Go贡献代码](https://246859.github.io/posts/code/go/contribute2go.html)。
 
 :::
 
@@ -50,7 +62,9 @@ Go语言下载：[Downloads - The Go Programming Language](https://go.dev/dl/)
 
 ![](/images/download.png)
 
-Stable Version指的是目前处于维护状态的两个稳定版本，Archived Version指的是不再维护的历史版本，关于历史信息可以前往[更新日志](/release.md)了解更多关于维护规则以及历史版本的信息。
+Stable Version指的是目前处于维护状态的两个稳定版本，Archived Version指的是不再维护的历史版本，前往[更新日志](/release.md)了解更多关于维护规则以及历史版本的信息。
+
+
 
 ### windows
 
@@ -110,7 +124,7 @@ go version go1.21.1 linux/amd64
 
 
 
-### 自定义
+### 自定义结构
 
 只是基本使用而言，上面的安装方式对于基本使用已经够用了，个人推荐用以下的目录结构来存放go语言及其衍生文件
 
@@ -159,6 +173,39 @@ GOTMPDIR=go/temp
 
 
 
+### 多版本管理
+
+如果你有在本地安装不同版本Go的需求，手动下载然后安装多个版本会很繁琐，这件事曾经让我感到比较困扰，为了能够方便随时切换版本，我编写了一个命令行工具[govm](https://github.com/Open-Source-CQUT/govm/blob/main/README.zh.md)，它可以搜索并下载可用的版本，然后安装到本地，而且可以非常方便的随时切换，效果大概如下所示，通过工具结合上面的结构管理go语言会更好。
+
+```bash
+$ govm search 1.22 -n 10
+go1.22.6           76 MB
+go1.22.5           76 MB
+go1.22.4           76 MB
+go1.22.3           76 MB
+go1.22.2           76 MB
+go1.22.1           76 MB
+go1.22.0           76 MB
+
+$ govm install 1.22.4
+Fetch go1.22.4 from https://dl.google.com/go/go1.22.4.windows-amd64.zip
+Downloading go1.22.4.windows-amd64.zip 100% |████████████████████████████████████████| (76/76 MB, 32 MB/s) [2s]
+Extract go1.22.4.windows-amd64.zip to local store
+Remove archive from cache
+Version go1.22.4 installed
+
+$ govm use 1.22.4
+Use go1.22.4 now
+
+# 重新登陆shell
+$ go version
+go version go1.22.4 windows/amd64
+```
+
+如果你想了解如何用Go编写命令行工具，不嫌弃的话可以将govm作为一个项目参考，它也是由Go编写的。
+
+
+
 ### 编辑器
 
 主流的go语言IDE目前个人只推荐下面两个
@@ -170,32 +217,35 @@ GOTMPDIR=go/temp
 
 ::: tip
 
-如果你正在使用JetBrains Toolbox，可以尝试我写的一个命令行工具[AutoToolBox](https://github.com/246859/AutoToolBox)，可以为Toolbox生成windows右键菜单，它是用Go语言编写的，也可以给入门学习带来一定参考。
+如果你正在使用JetBrains Toolbox，可以尝试我写的一个命令行工具[AutoToolBox](https://github.com/246859/AutoToolBox)，可以为Toolbox生成windows右键菜单，效果图如下。
+
+<img src="https://github.com/246859/AutoToolBox/raw/main/image/preview.png" style="zoom: 67%;" />
 
 :::
 
 
 
-## 介绍
+## 寄语
+
+虽然Go语言整体难度并不高，如果你有其他语言基础学起来会非常简单，在学习的过程中遇到琢磨不透的难点可以先跳过，学习任何一门语言都是先笼统的了解这个语言的大致语法与结构，再去深究一些特性和细节，文档中的理念也是如此，适合入门学习。笔者本人也仅仅只是一名普通学生，难免会有疏漏和勘误，如果有发现任何错误可以在Github提交PR，如果觉得文档还不错可以在Github上点一个Star。
+
+
+
+## 概览
 
 下面对本站的内容进行一个简单的介绍，以便各位可以按需阅读，部分页面是空白的代表着还未更新。
 
 - 语言入门：主要讲解关于Go语言本身的内容，偏理论。
-    - [语法基础](/essential/base/)：主要讲一些十分基础的语法，像是`if`，`for`之类的语法规则。
-    - [语法进阶](/essential/senior/)：讲一些Go独有的东西，关于模块，测试，协程等相关内容。
-    - [标准库](/essential/std/)：对Go自带的标准库的一个简单介绍，因为标准库的内容实在太过庞大所以随缘更新。
-    - [实现原理](/essential/impl/)：主要讲Go语言的一些内部设计原理，比如协程调度，内存管理，垃圾回收等。
+  - [语法基础](/essential/base/)：主要讲一些十分基础的语法，像是`if`，`for`之类的语法规则。
+  - [语法进阶](/essential/senior/)：讲一些Go独有的东西，关于模块，测试，协程等相关内容。
+  - [标准库](/essential/std/)：对Go自带的标准库的一个简单介绍，因为标准库的内容实在太过庞大所以随缘更新。
+  - [实现原理](/essential/impl/)：主要讲Go语言的一些内部设计原理，比如协程调度，内存管理，垃圾回收等。
 - 社区生态：主要讲解Go周边的生态，偏应用。
-    - [数据库](/community/database/)：通过Go操作主流的数据库。
-    - [微服务](/community/micro/)：介绍一些与Go有关的微服务工具。
-    - [第三方库](/community/pkgs/)：介绍一些由Go编写的第三方库，随缘更新，也可以直接在[依赖导航](/deb.md)里面查看。
+  - [数据库](/community/database/)：通过Go操作主流的数据库。
+  - [微服务](/community/micro/)：介绍一些与Go有关的微服务工具。
+  - [第三方库](/community/pkgs/)：介绍一些由Go编写的第三方库，随缘更新，也可以直接在[依赖导航](/deb.md)里面查看。
 
-前往[准备开始](/essential/base/0.ready.md)进行入门学习。
-
-
-## 寄语
-
-虽然Go语言整体难度并不高，但在学习的过程中遇到琢磨不透的困难可以先跳过，学习任何一门语言都是先笼统的了解这个语言的大致语法与结构，再去深究一些特性和细节，文档中的理念也是如此，适合入门学习。笔者本人也仅仅只是一名普通学生，难免会有疏漏和勘误，如果有发现任何错误可以在Github提交PR，如果觉得文档还不错可以在Github上点一个Star。
+**前往[准备开始](/essential/base/0.ready.md)进行入门学习**
 
 
 
