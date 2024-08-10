@@ -251,7 +251,7 @@ go version go1.22.4 windows/amd64
   - [微服务](/community/micro/)：介绍一些与Go有关的微服务工具。
   - [第三方库](/community/pkgs/)：介绍一些由Go编写的第三方库，随缘更新，也可以直接在[依赖导航](/deb.md)里面查看。
 
-前往**[准备开始](/essential/base/0.ready.md)**进行入门学习
+前往[准备开始](/essential/base/0.ready.md)进行入门学习
 
 
 
