@@ -2,13 +2,12 @@
 
 **维护版本：**
 
+- go1.23，首次发布：2024-08-13，最后更新：go1.23.0 (2024-08-13)
 - go1.22，首次发布：2024-02-08，最后更新：go1.22.6 (2024-08-06)
-
-- go1.21 ，首次发布：2023-08-08，最后更新：go1.21.13 (2024-08-06)
 
 Go语言官方更新日志：[Release History - The Go Programming Language](https://go.dev/doc/devel/release)
 
-Go官方采用语义化版本来标识更新，格式为v`主版本`.`次版本`.`补丁版本` (见[Semantic Versioning](https://semver.org/lang/zh-CN/))，主版本的更新意味着发生了Breaking Change，即无法向下兼容的更新，次版本的更新意味着有新功能添加同时保持向下兼容，补丁版本的更新意味着有问题被修复同时保持向下兼容。
+Go官方采用语义化版本来进行版本标识，格式为v`主版本`.`次版本`.`补丁版本` (见[Semantic Versioning](https://semver.org/lang/zh-CN/))，主版本的更新意味着发生了Breaking Change，即无法向下兼容的更新，次版本的更新意味着有新功能添加同时保持向下兼容，补丁版本的更新意味着有问题被修复同时保持向下兼容。
 
 Go团队每半年发布一个二级版本，并且只有最新的两个二级版本是长期维护，维护时间都是六个月，鉴于Go每一次更新都保持着相当高的兼容性，建议在新版本稳定后及时将Go升级到最新版。
 
@@ -22,13 +21,106 @@ Go2.0上一次提出草案是在2018年11月19日，那时还是处于go1.13版�
 
 
 
+## 1.23
+
+首次发布：2024-08-13
+
+最后更新：go1.23.0 (2024-08-13)
+
+go1.23版本的详细更新日志可以前往[Go 1.22 Release Notes](https://go.dev/doc/go1.23)查看，在其维护期间发布的所有补丁版本可以前往[Go1.23 - Release Patch](https://go.dev/doc/devel/release#go1.23.0)了解。
+
+
+
+**语言层面**
+
+1. for range支持迭代器函数，详细信息查看[Go Wiki: Rangefunc Experiment](https://go.dev/wiki/RangefuncExperiment)。
+
+   ```go
+   func Upper(s []string) iter.Seq2[int, string] {
+   	return func(yield func(int, string) bool) {
+   		for i, s1 := range s {
+   			if !yield(i, strings.ToUpper(s1)) {
+   				return
+   			}
+   		}
+   		return
+   	}
+   }
+   
+   func main() {
+   	sl := []string{"hello", "world", "golang"}
+   	for i, s := range Upper(sl) {
+   		fmt.Printf("%d : %s\n", i, s)
+   	}
+   }
+   
+   //0 : HELLO
+   //1 : WORLD
+   //2 : GOLANG
+   ```
+
+   这是一个比较实用的特性，一般会结合泛型来用。
+
+   
+
+**标准库**
+
+1. 新增标准库`iter`，它定义和描述了关于迭代器的详细信息
+
+2. `maps`库新增了若干个迭代器函数
+
+3. `slices`库新增了若干个迭代器函数
+
+4. 新增`structs`库，提供了可以修改结构体属性的能力，比如内存布局
+
+   ```go
+   type Person struct {
+   	Name string
+   	Age  int
+   	_    structs.HostLayout
+   }
+   ```
+
+5. 优化了`time`标准库的实现
+
+
+
+**Linker**
+
+1. 处理`//go:linkname`的滥用，对于一些经常被引用的API暂时允许其存在，比如`runtime.memhash64`，`runtime.nanotime`等等，此后对于其他的新引用将不会允许。
+
+   ```go
+   //go:linkname gcinit runtime.gcinit
+   func gcinit()
+   
+   func main() {
+   	gcinit()
+   }
+   ```
+
+   像这种代码就无法通过编译
+
+   ```
+   link: main: invalid reference to runtime.gcinit
+   ```
+
+
+
+**工具链**
+
+1. 新增`go telemetry` 命令用于遥测数据管理
+
+
+
+
+
 ## 1.22
 
 首次发布：2024-02-06
 
 最后更新：go1.22.6（released 2024-08-06）
 
-go1.22版本的详细更新日志可以前往[Go 1.22 Release Notes](https://go.dev/doc/go1.22)查看，在其维护期间发布的所有补丁版本可以前往[Go1.22 - Release Patch](https://go.dev/doc/devel/release#go1.22.0)了解。、
+go1.22版本的详细更新日志可以前往[Go 1.22 Release Notes](https://go.dev/doc/go1.22)查看，在其维护期间发布的所有补丁版本可以前往[Go1.22 - Release Patch](https://go.dev/doc/devel/release#go1.22.0)了解。
 
 
 
@@ -36,6 +128,23 @@ go1.22版本的详细更新日志可以前往[Go 1.22 Release Notes](https://go.
 
 1. 解决了go语言循环变量的问题
 
+    ```go
+    func main() {
+    	var wg sync.WaitGroup
+    	const n = 10
+    	wg.Add(n)
+    	for i := 0; i < n; i++ {
+    		go func() {
+    			fmt.Println(i)
+    			wg.Done()
+    		}()
+    	}
+    	wg.Wait()
+    }
+    ```
+    
+    这段代码在1.22前，会输出10个9，在1.22后则会正常输出0到9。
+    
 2. `for range`现在支持数字，比如
 
     ```go
@@ -46,7 +155,7 @@ go1.22版本的详细更新日志可以前往[Go 1.22 Release Notes](https://go.
 
 **标准库**
 
-1. 增强了自带的HTTP路由
+1. 增强了`net/http`标准库的路由
 
 
 
