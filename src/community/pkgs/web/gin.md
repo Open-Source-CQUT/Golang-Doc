@@ -14,14 +14,6 @@ Gin 是一个用 Go (Golang) 编写的 Web 框架。 它具有类似 martini 的
 
 
 
-::: tip
-
-`Gin`是一个Web框架，并非MVC框架，MVC的功能需要开发者自行实现。这里推荐一个很优秀的`Gin`Server端项目：[gin-vue-admin | GVA 文档站](https://www.gin-vue-admin.com/)，里面的项目结构，代码，路由等都很值得学习。
-
-:::
-
-
-
 ## 特性
 
 - **快速**：基于 Radix 树的路由，小内存占用。没有反射。可预测的 API 性能。
@@ -105,7 +97,7 @@ Response file saved.
 
 ::: tip
 
-开始之前建议可以阅读一下`HttpRouter`:[HttpRouter](/community/pkgs/HttpRouter.md)
+开始之前建议可以阅读一下`HttpRouter`:[HttpRouter](/community/pkgs/web/HttpRouter.md)
 
 :::
 
@@ -470,7 +462,7 @@ func SomeHandler(c *gin.Context) {
 
 ## 数据校验
 
-`gin`内置的校验工具其实是`github.com/go-playground/validator/v10`，使用方法也几乎没有什么差别，[Validator](/community/pkgs/Validator.md)
+`gin`内置的校验工具其实是`github.com/go-playground/validator/v10`，使用方法也几乎没有什么差别，[Validator](/community/pkgs/validate/Validator.md)
 
 
 
@@ -1537,7 +1529,7 @@ func main() {
 - Token刷新问题
 - 一旦签发则无法主动控制
 
-自从前端革命以来，前端程序员不再只是一个“写页面的”，前后端分离的趋势愈演愈烈，JWT是最适合前后端分离和分布式系统来做会话控制的，具有很大的天然优势。考虑到JWT已经完全脱离Gin的内容，且没有任何中间件支持，因为JWT本身就是不局限于任何框架任何语言，在这里就不作细致的讲解，可以前往另一篇文档：[JWT](/community/pkgs/jwt.md)
+自从前端革命以来，前端程序员不再只是一个“写页面的”，前后端分离的趋势愈演愈烈，JWT是最适合前后端分离和分布式系统来做会话控制的，具有很大的天然优势。考虑到JWT已经完全脱离Gin的内容，且没有任何中间件支持，因为JWT本身就是不局限于任何框架任何语言，在这里就不作细致的讲解，可以前往另一篇文档：[JWT](/community/pkgs/auth/jwt.md)
 
 
 
