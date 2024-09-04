@@ -28,7 +28,7 @@ features:
 
 - title: 生态良好
   icon: flex
-  details: Go语言的生态正在蓬勃发展，诞生了许多重量级的开源项目，例如Docker容器，K8S容器编排等。
+  details: Go语言的生态正在蓬勃发展，诞生了许多重量级的开源项目，例如Docker，K8s，k3s，Podman，esbuild等。
 
 - title: 应用广泛
   icon: mount
