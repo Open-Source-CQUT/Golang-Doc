@@ -167,32 +167,28 @@
 
 ### 数据库&驱动
 
-| 名称                  | 描述                                            | 仓库                                       |
-| --------------------- | ----------------------------------------------- | ------------------------------------------ |
-| modernc.org/sqlite    | sqlite驱动，纯go编写，不需要cgo                 | https://gitlab.com/cznic/sqlite            |
-| mattn/go-sqlite3      | sqlite驱动，需要cgo                             | https://github.com/mattn/go-sqlite3        |
-| denisenkom/go-mssqldb | sqlserver驱动，不怎么更新了，建议使用微软的版本 | https://github.com/denisenkom/go-mssqldb   |
-| microsoft/go-mssqldb  | sqlserver驱动，微软fork的新分支并维护           | https://github.com/microsoft/go-mssqldb    |
-| pgx                   | postgreSQL驱动                                  | https://github.com/jackc/pgx/              |
-| mysql                 | mysql驱动                                       | https://github.com/go-sql-driver/mysql     |
-| oci-go-sdk            | oracle官方驱动                                  | https://github.com/oracle/oci-go-sdk       |
-| go-ora                | oracle驱动，纯go编写                            | https://github.com/sijms/go-ora            |
-| badger                | 嵌入式的kv数据库，基于LSM                       | https://github.com/dgraph-io/badger        |
-| boltdb                | 嵌入式的kv数据库，基于B+Tree                    | https://github.com/boltdb/bolt             |
-| goleveldb             | go语言实现的leveldb                             | https://github.com/syndtr/goleveldb        |
-| qmgo                  | 七牛云开源的mongodb操作库                       | https://github.com/qiniu/qmgo              |
-| mongo-go-driver       | mongodb官方的go驱动                             | https://github.com/mongodb/mongo-go-driver |
-| rqlite                | 基于sqlite的轻量级分布式关系数据库              | https://github.com/rqlite/rqlite/          |
+| 名称                   | 描述                                            | 仓库                                                   |
+| ---------------------- | ----------------------------------------------- | ------------------------------------------------------ |
+| modernc.org/sqlite     | sqlite驱动，纯go编写，不需要cgo                 | https://gitlab.com/cznic/sqlite                        |
+| mattn/go-sqlite3       | sqlite驱动，需要cgo                             | https://github.com/mattn/go-sqlite3                    |
+| denisenkom/go-mssqldb  | sqlserver驱动，不怎么更新了，建议使用微软的版本 | https://github.com/denisenkom/go-mssqldb               |
+| microsoft/go-mssqldb   | sqlserver驱动，微软fork的新分支并维护           | https://github.com/microsoft/go-mssqldb                |
+| pgx                    | postgreSQL驱动                                  | https://github.com/jackc/pgx/                          |
+| mysql                  | mysql驱动                                       | https://github.com/go-sql-driver/mysql                 |
+| oci-go-sdk             | oracle官方驱动                                  | https://github.com/oracle/oci-go-sdk                   |
+| go-ora                 | oracle驱动，纯go编写                            | https://github.com/sijms/go-ora                        |
+| badger                 | 嵌入式的kv数据库，基于LSM                       | https://github.com/dgraph-io/badger                    |
+| boltdb                 | 嵌入式的kv数据库，基于B+Tree                    | https://github.com/boltdb/bolt                         |
+| goleveldb              | go语言实现的leveldb                             | https://github.com/syndtr/goleveldb                    |
+| qmgo                   | 七牛云开源的mongodb操作库                       | https://github.com/qiniu/qmgo                          |
+| mongo-go-driver        | mongodb官方的go驱动                             | https://github.com/mongodb/mongo-go-driver             |
+| rqlite                 | 基于sqlite的轻量级分布式关系数据库              | https://github.com/rqlite/rqlite/                      |
+| go-mysql               | 一个强大的MySQL工具集合                         | https://github.com/go-mysql-org/go-mysql               |
+| go-mysql-elasticsearch | MySQL数据同步到Elasticsearch的工具              | https://github.com/go-mysql-org/go-mysql-elasticsearch |
 
 
 
 ### 序列化
-
-::: tip
-
-早期官方的json库速度比较慢，于是有了许多开源的json库，不过后期经过优化后基本上性能已经差别不大了。
-
-:::
 
 | 名称       | 描述                                         | 仓库                                     |
 | ---------- | -------------------------------------------- | ---------------------------------------- |
@@ -251,11 +247,12 @@
 
 ### 依赖注入
 
-| 名称 | 描述                               | 仓库                                                |
-| ---- | ---------------------------------- | --------------------------------------------------- |
-| dig  | uber开源的依赖注入库，基于反射     | https://darjun.github.io/2020/02/22/godailylib/dig/ |
-| wire | 谷歌开源的依赖注入库，基于代码生成 | https://github.com/google/wire                      |
-|      |                                    |                                                     |
+| 名称   | 描述                               | 仓库                                                |
+| ------ | ---------------------------------- | --------------------------------------------------- |
+| dig    | uber开源的依赖注入库，基于反射     | https://darjun.github.io/2020/02/22/godailylib/dig/ |
+| wire   | 谷歌开源的依赖注入库，基于代码生成 | https://github.com/google/wire                      |
+| inject | 依赖注入工具                       | https://github.com/codegangsta/inject               |
+| di     | 依赖注入容器                       | https://github.com/sarulabs/di                      |
 
 
 
@@ -446,4 +443,14 @@
 | hashicorp/raft       | consul开源的raft库   | https://github.com/hashicorp/raft       |
 | hashicorp/memberlist | consul开源的gossip库 | https://github.com/hashicorp/memberlist |
 | etcd-io/raft         | etcd开源的raft库     | https://github.com/etcd-io/raft         |
+
+
+
+### OCR
+
+| 名称      | 描述                           | 仓库                                 |
+| --------- | ------------------------------ | ------------------------------------ |
+| gosseract | 使用 Tesseract C + + 库的OCR库 | https://github.com/otiai10/gosseract |
+|           |                                |                                      |
+|           |                                |                                      |
 
