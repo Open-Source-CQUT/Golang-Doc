@@ -185,6 +185,8 @@
 | rqlite                 | 基于sqlite的轻量级分布式关系数据库              | https://github.com/rqlite/rqlite/                      |
 | go-mysql               | 一个强大的MySQL工具集合                         | https://github.com/go-mysql-org/go-mysql               |
 | go-mysql-elasticsearch | MySQL数据同步到Elasticsearch的工具              | https://github.com/go-mysql-org/go-mysql-elasticsearch |
+| gofound                | 单机亿级全文检索引擎，                          | https://github.com/sea-team/gofound                    |
+| bleve                  | 全文检索库                                      | https://github.com/blevesearch/bleve                   |
 
 
 
