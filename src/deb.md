@@ -406,15 +406,16 @@
 
 ### 文件处理
 
-| 名称      | 描述                               | 仓库                                        |
-| --------- | ---------------------------------- | ------------------------------------------- |
-| filebox   | 文件操作工具库                     | https://github.com/dstgo/filebox            |
-| size      | 快速完成文件大小与字符串之间的转换 | https://github.com/dstgo/size               |
-| checksum  | 一个计算文件哈希签名的库           | https://github.com/codingsince1985/checksum |
-| pdfcpu    | pdf处理器                          | https://github.com/pdfcpu/pdfcpu            |
-| unioffice | office处理库                       | https://github.com/unidoc/unioffice         |
-| gooxml    | office处理库                       | https://github.com/carmel/gooxml            |
-| pdfcpu    | PDF处理库                          | https://github.com/pdfcpu/pdfcpu            |
+| 名称      | 描述                               | 仓库                                              |
+| --------- | ---------------------------------- | ------------------------------------------------- |
+| filebox   | 文件操作工具库                     | https://github.com/dstgo/filebox                  |
+| size      | 快速完成文件大小与字符串之间的转换 | https://github.com/dstgo/size                     |
+| checksum  | 一个计算文件哈希签名的库           | https://github.com/codingsince1985/checksum       |
+| pdfcpu    | pdf处理器                          | https://github.com/pdfcpu/pdfcpu                  |
+| unioffice | office处理库                       | https://github.com/unidoc/unioffice               |
+| gooxml    | office处理库                       | https://github.com/carmel/gooxml                  |
+| pdfcpu    | PDF处理库                          | https://github.com/pdfcpu/pdfcpu                  |
+| excelize  | Excel处理库                        | https://github.com/360EntSecGroup-Skylar/excelize |
 
 
 
