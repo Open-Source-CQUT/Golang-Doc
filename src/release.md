@@ -2,7 +2,7 @@
 
 **维护版本：**
 
-- go1.23，首次发布：2024-08-13，最后更新：go1.23.0 (2024-08-13)
+- go1.23，首次发布：2024-08-13，最后更新：go1.23.4 (2024-12-03)
 - go1.22，首次发布：2024-02-08，最后更新：go1.22.6 (2024-08-06)
 
 Go语言官方更新日志：[Release History - The Go Programming Language](https://go.dev/doc/devel/release)
@@ -25,9 +25,9 @@ Go2.0上一次提出草案是在2018年11月19日，那时还是处于go1.13版�
 
 首次发布：2024-08-13
 
-最后更新：go1.23.0 (2024-08-13)
+最后更新：go1.23.4 (2024-12-03)
 
-go1.23版本的详细更新日志可以前往[Go 1.22 Release Notes](https://go.dev/doc/go1.23)查看，在其维护期间发布的所有补丁版本可以前往[Go1.23 - Release Patch](https://go.dev/doc/devel/release#go1.23.0)了解。
+go1.23版本的详细更新日志可以前往[Go 1.23 Release Notes](https://go.dev/doc/go1.23)查看，在其维护期间发布的所有补丁版本可以前往[Go1.23 - Release Patch](https://go.dev/doc/devel/release#go1.23.0)了解。
 
 
 
@@ -145,7 +145,7 @@ go1.22版本的详细更新日志可以前往[Go 1.22 Release Notes](https://go.
     
     这段代码在1.22前，会输出10个9，在1.22后则会正常输出0到9。
     
-2. `for range`现在支持数字，比如
+2. `for range`现在支持迭代数字类型，如下
 
     ```go
     for i := range 10 {
@@ -156,6 +156,26 @@ go1.22版本的详细更新日志可以前往[Go 1.22 Release Notes](https://go.
 **标准库**
 
 1. 增强了`net/http`标准库的路由
+
+2. `database/sql`新增了`sql.Null`泛型类型
+
+   ```go
+   type Null[T any] struct {
+   	V     T
+   	Valid bool
+   }
+   ```
+
+   使用如下
+
+   ```go
+   type Person struct {
+   	Name sql.Null[string]
+   	Age  sql.Null[int]
+   }
+   ```
+
+   
 
 
 
@@ -250,7 +270,7 @@ go1.19版本的详细更新日志可以前往[Go 1.19 Release Notes](https://go.
 
 **重要变化**
 
-1. 内存模型向c/c++看齐
+1. 内存模型向c/c++看齐，类似于TcMollcate
 
 2. `sync/atomic`包现在提供了更多的类型可供使用
 
