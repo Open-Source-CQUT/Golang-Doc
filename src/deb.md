@@ -82,6 +82,8 @@
 | go-sqlmock        | 用于测试的SQL Mock                       | https://github.com/DATA-DOG/go-sqlmock       |
 | goconvey          | 在浏览器可视化中测试                     | https://github.com/smartystreets/goconvey    |
 | go-stress-testing | 压测工具                                 | https://github.com/link1st/go-stress-testing |
+| xgo               | go打桩测试框架，通过编译期重写代码来实现 | https://github.com/xhd2015/xgo               |
+| gomonkey          | go打桩测试框架，通过修改修改函数地址实现 | https://github.com/agiledragon/gomonkey      |
 
 
 
