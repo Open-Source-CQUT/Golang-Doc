@@ -6,19 +6,13 @@
 
 官方示例：[gg/examples at master · fogleman/gg (github.com)](https://github.com/fogleman/gg/tree/master/examples)
 
-
-
 gg是一个比较老牌的二维的图形渲染引擎，适合用于生成图片。
-
-
 
 ## 安装
 
 ```
 go get -u github.com/fogleman/gg
 ```
-
-
 
 ## 快速开始
 
@@ -36,8 +30,6 @@ func main() {
 }
 ```
 
-
-
 ## 描点
 
 ![](/images/gg/points.png =400x400)
@@ -54,8 +46,6 @@ func TestDot(t *testing.T) {
 }
 ```
 
-
-
 ## 画线
 
 ![](/images/gg/lines.png =400x400)
@@ -71,6 +61,3 @@ func TestLines(t *testing.T) {
    dc.SavePNG("lines.png")
 }
 ```
-
-
-

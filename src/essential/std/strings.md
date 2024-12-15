@@ -1,15 +1,16 @@
 ---
 date: 2022-10-22
 ---
+
 # strings
 
-包 `strings`实现了简单的函数来操作UTF-8编码的字符串，简单来说就是操作字符串的工具包。
+包 `strings` 实现了简单的函数来操作 UTF-8 编码的字符串，简单来说就是操作字符串的工具包。
 
 官方文档：[strings package - strings - Go Packages](https://pkg.go.dev/strings@go1.19.4)
 
 ::: tip
 
-Go天然支持UTF8字符，所有的字符串操作都是建立在UTF8的基础之上。
+Go 天然支持 UTF8 字符，所有的字符串操作都是建立在 UTF8 的基础之上。
 
 :::
 
@@ -23,14 +24,10 @@ import (
 
 下面将以示例的形式讲解常用的函数。
 
-
-
-
-
 ## 复制字符串
 
 ```go
-func Clone(s string) string 
+func Clone(s string) string
 ```
 
 将会分配一个新的内存给复制的副本，如果传入一个空字符串，则不会分配内存且返回空字符串。
@@ -52,22 +49,20 @@ hello 世界 hello 世界
 PASS
 ```
 
-
-
 ## 比较字符串
 
 ```go
 func Compare(a, b string) int
 ```
 
-将a与b按照字典顺序进行字符串比较，如果a>b，返回1，a<b返回-1，a=b返回0。
+将 a 与 b 按照字典顺序进行字符串比较，如果 a>b，返回 1，a<b 返回-1，a=b 返回 0。
 
 ```go
 func TestCompare(t *testing.T) {
-	fmt.Println(strings.Compare("abc", "abe"))
-	fmt.Println(strings.Compare("abcd", "abe"))
-	fmt.Println(strings.Compare("abijk", "abe"))
-	fmt.Println(strings.Compare("abe", "abe"))
+  fmt.Println(strings.Compare("abc", "abe"))
+  fmt.Println(strings.Compare("abcd", "abe"))
+  fmt.Println(strings.Compare("abijk", "abe"))
+  fmt.Println(strings.Compare("abe", "abe"))
 }
 ```
 
@@ -81,21 +76,19 @@ func TestCompare(t *testing.T) {
 PASS
 ```
 
-
-
 ## 包含字符串
 
 ```go
 func Contains(s, substr string) bool
 ```
 
-判断一个字符串s是不是包含一个子串substr
+判断一个字符串 s 是不是包含一个子串 substr
 
 ```go
 func TestContains(t *testing.T) {
-	fmt.Println(strings.Contains("abcdefg", "a"))
-	fmt.Println(strings.Contains("abcdefg", "abc"))
-	fmt.Println(strings.Contains("abcdefg", "ba"))
+  fmt.Println(strings.Contains("abcdefg", "a"))
+  fmt.Println(strings.Contains("abcdefg", "abc"))
+  fmt.Println(strings.Contains("abcdefg", "ba"))
 }
 ```
 
@@ -108,18 +101,16 @@ false
 PASS
 ```
 
-<br/>
-
 ```go
 func ContainsAny(s, chars string) bool
 ```
 
-判断字符串chars内任意字符的unicode码是否在字符串s内，翻译一下就是s是否包含chars内的任意字符串
+判断字符串 chars 内任意字符的 unicode 码是否在字符串 s 内，翻译一下就是 s 是否包含 chars 内的任意字符串
 
 ```go
 func TestContainsAny(t *testing.T) {
-	fmt.Println(strings.ContainsAny("abcedfg", "bac"))
-	fmt.Println(strings.ContainsAny("abcedfg", "gfdecba"))
+  fmt.Println(strings.ContainsAny("abcedfg", "bac"))
+  fmt.Println(strings.ContainsAny("abcedfg", "gfdecba"))
 }
 ```
 
@@ -130,13 +121,11 @@ true
 PASS
 ```
 
-<br/>
-
 ```go
 func ContainsRune(s string, r rune) bool
 ```
 
-判断字符串s内是否包含字符r
+判断字符串 s 内是否包含字符 r
 
 ```go
 func TestContainsRune(t *testing.T) {
@@ -155,21 +144,19 @@ true
 PASS
 ```
 
-
-
 ## 子串出现次数
 
 ```go
 func Count(s, substr string) int
 ```
 
-给出子串substr在字符串s内的出现次数
+给出子串 substr 在字符串 s 内的出现次数
 
 ```go
 func TestCount(t *testing.T) {
-	fmt.Println(strings.Count("3.1415926", "1"))
-	fmt.Println(strings.Count("there is a girl", "e"))
-	fmt.Println(strings.Count("there is a girl", ""))
+  fmt.Println(strings.Count("3.1415926", "1"))
+  fmt.Println(strings.Count("there is a girl", "e"))
+  fmt.Println(strings.Count("there is a girl", ""))
 }
 ```
 
@@ -182,15 +169,13 @@ func TestCount(t *testing.T) {
 PASS
 ```
 
-
-
 ## 删除指定子串
 
 ```go
 func Cut(s, sep string) (before, after string, found bool)
 ```
 
-删除在s内第一次出现的子串sep，并返回删除后的结果
+删除在 s 内第一次出现的子串 sep，并返回删除后的结果
 
 - `before` - 被删除子串位置前面的字符串
 - `after` - 被删除子串位置后面的字符串
@@ -198,14 +183,14 @@ func Cut(s, sep string) (before, after string, found bool)
 
 ```go
 func TestCut(t *testing.T) {
-	show := func(s, sep string) {
-		before, after, found := strings.Cut(s, sep)
-		fmt.Printf("Cut(%q, %q) = %q, %q, %v\n", s, sep, before, after, found)
-	}
-	show("Hello world", " ")
-	show("Hello world", "world")
-	show("Hello world", "Hello")
-	show("Hello world", "Hello world")
+  show := func(s, sep string) {
+    before, after, found := strings.Cut(s, sep)
+    fmt.Printf("Cut(%q, %q) = %q, %q, %v\n", s, sep, before, after, found)
+  }
+  show("Hello world", " ")
+  show("Hello world", "world")
+  show("Hello world", "Hello")
+  show("Hello world", "Hello world")
 }
 ```
 
@@ -219,15 +204,13 @@ Cut("Hello world", "Hello world") = "", "", true
 PASS
 ```
 
-
-
 ## 忽略大小写相等
 
 ```go
 func EqualFold(s, t string) bool
 ```
 
-返回字符串s和t在忽略大小写情况下是否相等
+返回字符串 s 和 t 在忽略大小写情况下是否相等
 
 ```go
 func TestEqualFold(t *testing.T) {
@@ -246,8 +229,6 @@ true
 PASS
 ```
 
-
-
 ## 分割字符串
 
 ```go
@@ -258,7 +239,7 @@ func Fields(s string) []string
 func FieldsFunc(s string, f func(rune) bool) []string
 ```
 
-前者是根据空格来分割字符串，后者是函数f的返回值来决定是否分割字符串。
+前者是根据空格来分割字符串，后者是函数 f 的返回值来决定是否分割字符串。
 
 ```go
 func TestField(t *testing.T) {
@@ -276,8 +257,6 @@ func TestField(t *testing.T) {
 --- PASS: TestField (0.00s)
 PASS
 ```
-
-
 
 ## 寻找前后缀
 
@@ -307,8 +286,6 @@ true
 PASS
 ```
 
-
-
 ## 子串的位置
 
 返回第一次出现的子串的下标
@@ -320,7 +297,7 @@ func Index(s, substr string) int
 返回第一次出现的子串的下标
 
 ```go
-func IndexAny(s, chars string) int 
+func IndexAny(s, chars string) int
 ```
 
 返回第一次出现的子串的下标
@@ -348,8 +325,6 @@ func TestIndex(t *testing.T) {
 PASS
 ```
 
-<br/>
-
 返回最后一次出现的子串的下标
 
 ```go
@@ -366,12 +341,10 @@ func LastIndexAny(s, chars string) int
 
 ```go
 func TestLastIndex(t *testing.T) {
-	fmt.Println(strings.LastIndex("abcdefga", "a"))
-	fmt.Println(strings.LastIndexAny("abcdefghisa", "ba"))
+  fmt.Println(strings.LastIndex("abcdefga", "a"))
+  fmt.Println(strings.LastIndexAny("abcdefghisa", "ba"))
 }
 ```
-
-
 
 ## 遍历替换字符串
 
@@ -412,11 +385,9 @@ FGHIJK
 PASS
 ```
 
-
-
 ## 重复复制字符串
 
-根据给定的Count复制字符串，如果为负数会导致`panic`
+根据给定的 Count 复制字符串，如果为负数会导致`panic`
 
 ```go
 func Repeat(s string, count int) string
@@ -441,11 +412,9 @@ abcabcabcabcabcabcabcabcabcabc
 PASS
 ```
 
-
-
 ## 替换字符串
 
-s为源字符串，old指要被替换的部分，new指old的替换部分，n指的是替换次数，n小于0时表示不限制替换次数。
+s 为源字符串，old 指要被替换的部分，new 指 old 的替换部分，n 指的是替换次数，n 小于 0 时表示不限制替换次数。
 
 ```go
 func Replace(s, old, new string, n int) string
@@ -472,9 +441,7 @@ Hellc this is golang
 PASS
 ```
 
-<br>
-
- `Replace`的方便函数，等价于`stings.Replace(s,old,new,-1)`
+`Replace`的方便函数，等价于`stings.Replace(s,old,new,-1)`
 
 ```go
 func ReplaceAll(s, old, new string) string
@@ -484,7 +451,7 @@ func ReplaceAll(s, old, new string) string
 
 ```go
 func TestReplaceAll(t *testing.T) {
-	fmt.Println(strings.ReplaceAll("Hello this is golang", "o", "c++"))
+  fmt.Println(strings.ReplaceAll("Hello this is golang", "o", "c++"))
 }
 ```
 
@@ -497,29 +464,27 @@ Hellc++ this is gc++lang
 PASS
 ```
 
-
-
 ## 分隔字符串
 
-根据子串sep将字符串s分隔成一个字符串切片
+根据子串 sep 将字符串 s 分隔成一个字符串切片
 
 ```go
 func Split(s, sep string) []string
 ```
 
-根据子串sep将字符串s分隔成一个字符串切片，其分隔次数由n决定
+根据子串 sep 将字符串 s 分隔成一个字符串切片，其分隔次数由 n 决定
 
 ```go
 func SplitN(s, sep string, n int) []string
 ```
 
-根据子串sep将字符串s分隔成包含sep的字符串元素组成的字符串切片
+根据子串 sep 将字符串 s 分隔成包含 sep 的字符串元素组成的字符串切片
 
 ```go
 func SplitAfter(s, sep string) []string
 ```
 
-根据子串sep将字符串s分隔成包含sep的字符串元素组成的字符串切片，其分隔次数由n决定
+根据子串 sep 将字符串 s 分隔成包含 sep 的字符串元素组成的字符串切片，其分隔次数由 n 决定
 
 ```go
 func SplitAfterN(s, sep string, n int) []string
@@ -547,8 +512,6 @@ func TestSplit(t *testing.T) {
 --- PASS: TestSplit (0.00s)
 PASS
 ```
-
-
 
 ## 大小写转换
 
@@ -599,35 +562,33 @@ MY NAME IS JACK,NICE TO MEET YOU!
 PASS
 ```
 
-
-
 ## 修剪字符串
 
-修剪字符串两端，将cutset任意匹配的子串删除
+修剪字符串两端，将 cutset 任意匹配的子串删除
 
 ```go
 func Trim(s, cutset string) string
 ```
 
-修剪字符串左端，将cutset任意匹配的子串删除
+修剪字符串左端，将 cutset 任意匹配的子串删除
 
 ```go
 func TrimLeft(s, cutset string) string
 ```
 
-修剪字符串左端前缀，将cutset匹配的子串删除，不匹配就会返回字符串s
+修剪字符串左端前缀，将 cutset 匹配的子串删除，不匹配就会返回字符串 s
 
 ```go
 func TrimPrefix(s, suffix string) string
 ```
 
-修剪字符串右端，将cutset任意匹配的子串删除
+修剪字符串右端，将 cutset 任意匹配的子串删除
 
 ```go
 func TrimRight(s, cutset string) string
 ```
 
-修剪字符串右端后缀，将cutset匹配的子串删除，不匹配就会返回字符串s
+修剪字符串右端后缀，将 cutset 匹配的子串删除，不匹配就会返回字符串 s
 
 ```go
 func TrimSuffix(s, suffix string) string
@@ -637,11 +598,11 @@ func TrimSuffix(s, suffix string) string
 
 ```go
 func TestTrim(t *testing.T) {
-	fmt.Println(strings.Trim("!!this is a test statement!!", "!!!"))
-	fmt.Println(strings.TrimLeft("!!this is a test statement!!", "!!!"))
-	fmt.Println(strings.TrimRight("!!this is a test statement!!", "!!!"))
-	fmt.Println(strings.TrimPrefix("!!this is a test statement!!", "!!!"))
-	fmt.Println(strings.TrimSuffix("!!this is a test statement!!", "!!!"))
+  fmt.Println(strings.Trim("!!this is a test statement!!", "!!!"))
+  fmt.Println(strings.TrimLeft("!!this is a test statement!!", "!!!"))
+  fmt.Println(strings.TrimRight("!!this is a test statement!!", "!!!"))
+  fmt.Println(strings.TrimPrefix("!!this is a test statement!!", "!!!"))
+  fmt.Println(strings.TrimSuffix("!!this is a test statement!!", "!!!"))
 }
 ```
 
@@ -658,15 +619,13 @@ this is a test statement!!
 PASS
 ```
 
+## 字符串 Builder
 
-
-## 字符串Builder
-
-字符串Builder比起直接操作字符串更加节省内存。
+字符串 Builder 比起直接操作字符串更加节省内存。
 
 ```go
 type Builder struct {
-	// 内部字段不对外暴露
+  // 内部字段不对外暴露
 }
 ```
 
@@ -692,8 +651,6 @@ hello world
 PASS
 ```
 
-
-
 ::: tip
 
 不要试图将`Builder`作为值进行传递，例如将`strings.Builder`作为函数参数传递的时候，程序会`panic`
@@ -706,8 +663,8 @@ strings: illegal use of non-zero Builder copied by value
 
 ```go
 type Builder struct {
-	addr *Builder //自身的地址
-	buf  []byte
+  addr *Builder //自身的地址
+  buf  []byte
 }
 
 func (b *Builder) copyCheck() {
@@ -723,11 +680,9 @@ func (b *Builder) copyCheck() {
 
 :::
 
+## 字符串 Replacer
 
-
-## 字符串Replacer
-
-Replacer转用于替换字符串
+Replacer 转用于替换字符串
 
 ```go
 func NewReplacer(oldnew ...string) *Replacer
@@ -737,8 +692,8 @@ func NewReplacer(oldnew ...string) *Replacer
 
 ```go
 func TestReplacer(t *testing.T) {
-	r := strings.NewReplacer("<", "&lt;", ">", "&gt;")
-	fmt.Println(r.Replace("This is <b>HTML</b>!"))
+  r := strings.NewReplacer("<", "&lt;", ">", "&gt;")
+  fmt.Println(r.Replace("This is <b>HTML</b>!"))
 }
 ```
 
@@ -748,11 +703,9 @@ func TestReplacer(t *testing.T) {
 This is &lt;b&gt;HTML&lt;/b&gt;!
 ```
 
+## 字符串 Reader
 
-
-## 字符串Reader
-
-Reader实现了io.Reader, io.ReaderAt, io.ByteReader, io.ByteScanner, io.RuneReader, io.RuneScanner, io.Seeker, 和 io.WriterTo interfaces。 
+Reader 实现了 io.Reader, io.ReaderAt, io.ByteReader, io.ByteScanner, io.RuneReader, io.RuneScanner, io.Seeker, 和 io.WriterTo interfaces。
 
 ```go
 func NewReader(s string) *Reader
@@ -778,8 +731,7 @@ func TestReader(t *testing.T) {
 ```
 === RUN   TestReader
 11
-abcdefghijk         
+abcdefghijk
 --- PASS: TestReader (0.00s)
 PASS
 ```
-

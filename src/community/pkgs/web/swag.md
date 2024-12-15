@@ -1,12 +1,12 @@
 # swag
 
-swaggo/swag是Swagger API 2.0在go语言中的一个实现，通过在书写指定格式的注释就可以生成`swagger.json`和`swagger.yaml`类型的接口文档，方便导出和导入。
+swaggo/swag 是 Swagger API 2.0 在 go 语言中的一个实现，通过在书写指定格式的注释就可以生成`swagger.json`和`swagger.yaml`类型的接口文档，方便导出和导入。
 
 仓库：[swaggo/swag: Automatically generate RESTful API documentation with Swagger 2.0 for Go. (github.com)](https://github.com/swaggo/swag)
 
 文档：[swaggo/swag: Automatically generate RESTful API documentation with Swagger 2.0 for Go. (github.com)](https://github.com/swaggo/swag#readme)
 
-swag默认支持的web框架如下所示，本文以gin为例子，来演示gin结合swagger快速生成接口文档的例子。
+swag 默认支持的 web 框架如下所示，本文以 gin 为例子，来演示 gin 结合 swagger 快速生成接口文档的例子。
 
 - [gin](http://github.com/swaggo/gin-swagger)
 - [echo](http://github.com/swaggo/echo-swagger)
@@ -19,23 +19,21 @@ swag默认支持的web框架如下所示，本文以gin为例子，来演示gin�
 - [atreugo](https://github.com/Nerzal/atreugo-swagger)
 - [hertz](https://github.com/hertz-contrib/swagger)
 
-
-
 ::: tip
 
-如果不熟悉swagger语法，可以前往[About Swagger Specification | Documentation | Swagger](https://swagger.io/docs/specification/about/)
+如果不熟悉 swagger 语法，可以前往[About Swagger Specification | Documentation | Swagger](https://swagger.io/docs/specification/about/)
 
 :::
 
 ## 安装
 
-首先下载swagger命令行工具
+首先下载 swagger 命令行工具
 
 ```
 go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
-然后下载swagger源码依赖
+然后下载 swagger 源码依赖
 
 ```
 go get github.com/swaggo/swag
@@ -47,32 +45,30 @@ go get github.com/swaggo/swag
 
 :::
 
-然后下载swagger的静态文件库，html，css，js之类的，都被嵌到了go代码中。
+然后下载 swagger 的静态文件库，html，css，js 之类的，都被嵌到了 go 代码中。
 
 ```
 go get github.com/swaggo/files@latest
 ```
 
-最后下载swagger的gin适配库
+最后下载 swagger 的 gin 适配库
 
 ```
 go get github.com/swaggo/gin-swagger@latest
 ```
 
-因为本文是只用gin做示例，其他web框架的适配器请自行了解，基本都是大同小异。
-
-
+因为本文是只用 gin 做示例，其他 web 框架的适配器请自行了解，基本都是大同小异。
 
 ## 使用
 
-使用go mod创建一个最基本的go项目，新建`main.go`，写入如下内容。
+使用 go mod 创建一个最基本的 go 项目，新建`main.go`，写入如下内容。
 
 ```go
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
+  "fmt"
+  "github.com/gin-gonic/gin"
 )
 
 // @title           Swagger Example API
@@ -85,9 +81,9 @@ import (
 
 // @BasePath  /api/v1
 func main() {
-	engine := gin.Default()
-	engine.GET("/api/v1/ping", Ping)
-	engine.Run(":80")
+  engine := gin.Default()
+  engine.GET("/api/v1/ping", Ping)
+  engine.Run(":80")
 }
 
 // Ping godoc
@@ -98,13 +94,13 @@ func main() {
 // @Produce      json
 // @Router       /ping [get]
 func Ping(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{
-		"message": fmt.Sprintf("Hello World!%s", ctx.Query("name")),
-	})
+  ctx.JSON(200, gin.H{
+    "message": fmt.Sprintf("Hello World!%s", ctx.Query("name")),
+  })
 }
 ```
 
-这是一个很简单的gin web例子，main函数上的注释是文档的基本信息，Ping函数则是一个普通的接口。接下来执行命令生成文档，默认是在`main.go`同级的docs目录下
+这是一个很简单的 gin web 例子，main 函数上的注释是文档的基本信息，Ping 函数则是一个普通的接口。接下来执行命令生成文档，默认是在`main.go`同级的 docs 目录下
 
 ```
 swag init
@@ -161,8 +157,6 @@ func Ping(ctx *gin.Context) {
 
 如此便运行起了一个基本的接口文档。接下来除了一些特别要注意的点，基本上和其他语言使用起来没有什么太大的差别。
 
-
-
 ## 参数
 
 定义参数的格式为
@@ -193,9 +187,7 @@ func Ping(ctx *gin.Context) {
 - boolean (bool)
 - user defined struct
 
-参数类型也可以是你自己的类型，前提是能够被swagger扫描到。
-
-
+参数类型也可以是你自己的类型，前提是能够被 swagger 扫描到。
 
 ## 响应
 
@@ -228,17 +220,15 @@ type JSONResult struct {
 @success 200 {object} jsonresult.JSONResult{data=[]Account} "desc"
 ```
 
-
-
 ## 模型
 
-给结构体字段加注释会被被swagger扫描为模型字段注释
+给结构体字段加注释会被被 swagger 扫描为模型字段注释
 
 ```go
 package model
 
 type Account struct {
-	// account id
+  // account id
     ID   int    `json:"id" example:"1"`
     // username
     Name string `json:"name" example:"account name"`
@@ -255,11 +245,7 @@ type Foo struct {
 }
 ```
 
-所有的模型在使用时都要确保能被swagger扫描到，否则不会起作用。
-
-
-
-
+所有的模型在使用时都要确保能被 swagger 扫描到，否则不会起作用。
 
 ## 认证
 
@@ -272,9 +258,7 @@ type Foo struct {
 - OAuth2 password auth
 - OAuth2 access code auth
 
-
-
-假如接口认证用的是JWT，存放在header中的`Authorization`字段中，我们可以如下定义
+假如接口认证用的是 JWT，存放在 header 中的`Authorization`字段中，我们可以如下定义
 
 ```go
 // @securityDefinitions.apikey Bearer
@@ -284,11 +268,9 @@ type Foo struct {
 
 ![](/images/swag/auth.png)
 
-本质上这只是一个apikey，如果你传入的是bearer token的话，需要自己手动加上Bearer前缀。
+本质上这只是一个 apikey，如果你传入的是 bearer token 的话，需要自己手动加上 Bearer 前缀。
 
 ![](/images/swag/auth2.png)
-
-
 
 然后在你需要认证的接口上加上如下注释
 
@@ -298,11 +280,9 @@ type Foo struct {
 
 它的值是你的`securityDefinitions`定义的名称。
 
-
-
 ## 配置
 
-swag实际上是将多个不同的swagger实例存放在一个map中，ginSwagger作为适配器从实例中读取`doc.json`也就是API接口的定义文件，swaggerFiles提供静态的HTML文件用于展示网页，解析API定义并生成界面，整个流程明白以后，就可以进行自定义的操作了。
+swag 实际上是将多个不同的 swagger 实例存放在一个 map 中，ginSwagger 作为适配器从实例中读取`doc.json`也就是 API 接口的定义文件，swaggerFiles 提供静态的 HTML 文件用于展示网页，解析 API 定义并生成界面，整个流程明白以后，就可以进行自定义的操作了。
 
 ```go
 // Name is a unique name be used to register swag instance.
@@ -310,9 +290,9 @@ swag实际上是将多个不同的swagger实例存放在一个map中，ginSwagge
 const Name = "swagger"
 
 var (
-	swaggerMu sync.RWMutex
+  swaggerMu sync.RWMutex
     // 实例表
-	swags     map[string]Swagger
+  swags     map[string]Swagger
 )
 ```
 
@@ -339,7 +319,7 @@ func CustomWrapHandler(config *Config, handler *webdav.Handler) gin.HandlerFunc 
 
           return
        }
-	
+
        // 路由匹配
        matches := matcher.FindStringSubmatch(ctx.Request.RequestURI)
 
@@ -353,7 +333,7 @@ func CustomWrapHandler(config *Config, handler *webdav.Handler) gin.HandlerFunc 
        once.Do(func() {
           handler.Prefix = matches[1]
        })
-		
+
        switch filepath.Ext(path) {
        case ".html":
           ctx.Header("Content-Type", "text/html; charset=utf-8")
@@ -388,30 +368,30 @@ func CustomWrapHandler(config *Config, handler *webdav.Handler) gin.HandlerFunc 
 }
 ```
 
-通过生成的go代码来自动完成实例注册，下方是自动生成的`docs.go`的部分代码
+通过生成的 go 代码来自动完成实例注册，下方是自动生成的`docs.go`的部分代码
 
 ```go
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
-	InfoInstanceName: "swagger",
-	SwaggerTemplate:  docTemplate,
-	LeftDelim:        "{{",
-	RightDelim:       "}}",
+  Version:          "",
+  Host:             "",
+  BasePath:         "",
+  Schemes:          []string{},
+  Title:            "",
+  Description:      "",
+  InfoInstanceName: "swagger",
+  SwaggerTemplate:  docTemplate,
+  LeftDelim:        "{{",
+  RightDelim:       "}}",
 }
 
 func init() {
     // 注册实例
-	swag.Register(SwaggerInfo.InstanceName(), SwaggerInfo)
+  swag.Register(SwaggerInfo.InstanceName(), SwaggerInfo)
 }
 ```
 
-可以看到在`init`函数中有一个Register函数用来注册当前实例，如果想要修改实例名称不建议在该文件进行编辑，因为`docs.go`文件是自动生成的，只需要在生成代码时使用`--instanceName appapi`参数。为了方便，可以使用go generate命令嵌入的到go文件中，方便自动生成代码，如下。
+可以看到在`init`函数中有一个 Register 函数用来注册当前实例，如果想要修改实例名称不建议在该文件进行编辑，因为`docs.go`文件是自动生成的，只需要在生成代码时使用`--instanceName appapi`参数。为了方便，可以使用 go generate 命令嵌入的到 go 文件中，方便自动生成代码，如下。
 
 ```go
 // swagger declarative api comment
@@ -423,7 +403,7 @@ func init() {
 //go:generate swag init --generatedTime --instanceName appapi -g api.go -d ./ --output ./swagger
 ```
 
-个人并不喜欢将swagger的通用信息注释写在`main.go`或`main`函数上，将这些注释写在`go generate`上方最合适不过。
+个人并不喜欢将 swagger 的通用信息注释写在`main.go`或`main`函数上，将这些注释写在`go generate`上方最合适不过。
 
 ::: tip
 
@@ -431,29 +411,29 @@ func init() {
 
 :::
 
-为了定制化一些配置，需要用`ginSwagger.CustomWrapHandler`，它相比前者多了一个Config参数，释义如下
+为了定制化一些配置，需要用`ginSwagger.CustomWrapHandler`，它相比前者多了一个 Config 参数，释义如下
 
 ```go
 // Config stores ginSwagger configuration variables.
 type Config struct {
-	// The url pointing to API definition (normally swagger.json or swagger.yaml). Default is `doc.json`.
-	URL                      string
+  // The url pointing to API definition (normally swagger.json or swagger.yaml). Default is `doc.json`.
+  URL                      string
     // 接口列表展开状态
-	DocExpansion             string
+  DocExpansion             string
     // 实例名称
-	InstanceName             string
+  InstanceName             string
     // 标题
-	Title                    string
+  Title                    string
     // 展开深度
-	DefaultModelsExpandDepth int
+  DefaultModelsExpandDepth int
     // 顾名思义
-	DeepLinking              bool
-	PersistAuthorization     bool
-	Oauth2DefaultClientID    string
+  DeepLinking              bool
+  PersistAuthorization     bool
+  Oauth2DefaultClientID    string
 }
 ```
 
-使用`swaggerFiles.NewHandler()`来替代默认的Handler，在多个实例时尤其要如此。
+使用`swaggerFiles.NewHandler()`来替代默认的 Handler，在多个实例时尤其要如此。
 
 ```go
 engine.GET(openapi.ApiDoc, ginSwagger.CustomWrapHandler(openapi.Config, swaggerFiles.NewHandler()))
@@ -461,43 +441,38 @@ engine.GET(openapi.ApiDoc, ginSwagger.CustomWrapHandler(openapi.Config, swaggerF
 
 除此之外还可以进行类型重写等一系列操作，都是比较简单的，更多内容可以阅读官方文档。
 
-
-
 ## 注意事项
 
-1. swag是根据注释来生成openapi的接口描述文件的，在生成时，指定的目录必须要包含接口文档的基本信息，默认是在`main.go`里面查找
+1. swag 是根据注释来生成 openapi 的接口描述文件的，在生成时，指定的目录必须要包含接口文档的基本信息，默认是在`main.go`里面查找
 
 2. `swag init`默认指定的是当前目录，值为`./`，可以使用`swag init -d`指定多个目录，使用逗号分隔，第一个指定的目录必须包含接口文档的基本信息。例如
 
-    ```
-    swag init -d ./,./api
-    ```
+   ```
+   swag init -d ./,./api
+   ```
 
 3. `-g`，接口文档的基本信息的存放文件可以自定义文件名，默认是`main.go`，在生成文档时，使用`-g`参数指定文件名
 
-    ```
-    swag init -g api.go -d ./,./api
-    ```
+   ```
+   swag init -g api.go -d ./,./api
+   ```
 
-    该命令的意思是在`./api.go`解析接口文档的基本信息，同时在`./`和`./api`两个目录下查找和解析其他接口的注释信息并生成对应的文档。
+   该命令的意思是在`./api.go`解析接口文档的基本信息，同时在`./`和`./api`两个目录下查找和解析其他接口的注释信息并生成对应的文档。
 
 4. `-o`参数可以指定文档描述文件的输出路径，默认是`./docs`，例:
 
-    ```
-    swag init -o ./api/docs
-    ```
+   ```
+   swag init -o ./api/docs
+   ```
 
-5. `--ot`可以指定输出文件类型，默认是（docs.go,swagger.json,swagger.yaml），如果想要使用go程序加载swagger ui，go文件是必不可少的。
+5. `--ot`可以指定输出文件类型，默认是（docs.go,swagger.json,swagger.yaml），如果想要使用 go 程序加载 swagger ui，go 文件是必不可少的。
 
-    ```
-    swag init --ot go,yaml
-    ```
+   ```
+   swag init --ot go,yaml
+   ```
 
-    其余生成的json和yaml文件可以方便在其他接口管理软件上导入数据。
+   其余生成的 json 和 yaml 文件可以方便在其他接口管理软件上导入数据。
 
-6. 注释写在哪里都一样，就算不写在函数上也一样能解析，只是写在函数上可读性好一些，本质上还是一个以注释形式和go源代码嵌在一起的DSL。
+6. 注释写在哪里都一样，就算不写在函数上也一样能解析，只是写在函数上可读性好一些，本质上还是一个以注释形式和 go 源代码嵌在一起的 DSL。
 
-7. swag还支持很多其他的参数，可以使用`swag init -h`查看。
-
-
-
+7. swag 还支持很多其他的参数，可以使用`swag init -h`查看。

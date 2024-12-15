@@ -1,19 +1,18 @@
 ---
 date: 2023-09-06
 ---
+
 # Protobuf
 
-官网：[Protocol Buffers  | Google Developers](https://developers.google.com/protocol-buffers/)
+官网：[Protocol Buffers | Google Developers](https://developers.google.com/protocol-buffers/)
 
 ## 介绍
 
-官方教程：[Protocol Buffer Basics: Go  | Protocol Buffers  | Google Developers](https://developers.google.com/protocol-buffers/docs/gotutorial)
+官方教程：[Protocol Buffer Basics: Go | Protocol Buffers | Google Developers](https://developers.google.com/protocol-buffers/docs/gotutorial)
 
-`Protocol Buffers`是谷歌2008年开源的语言无关，协议无关，可扩展的结构化数据序列化机制，在解包封包的时候更加的快速，多用于RPC领域通信相关，可以定义数据的结构化方式，然后可以使用特殊生成的源代码轻松地将结构化数据写入各种数据流和从各种数据流中读取结构化数据，并使用于各种语言，关于`Protocol Buffers`下文统称为`protobuf`。
+`Protocol Buffers`是谷歌 2008 年开源的语言无关，协议无关，可扩展的结构化数据序列化机制，在解包封包的时候更加的快速，多用于 RPC 领域通信相关，可以定义数据的结构化方式，然后可以使用特殊生成的源代码轻松地将结构化数据写入各种数据流和从各种数据流中读取结构化数据，并使用于各种语言，关于`Protocol Buffers`下文统称为`protobuf`。
 
-`protobuf`算是比较流行，尤其是go这一块，gRPC就将其作为协议传输的序列化机制。
-
-
+`protobuf`算是比较流行，尤其是 go 这一块，gRPC 就将其作为协议传输的序列化机制。
 
 ## 语法
 
@@ -32,23 +31,21 @@ message SearchResult {
 }
 
 service SearchService {
-	rpc Search(SearchRequest) returns(SearchResult);
+  rpc Search(SearchRequest) returns(SearchResult);
 }
 ```
 
 - 第一行`syntax = "proto3";` 表示使用`proto3`的语法，默认使用`proto3`的语法。
 - `message`声明的方式类似于结构体，是`proto`中的基本结构
 - `SearchRequest`中定义了三个字段，每个字段都会有名称和类型
-- `service`中定义了一个服务，一个服务中包含一个或多个rpc接口
-- rpc接口必须要有且只能有一个参数和返回值，它们的类型必须是`message`，不能是基本类型。
+- `service`中定义了一个服务，一个服务中包含一个或多个 rpc 接口
+- rpc 接口必须要有且只能有一个参数和返回值，它们的类型必须是`message`，不能是基本类型。
 
 另外需要注意的是，`proto`文件中的每一行末尾必须要有分号结尾。
 
-
-
 ### 注释
 
-注释风格跟go完全一致。
+注释风格跟 go 完全一致。
 
 ```protobuf
 syntax = "proto3";
@@ -61,15 +58,9 @@ message SearchRequest {
 }
 ```
 
-
-
-
-
 ### 类型
 
 类型修饰只能出现在`message`中，不能单独出现。
-
-
 
 #### 基本类型
 
@@ -91,11 +82,9 @@ message SearchRequest {
 | string     | string  |
 | bytes      | []byte  |
 
-
-
 #### 数组
 
-在基本类型前面加上`repeated`修饰符表示这是一个数组类型，对应go中的切片。
+在基本类型前面加上`repeated`修饰符表示这是一个数组类型，对应 go 中的切片。
 
 ```protobuf
 message Company {
@@ -103,11 +92,9 @@ message Company {
 }
 ```
 
-
-
 #### map
 
-在protobuf中定义map类型格式如下
+在 protobuf 中定义 map 类型格式如下
 
 ```
 map<key_type, value_type> map_field = N;
@@ -121,40 +108,36 @@ message Person {
 }
 ```
 
-
-
 ### 字段
 
-事实上，proto并不是传统的键值类型，在声明的`proto`文件中是不会出现具体的数据的，每一次字段的`=`后面跟的应该是当前`message`中的唯一编号，这些编号用于在二进制消息体中识别和定义这些字段。编号从1开始，1-15的编号会占用1个字节，16-2047会占用两个字节，因此尽可能的将频繁出现的字段赋予1-15的编号以节省空间，并且应该留出一些空间以留给后续可能会频繁出现的字段。
+事实上，proto 并不是传统的键值类型，在声明的`proto`文件中是不会出现具体的数据的，每一次字段的`=`后面跟的应该是当前`message`中的唯一编号，这些编号用于在二进制消息体中识别和定义这些字段。编号从 1 开始，1-15 的编号会占用 1 个字节，16-2047 会占用两个字节，因此尽可能的将频繁出现的字段赋予 1-15 的编号以节省空间，并且应该留出一些空间以留给后续可能会频繁出现的字段。
 
 一个`message`中的字段应当遵循以下规则
 
-- `singular`: 默认是该种类型的字段，在一个结构良好的`message`中，有且只能由0个或者1个该字段，即不能重复存在同一个字段。如下声明便会报错。
+- `singular`: 默认是该种类型的字段，在一个结构良好的`message`中，有且只能由 0 个或者 1 个该字段，即不能重复存在同一个字段。如下声明便会报错。
 
-    ```protobuf
-    syntax = "proto3";
-    
-    message SearchRequest {
-      string query = 1;
-      string number = 2;
-      string number = 3;//字段重复
-    }
-    ```
+  ```protobuf
+  syntax = "proto3";
 
-- `optional`:  与`singular`类似，只是可以显示的检查字段值是否被设置，可能会有以下两种情况
+  message SearchRequest {
+    string query = 1;
+    string number = 2;
+    string number = 3;//字段重复
+  }
+  ```
 
-    - `set`:  将会被序列化
-    - `unset`: 不会被序列化
+- `optional`: 与`singular`类似，只是可以显示的检查字段值是否被设置，可能会有以下两种情况
 
-- `repeated`: 此种类型的字段可以出现0次或多次，将会按照顺序保留重复值（说白了其实就是数组，可以允许同一个类型的值多次重复出现，并且按照出现的顺序保留，就是索引）
+  - `set`: 将会被序列化
+  - `unset`: 不会被序列化
+
+- `repeated`: 此种类型的字段可以出现 0 次或多次，将会按照顺序保留重复值（说白了其实就是数组，可以允许同一个类型的值多次重复出现，并且按照出现的顺序保留，就是索引）
 
 - `map`: 键值对类型的字段，声明方式如下
 
-    ```protobuf
-    map<string,int32> config = 3;
-    ```
-
-
+  ```protobuf
+  map<string,int32> config = 3;
+  ```
 
 ### 保留字段
 
@@ -176,8 +159,6 @@ message SearchRequest {
 
 如此一来，此文件将不会通过编译。
 
-
-
 ### 弃用字段
 
 如果一个字段被弃用，可以如下书写。
@@ -187,8 +168,6 @@ message Body {
   string name = 1 [deprecated = true];
 }
 ```
-
-
 
 ### 枚举
 
@@ -238,8 +217,6 @@ message SearchRequest {
 
 ```
 
-
-
 ### 嵌套消息
 
 ```protobuf
@@ -261,8 +238,6 @@ message Outer {                  // Level 0
 
 `message`里面可以嵌套声明`message`，就跟嵌套结构体一样。
 
-
-
 ### Package
 
 您可以向`protobuf`文件添加一个可选的包修饰符，以防止协议消息类型之间的名称冲突。
@@ -281,8 +256,6 @@ message Foo {
   ...
 }
 ```
-
-
 
 ### Import
 
@@ -336,7 +309,7 @@ import "player/health.proto";
 
 ::: tip
 
-如果你使用的是goland编辑器，对于你自己创建的`protobuf`目录，默认是没法解析的，也就会出现爆红的情况，想要goland识别的话就得手动设置扫描路径，其原理跟上面讲的完全一样，设置方法如下，打开如下设置
+如果你使用的是 goland 编辑器，对于你自己创建的`protobuf`目录，默认是没法解析的，也就会出现爆红的情况，想要 goland 识别的话就得手动设置扫描路径，其原理跟上面讲的完全一样，设置方法如下，打开如下设置
 
 ```
 File | Settings | Languages & Frameworks | Protocol Buffers
@@ -347,8 +320,6 @@ File | Settings | Languages & Frameworks | Protocol Buffers
 ![](/images/protoc/setting.png)
 
 :::
-
-
 
 ### Any
 
@@ -367,15 +338,13 @@ message ErrorStatus {
 
 - 基本类型的封装
 - 时间类型
-- Duration类型
+- Duration 类型
 
 有关它们的`protobuf`定义应该在`protoc`编译器的`inlucde`目录下。
 
-
-
 ### OneOf
 
-这里的官方文档给出的解释实在是太繁琐了，说人话其实就是表示一个字段在传输时会有多种可能的类型，但最终只可能会有一个类型被使用，它的内部不允许出现`repeated`修饰的字段，这就好像c语言中的`union`一样。
+这里的官方文档给出的解释实在是太繁琐了，说人话其实就是表示一个字段在传输时会有多种可能的类型，但最终只可能会有一个类型被使用，它的内部不允许出现`repeated`修饰的字段，这就好像 c 语言中的`union`一样。
 
 ```protobuf
 message Stock {
@@ -395,19 +364,17 @@ message ChangeNotification {
 }
 ```
 
-
-
 ### Service
 
-`service`关键字可以定义一个RPC服务，一个RPC服务包含若干个rpc接口，接口又分为一元接口和流式接口。
+`service`关键字可以定义一个 RPC 服务，一个 RPC 服务包含若干个 rpc 接口，接口又分为一元接口和流式接口。
 
 ```protobuf
 message Body {
-	string name = 1;
+  string name = 1;
 }
 
 service ExampleService {
-	rpc DoSomething(Body) returns(Body);
+  rpc DoSomething(Body) returns(Body);
 }
 ```
 
@@ -430,11 +397,9 @@ service ExampleService {
 
 所谓流式就是就是在一个连接中长期的相互发送数据，而不再像一元接口那样简单的一问一答。
 
-
-
 ### Empty
 
-empty实际上是一个空的`message`，对应go中的空结构体，它很少用于修饰字段，主要是用来表示某个rpc接口不需要参数或者没有返回值。
+empty 实际上是一个空的`message`，对应 go 中的空结构体，它很少用于修饰字段，主要是用来表示某个 rpc 接口不需要参数或者没有返回值。
 
 ```protobuf
 syntax = "proto3";
@@ -446,11 +411,9 @@ service EmptyService {
 }
 ```
 
-
-
 ### Option
 
-option通常用于控制`protobuf`的一些行为。比如控制go语言源代码生成的包，就可以如下声明。
+option 通常用于控制`protobuf`的一些行为。比如控制 go 语言源代码生成的包，就可以如下声明。
 
 ```protobuf
 option go_package = "github/jack/sample/pb_learn;pb_learn"
@@ -470,9 +433,7 @@ option go_package = "github/jack/sample/pb_learn;pb_learn"
 option optimize_for = SPEED;
 ```
 
-除此之外，option还可以给`message`和`enum`添加一些元信息，利用反射可以获取这些信息，这在进行参数校验的时候尤其有用。
-
-
+除此之外，option 还可以给`message`和`enum`添加一些元信息，利用反射可以获取这些信息，这在进行参数校验的时候尤其有用。
 
 ## 编译
 
@@ -480,11 +441,9 @@ option optimize_for = SPEED;
 
 ![](/images/protoc/languages.png)
 
-
-
 ### 安装
 
-编译器下载的话到[protocolbuffers/protobuf: Protocol Buffers - Google's data interchange format (github.com)](https://github.com/protocolbuffers/protobuf)去下载最新版的Release，一般是一个压缩文件
+编译器下载的话到[protocolbuffers/protobuf: Protocol Buffers - Google's data interchange format (github.com)](https://github.com/protocolbuffers/protobuf)去下载最新版的 Release，一般是一个压缩文件
 
 ```
 protoc-25.1-win64
@@ -512,20 +471,20 @@ protoc-25.1-win64
                     plugin.proto
 ```
 
-下载好后将bin目录添加到环境变量中，以便可以使用`protoc`命令，完成后看下版本，能正常输出就说明安装成功
+下载好后将 bin 目录添加到环境变量中，以便可以使用`protoc`命令，完成后看下版本，能正常输出就说明安装成功
 
 ```bash
 $ protoc --version
 libprotoc 25.1
 ```
 
-下载下来的编译器默认不支持go语言，因为go语言代码生成是单独的一个可执行文件，其它语言全揉一块了，所以再安装go语言插件，用于将`protocbuf`定义翻译成go语言源代码。
+下载下来的编译器默认不支持 go 语言，因为 go 语言代码生成是单独的一个可执行文件，其它语言全揉一块了，所以再安装 go 语言插件，用于将`protocbuf`定义翻译成 go 语言源代码。
 
 ```bash
 $ go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 ```
 
-假如还需要生成gRPC服务代码，再安装如下插件
+假如还需要生成 gRPC 服务代码，再安装如下插件
 
 ```bash
 $ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
@@ -548,8 +507,6 @@ protoc-gen-go.exe v1.31.0
 ```
 
 除此之外还有许多其它插件，比如生成`openapi`接口文档的插件等等，感兴趣可以自己去搜索。
-
-
 
 ### 生成
 
@@ -590,7 +547,7 @@ $ ls
 common.pb.go  common.proto  monster/  player/
 ```
 
-`--go_out`的参数就是指定的生成路径，`.`表示的就是当前路径，`common.proto`就是指定要编译的文件。如果要生成`grpc`代码（前提是装了grpc插件），可以加上`--go-grpc_out`参数（如果`protobuf`文件中没有定义`service`，就不会生成对应文件）。
+`--go_out`的参数就是指定的生成路径，`.`表示的就是当前路径，`common.proto`就是指定要编译的文件。如果要生成`grpc`代码（前提是装了 grpc 插件），可以加上`--go-grpc_out`参数（如果`protobuf`文件中没有定义`service`，就不会生成对应文件）。
 
 ```bash
 $ protoc --proto_path=. --go_out=. --go-grpc_out=. common.proto
@@ -613,23 +570,23 @@ $ protoc --proto_path=. --go_out=.. common.proto --go-grpc_out=. ./*.proto
 $ protoc --proto_path=. --go_out=.. common.proto --go-grpc_out=. ./*.proto
 ```
 
-但是，这种方法仅适用于支持这种通配符的shell，比如在windows下，cmd或powershell都不支持这种写法
+但是，这种方法仅适用于支持这种通配符的 shell，比如在 windows 下，cmd 或 powershell 都不支持这种写法
 
 ```powershell
 D> protoc --proto_path=. --go_out=.. common.proto --go-grpc_out=. ./**/*.proto
 Invalid file name pattern or missing input file "./**/*.proto"
 ```
 
-幸运的是gitbash支持linux许多命令，也可以让windows支持这种语法。为了避免每次都要写重复的命令，可以将其放在`makefile`里面
+幸运的是 gitbash 支持 linux 许多命令，也可以让 windows 支持这种语法。为了避免每次都要写重复的命令，可以将其放在`makefile`里面
 
 ```makefile
 .PHONY: all
 
 proto_gen:
-	protoc --proto_path=. \
-		   --go_out=paths=source_relative:. \
-		   --go-grpc_out=paths=source_relative:. \
-		   ./**/*.proto ./*.proto
+  protoc --proto_path=. \
+       --go_out=paths=source_relative:. \
+       --go-grpc_out=paths=source_relative:. \
+       ./**/*.proto ./*.proto
 ```
 
 可以注意到多了一个`paths=source_relative:.`，这是在设置文件生成的路径模式，总共有以下几个可选项
@@ -655,8 +612,6 @@ proto_gen:
         player.pb.go
         player.proto
 ```
-
-
 
 ## 反射
 
@@ -694,11 +649,11 @@ message MyMessage {
 
 ```go
 func main() {
-	message := pb_learn.MyMessage{}
-	message.ProtoReflect().Descriptor().Options().ProtoReflect().Range(func(descriptor protoreflect.FieldDescriptor, value protoreflect.Value) bool {
-		fmt.Println(descriptor.FullName(), ":", value)
-		return true
-	})
+  message := pb_learn.MyMessage{}
+  message.ProtoReflect().Descriptor().Options().ProtoReflect().Range(func(descriptor protoreflect.FieldDescriptor, value protoreflect.Value) bool {
+    fmt.Println(descriptor.FullName(), ":", value)
+    return true
+  })
 }
 ```
 
@@ -708,4 +663,4 @@ func main() {
 my_option:"Hello world!"
 ```
 
-这种方式可以类比一下go中给结构体加tag，都是差不的感觉，根据这种方式还能实现参数校验的功能，只需要在`options`中书写规则，通过`Descriptor`来进行检查。
+这种方式可以类比一下 go 中给结构体加 tag，都是差不的感觉，根据这种方式还能实现参数校验的功能，只需要在`options`中书写规则，通过`Descriptor`来进行检查。

@@ -1,22 +1,16 @@
 # Zap
 
-Zap是一个用Go构建的，快速的 ，结构化，级别化的日志组件。
-
-
+Zap 是一个用 Go 构建的，快速的 ，结构化，级别化的日志组件。
 
 官方仓库：[uber-go/zap: Blazing fast, structured, leveled logging in Go. (github.com)](https://github.com/uber-go/zap)
 
 官方文档：[zap package - go.uber.org/zap - Go Packages](https://pkg.go.dev/go.uber.org/zap)
-
-
 
 ## 安装
 
 ```
 go get -u go.uber.org/zap
 ```
-
-
 
 ## 快速开始
 
@@ -47,26 +41,24 @@ logger.Info("failed to fetch URL",
 )
 ```
 
-
-
 ::: tip
 
-Zap的使用非常简单，麻烦的点在于配置出一个适合自己项目的日志，官方例子很少，要多读源代码注释。
+Zap 的使用非常简单，麻烦的点在于配置出一个适合自己项目的日志，官方例子很少，要多读源代码注释。
 
 :::
 
 ## 配置
 
-一般来说日志的配置都是写在配置文件里的，Zap的配置也支持通过配置文件反序列化，但是仅支持基础的配置，即便是高级配置官方给出的例子也是十分简洁，并不足以投入使用，所以要详细讲一下细节的配置。
+一般来说日志的配置都是写在配置文件里的，Zap 的配置也支持通过配置文件反序列化，但是仅支持基础的配置，即便是高级配置官方给出的例子也是十分简洁，并不足以投入使用，所以要详细讲一下细节的配置。
 
 首先看一下总体的配置结构体，需要先搞明白里面的每一个字段的含义
 
 ```go
 type Config struct {
     // 最小日志级别
-   Level AtomicLevel `json:"level" yaml:"level"` 
+   Level AtomicLevel `json:"level" yaml:"level"`
     // 开发模式，主要影响堆栈跟踪
-   Development bool `json:"development" yaml:"development"` 
+   Development bool `json:"development" yaml:"development"`
     // 调用者追踪
    DisableCaller bool `json:"disableCaller" yaml:"disableCaller"`
     // 堆栈跟踪
@@ -125,14 +117,14 @@ type Option interface {
 type optionFunc func(*Logger)
 
 func (f optionFunc) apply(log *Logger) {
-	f(log)
+  f(log)
 }
 
 // 应用
 func Development() Option {
-	return optionFunc(func(log *Logger) {
-		log.development = true
-	})
+  return optionFunc(func(log *Logger) {
+    log.development = true
+  })
 }
 ```
 
@@ -223,25 +215,25 @@ zap:
 // @Date: 2023-01-09 16:37:05
 // @Description: zap日志配置结构体
 type ZapConfig struct {
-	Prefix     string         `yaml:"prefix" mapstructure:""prefix`
-	TimeFormat string         `yaml:"timeFormat" mapstructure:"timeFormat"`
-	Level      string         `yaml:"level" mapstructure:"level"`
-	Caller     bool           `yaml:"caller" mapstructure:"caller"`
-	StackTrace bool           `yaml:"stackTrace" mapstructure:"stackTrace"`
-	Writer     string         `yaml:"writer" mapstructure:"writer"`
-	Encode     string         `yaml:"encode" mapstructure:"encode"`
-	LogFile    *LogFileConfig `yaml:"logFile" mapstructure:"logFile"`
+  Prefix     string         `yaml:"prefix" mapstructure:""prefix`
+  TimeFormat string         `yaml:"timeFormat" mapstructure:"timeFormat"`
+  Level      string         `yaml:"level" mapstructure:"level"`
+  Caller     bool           `yaml:"caller" mapstructure:"caller"`
+  StackTrace bool           `yaml:"stackTrace" mapstructure:"stackTrace"`
+  Writer     string         `yaml:"writer" mapstructure:"writer"`
+  Encode     string         `yaml:"encode" mapstructure:"encode"`
+  LogFile    *LogFileConfig `yaml:"logFile" mapstructure:"logFile"`
 }
 
 // LogFileConfig
 // @Date: 2023-01-09 16:38:45
 // @Description: 日志文件配置结构体
 type LogFileConfig struct {
-	MaxSize  int      `yaml:"maxSize" mapstructure:"maxSize"`
-	BackUps  int      `yaml:"backups" mapstructure:"backups"`
-	Compress bool     `yaml:"compress" mapstructure:"compress"`
-	Output   []string `yaml:"output" mapstructure:"output"`
-	Errput   []string `yaml:"errput" mapstructure:"errput"`
+  MaxSize  int      `yaml:"maxSize" mapstructure:"maxSize"`
+  BackUps  int      `yaml:"backups" mapstructure:"backups"`
+  Compress bool     `yaml:"compress" mapstructure:"compress"`
+  Output   []string `yaml:"output" mapstructure:"output"`
+  Errput   []string `yaml:"errput" mapstructure:"errput"`
 }
 ```
 
@@ -340,8 +332,6 @@ go get -u github.com/natefinch/lumberjack
 }
 ```
 
-
-
 ### 日志级别
 
 官方有关于日志级别的枚举项，直接使用即可。
@@ -364,8 +354,6 @@ func zapLevelEnabler(cfg *ZapConfig) zapcore.LevelEnabler {
    return zap.DebugLevel
 }
 ```
-
-
 
 ### 最后构建
 
@@ -405,4 +393,3 @@ func buildOptions(cfg *ZapConfig, levelEnabler zapcore.LevelEnabler) (options []
 ```
 ZapLogTest      2023/01/09 - 19:44:00.91076     INFO    demo/zap.go:49     日志初始化完成
 ```
-

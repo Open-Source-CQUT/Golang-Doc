@@ -1,11 +1,10 @@
 ---
 date: 2022-10-21
 ---
+
 # math
 
-`math`是Go中的基本数学操作库，也是必须要熟练掌握和使用的库。
-
-
+`math`是 Go 中的基本数学操作库，也是必须要熟练掌握和使用的库。
 
 ## 整数常量
 
@@ -31,8 +30,6 @@ const (
 )
 ```
 
-
-
 ## 浮点常量
 
 ```go
@@ -44,8 +41,6 @@ const (
    SmallestNonzeroFloat64 = 0x1p-1022 * 0x1p-52            // 4.9406564584124654417656879286822137236505980e-324
 )
 ```
-
-
 
 ## 数学常量
 
@@ -67,13 +62,11 @@ const (
 )
 ```
 
-
-
 ## 最大值
 
 ```go
 func TestMax(t *testing.T) {
-	fmt.Println(math.Max(1.0, 2.0))
+  fmt.Println(math.Max(1.0, 2.0))
 }
 ```
 
@@ -83,8 +76,6 @@ func TestMax(t *testing.T) {
 --- PASS: TestMax (0.00s)
 PASS
 ```
-
-
 
 ## 最小值
 
@@ -101,8 +92,6 @@ func TestMin(t *testing.T) {
 PASS
 ```
 
-
-
 ## 绝对值
 
 ```go
@@ -117,8 +106,6 @@ func TestAbs(t *testing.T) {
 --- PASS: TestAbs (0.00s)
 PASS
 ```
-
-
 
 ## 余数
 
@@ -137,9 +124,7 @@ func TestMod(t *testing.T) {
 PASS
 ```
 
-
-
-## Nan检测
+## Nan 检测
 
 ```go
 func TestName(t *testing.T) {
@@ -154,9 +139,7 @@ func TestName(t *testing.T) {
 PASS
 ```
 
-
-
-## Inf检测
+## Inf 检测
 
 ```go
 func TestInf(t *testing.T) {
@@ -172,8 +155,6 @@ true
 --- PASS: TestInf (0.00s)
 PASS
 ```
-
-
 
 ## 取整
 
@@ -192,8 +173,6 @@ func TestTrunc(t *testing.T) {
 PASS
 ```
 
-
-
 ## 向下取整
 
 ```go
@@ -209,8 +188,6 @@ func TestFloor(t *testing.T) {
 PASS
 ```
 
-
-
 ## 向上取整
 
 ```go
@@ -225,8 +202,6 @@ func TestCeil(t *testing.T) {
 --- PASS: TestCeil (0.00s)
 PASS
 ```
-
-
 
 ## 四舍五入
 
@@ -245,8 +220,6 @@ func TestRound(t *testing.T) {
 PASS
 ```
 
-
-
 ## 求对数
 
 ```go
@@ -264,9 +237,7 @@ func TestLog(t *testing.T) {
 PASS
 ```
 
-
-
-## E的指数
+## E 的指数
 
 ```go
 func TestEx(t *testing.T) {
@@ -280,8 +251,6 @@ func TestEx(t *testing.T) {
 --- PASS: TestEx (0.00s)
 PASS
 ```
-
-
 
 ## 幂
 
@@ -300,13 +269,11 @@ func TestPow(t *testing.T) {
 PASS
 ```
 
-
-
 ## 平方根
 
 ```go
 func TestSqrt(t *testing.T) {
-	fmt.Println(math.Sqrt(4))
+  fmt.Println(math.Sqrt(4))
 }
 ```
 
@@ -316,8 +283,6 @@ func TestSqrt(t *testing.T) {
 --- PASS: TestSqrt (0.00s)
 PASS
 ```
-
-
 
 ## 立方根
 
@@ -336,14 +301,12 @@ func TestCube(t *testing.T) {
 PASS
 ```
 
-
-
-## 开N方
+## 开 N 方
 
 ```go
 func TestN(t *testing.T) {
-	fmt.Println(math.Round(math.Pow(8, 1.0/3)))
-	fmt.Println(math.Round(math.Pow(100, 1.0/2)))
+  fmt.Println(math.Round(math.Pow(8, 1.0/3)))
+  fmt.Println(math.Round(math.Pow(100, 1.0/2)))
 }
 ```
 
@@ -354,8 +317,6 @@ func TestN(t *testing.T) {
 --- PASS: TestN (0.00s)
 PASS
 ```
-
-
 
 ## Sin
 
@@ -374,8 +335,6 @@ func TestSin(t *testing.T) {
 PASS
 ```
 
-
-
 ## Cos
 
 ```go
@@ -393,8 +352,6 @@ func TestCos(t *testing.T) {
 PASS
 ```
 
-
-
 ## Tan
 
 ```go
@@ -411,8 +368,6 @@ func TestTan(t *testing.T) {
 --- PASS: TestTan (0.00s)
 PASS
 ```
-
-
 
 ::: tip
 

@@ -1,27 +1,22 @@
 ---
 date: 2022-10-16
 ---
+
 # strconv
 
 官方文档：[strconv package - strconv - Go Packages](https://pkg.go.dev/strconv@go1.19.4)
 
 包 strconv 实现与基本数据类型的字符串表示形式之间的转换
 
-
-
 ## 导入
 
 ```go
 import (
-	"strconv"
+  "strconv"
 )
 ```
 
 下面将会以例子的形式演示如何使用。
-
-
-
-
 
 ## 字符串转整型
 
@@ -33,8 +28,8 @@ func Atoi(s string) (int, error)
 
 ```go
 func TestAoti(t *testing.T) {
-	ints, err := strconv.Atoi("456789")
-	fmt.Println(ints, err)
+  ints, err := strconv.Atoi("456789")
+  fmt.Println(ints, err)
 }
 ```
 
@@ -44,8 +39,6 @@ func TestAoti(t *testing.T) {
 --- PASS: TestAoti (0.00s)
 PASS
 ```
-
-
 
 ## 整型转字符串
 
@@ -69,8 +62,6 @@ func TestIota(t *testing.T) {
 PASS
 ```
 
-
-
 ## 字符串转布尔值
 
 ```go
@@ -86,16 +77,14 @@ func ParseBool(str string) (bool, error)
 "0", "f", "F", "false", "FALSE", "False" // false
 ```
 
-
-
 ```go
 func TestAtob(t *testing.T) {
    parseBool, err := strconv.ParseBool("1")
    fmt.Println(parseBool, err)
-    
+
    b, err := strconv.ParseBool("true")
    fmt.Println(b, err)
-    
+
    b2, err := strconv.ParseBool("FALSE")
    fmt.Println(b2, err)
 }
@@ -109,8 +98,6 @@ false <nil>
 --- PASS: TestAotb (0.00s)
 PASS
 ```
-
-
 
 ## 布尔值转字符串
 
@@ -135,16 +122,14 @@ false
 PASS
 ```
 
+## 转换成 Go 字符串
 
-
-## 转换成Go字符串
-
-两者都会将字符串转换为带引号的Go字符串，区别在于后者会将非ASCII字符转通过`\u`转义。
+两者都会将字符串转换为带引号的 Go 字符串，区别在于后者会将非 ASCII 字符转通过`\u`转义。
 
 ```go
 func TestQuote(t *testing.T) {
-	fmt.Println(strconv.Quote("hello 世界"))
-	fmt.Println(strconv.QuoteToASCII("hello 世界"))
+  fmt.Println(strconv.Quote("hello 世界"))
+  fmt.Println(strconv.QuoteToASCII("hello 世界"))
 }
 ```
 
@@ -155,8 +140,6 @@ func TestQuote(t *testing.T) {
 --- PASS: TestQuote (0.00s)
 PASS
 ```
-
-
 
 ## 字符串转浮点数
 
@@ -185,8 +168,6 @@ func TestParseFloat(t *testing.T) {
 PASS
 ```
 
-
-
 ## 浮点数转字符串
 
 字符串在转换浮点数时，官方给出了几种格式方法，以便输出不同的样式。
@@ -198,7 +179,7 @@ PASS
 // 'f' (-ddd.dddd, 没有指数), // 没有特殊需求一般都用这个
 // 'g' (对于大指数采用'e'的格式， 小指数采用'f'的格式),
 // 'G' (对于大指数采用'e'的格式， 小指数采用'f'的格式)，
-// 'x' (-0xd.ddddp±ddd, 十六进制分数和二进制指数), 
+// 'x' (-0xd.ddddp±ddd, 十六进制分数和二进制指数),
 // 'X' (-0Xd.ddddP±ddd, 十六进制分数和二进制指数).
 ```
 
@@ -213,7 +194,7 @@ func FormatFloat(f float64, fmt byte, prec, bitSize int) string
 - prec - 指的是精度，除了`g/G`的情况是表示最大有效位数，其他情况都表示的是保留小数到后几位，
 - bitzise - 指的是位数
 
-当然一般情况都是使用`f`直接转换小数的格式最多。 
+当然一般情况都是使用`f`直接转换小数的格式最多。
 
 ```go
 func TestFormatFloat(t *testing.T) {
@@ -239,8 +220,6 @@ func TestFormatFloat(t *testing.T) {
 PASS
 ```
 
-
-
 ## 字符串转复数
 
 ```go
@@ -264,8 +243,6 @@ func TestParseComplex(t *testing.T) {
 --- PASS: TestParseComplex (0.00s)
 PASS
 ```
-
-
 
 ## 复数转字符串
 
@@ -298,11 +275,9 @@ func TestFormatComplex(t *testing.T) {
 PASS
 ```
 
-
-
 ## 字符串追加数据
 
-在其他语言比如java中`"1"+1`的结果是`"11"`，java会自动完成类型转换，而在Go语言中这样的操作是不被允许的，因为两者的数据类型不同。所以需要用到`strconv`下的Append函数 ，具体的参数与上面对于的数据转换函数一致。
+在其他语言比如 java 中`"1"+1`的结果是`"11"`，java 会自动完成类型转换，而在 Go 语言中这样的操作是不被允许的，因为两者的数据类型不同。所以需要用到`strconv`下的 Append 函数 ，具体的参数与上面对于的数据转换函数一致。
 
 ```go
 func TestAppend(t *testing.T) {
@@ -311,7 +286,7 @@ func TestAppend(t *testing.T) {
    bytes = strconv.AppendFloat(bytes, 1.2222, 'f', 2, 64)
    bytes = strconv.AppendBool(bytes, false)
    fmt.Println(string(bytes))
-}  
+}
 ```
 
 ```
@@ -320,4 +295,3 @@ func TestAppend(t *testing.T) {
 --- PASS: TestAppend (0.00s)
 PASS
 ```
-

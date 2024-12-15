@@ -1,18 +1,16 @@
 # MongoDB
 
-MongoDB是一个文档数据库，它的基本数据单位就是文档，存储格式是BSON（Binary JSON）一种类似JSON的结构，松散的结构可以存储不同类型的数据，相较于关系数据库更为灵活，并且使用js作为脚本语言，可以通过脚本来完成组合操作。本文主要介绍使用在Go中使用官方的mongo驱动操作mongodb数据库，并不是mongodb教程，如果你没有mongo基础，请先自行了解和学习。
+MongoDB 是一个文档数据库，它的基本数据单位就是文档，存储格式是 BSON（Binary JSON）一种类似 JSON 的结构，松散的结构可以存储不同类型的数据，相较于关系数据库更为灵活，并且使用 js 作为脚本语言，可以通过脚本来完成组合操作。本文主要介绍使用在 Go 中使用官方的 mongo 驱动操作 mongodb 数据库，并不是 mongodb 教程，如果你没有 mongo 基础，请先自行了解和学习。
 
-mongodb文档：[Introduction to MongoDB — MongoDB Manual](https://www.mongodb.com/docs/manual/introduction/)
+mongodb 文档：[Introduction to MongoDB — MongoDB Manual](https://www.mongodb.com/docs/manual/introduction/)
 
 ## 驱动
 
-mongodb在go这方面的库比较少，早期有些社区维护的库，后面都停止维护了，不过官方的mongo驱动库已经完全足够使用了。
+mongodb 在 go 这方面的库比较少，早期有些社区维护的库，后面都停止维护了，不过官方的 mongo 驱动库已经完全足够使用了。
 
 开源仓库：[mongodb/mongo-go-driver: The Official Golang driver for MongoDB (github.com)](https://github.com/mongodb/mongo-go-driver)
 
 文档地址：[mongodb/mongo-go-driver: The Official Golang driver for MongoDB (github.com)](https://github.com/mongodb/mongo-go-driver#readme)
-
-
 
 ### 安装
 
@@ -22,11 +20,9 @@ mongodb在go这方面的库比较少，早期有些社区维护的库，后面�
 $ go get go.mongodb.org/mongo-driver/mongo
 ```
 
-
-
 ## 连接
 
-下面是一个简单的mongo客户端与服务端建立连接的例子。
+下面是一个简单的 mongo 客户端与服务端建立连接的例子。
 
 ```go
 package main
@@ -54,11 +50,9 @@ func main() {
 }
 ```
 
-
-
 ## bson
 
-mongodb在go里面使用了以下几种类型来映射数据库中的文档，位于`bson/bson.go`
+mongodb 在 go 里面使用了以下几种类型来映射数据库中的文档，位于`bson/bson.go`
 
 ```go
 // BSON文档的有序表示
@@ -82,8 +76,8 @@ type D []E
 
 // 一对键值，BSON文档的有序表示的基本单位
 type E struct {
-	Key   string
-	Value interface{}
+  Key   string
+  Value interface{}
 }
 
 // BSON文档的无序表示
@@ -93,25 +87,21 @@ type M map[string]interface{}
 type A []interface{}
 ```
 
-通过以上几种类型，即可以构造查询SQL，也可以用来映射数据。
-
-
+通过以上几种类型，即可以构造查询 SQL，也可以用来映射数据。
 
 ::: tip
 
-驱动examples目录下有着相当多的使用示例，官方非常详细的演示了如何使用上述四种类型。
+驱动 examples 目录下有着相当多的使用示例，官方非常详细的演示了如何使用上述四种类型。
 
 地址：[mongo-go-driver/examples/documentation_examples/examples.go at master · mongodb/mongo-go-driver (github.com)](https://github.com/mongodb/mongo-go-driver/blob/master/examples/documentation_examples/examples.go)
 
 :::
 
-
-
 ## 查询文档
 
 官方查询示例：[mongo-go-driver/examples/documentation_examples/examples.go at master · mongodb/mongo-go-driver (github.com)](https://github.com/mongodb/mongo-go-driver/blob/master/examples/documentation_examples/examples.go#L145)
 
-首先创建user数据库，向集合users插入如下数据
+首先创建 user 数据库，向集合 users 插入如下数据
 
 ```sql
 > use user
@@ -119,12 +109,12 @@ type A []interface{}
     {
         name: "mike",
         age: 12,
-        
+
     },
     {
         name: "jenny",
         age: 14,
-        
+
     },
     {
         name: "jack",
@@ -133,8 +123,6 @@ type A []interface{}
     }
 ])
 ```
-
-
 
 ### 查询单个
 
@@ -172,8 +160,6 @@ db.users.findOne({
 ```
 {Name:jack Age:18 Address:usa}
 ```
-
-
 
 ### 查询多个
 
@@ -213,7 +199,7 @@ db.users.find({})
 [{Name:jack Age:18 Address:usa} {Name:mike Age:12 Address:} {Name:jenny Age:14 Address:}]
 ```
 
-在构造查询条件的时候，也可以使用options
+在构造查询条件的时候，也可以使用 options
 
 ```go
 type User struct {
@@ -255,8 +241,6 @@ db.users.find({}).sort({age:1}).limit(1)
 [{Name:mike Age:12 Address:}]
 ```
 
-
-
 ## 创建文档
 
 官方创建实例：[mongo-go-driver/examples/documentation_examples/examples.go at master · mongodb/mongo-go-driver (github.com)](https://github.com/mongodb/mongo-go-driver/blob/master/examples/documentation_examples/examples.go#L55)
@@ -275,7 +259,7 @@ if err != nil {
 fmt.Println(one.InsertedID)
 ```
 
-创建成功后会返回文档的ObjectID
+创建成功后会返回文档的 ObjectID
 
 ```
 ObjectID("64c60fa01e2548d9e4de6cf4")
@@ -301,7 +285,7 @@ if err != nil {
 fmt.Println(one.InsertedIDs)
 ```
 
-创建成功后返回返回一组ObjectID
+创建成功后返回返回一组 ObjectID
 
 ```
 [ObjectID("64c610d5aec2618d6ca0b515") ObjectID("64c610d5aec2618d6ca0b516")]
@@ -309,13 +293,11 @@ fmt.Println(one.InsertedIDs)
 
 上面两段代码就等价于`db.users.insertOne`和`db.users.insertMany`。
 
-
-
 ## 更新文档
 
 官方更新示例：[mongo-go-driver/examples/documentation_examples/examples.go at master · mongodb/mongo-go-driver (github.com)](https://github.com/mongodb/mongo-go-driver/blob/master/examples/documentation_examples/examples.go#L1357)
 
-下面是更新单个文档的示例，将名为lili人更名为mark
+下面是更新单个文档的示例，将名为 lili 人更名为 mark
 
 ```go
 upres, err := client.Database("user").Collection("users").UpdateOne(ctx, bson.D{
@@ -350,7 +332,7 @@ db.users.updateOne({
 &{MatchedCount:1 ModifiedCount:1 UpsertedCount:0 UpsertedID:<nil>}
 ```
 
-下面是更新多个文档的示例，将年龄为10的人地址更新为cn
+下面是更新多个文档的示例，将年龄为 10 的人地址更新为 cn
 
 ```go
 upres, err := client.Database("user").Collection("users").UpdateMany(ctx, bson.D{
@@ -367,7 +349,7 @@ if err != nil {
 fmt.Printf("%+v", upres)
 ```
 
-除了使用`Update`，mongo还提供了`Replace`，两者的区别在于前者是更新文档字段，后者是直接替换文档。例如下面的代码，就不再需要操作符了。
+除了使用`Update`，mongo 还提供了`Replace`，两者的区别在于前者是更新文档字段，后者是直接替换文档。例如下面的代码，就不再需要操作符了。
 
 ```go
 upres, err := client.Database("user").Collection("users").ReplaceOne(ctx, bson.D{
@@ -382,7 +364,7 @@ if err != nil {
 fmt.Printf("%+v", upres)
 ```
 
-同时mongo还提供了`FindOneAndUpdate`和`FindOneAndReplace`来获取文档和更新文档。如下
+同时 mongo 还提供了`FindOneAndUpdate`和`FindOneAndReplace`来获取文档和更新文档。如下
 
 ```go
 res := client.Database("user").Collection("users").FindOneAndReplace(ctx, bson.D{
@@ -409,8 +391,6 @@ Name: Age:0 Address:cn}
 ```
 
 此操作会先查询文档再进行修改文档。
-
-
 
 ## 删除文档
 
@@ -439,8 +419,6 @@ if err != nil {
 }
 fmt.Println(result.DeletedCount)
 ```
-
-
 
 ## 聚合
 
@@ -482,4 +460,4 @@ log.Println(users)
 [{lili 20 uk} {kak 30 uk}]
 ```
 
-这段聚合操作就是匹配所有address为uk的用户，然后按照年龄排序。
+这段聚合操作就是匹配所有 address 为 uk 的用户，然后按照年龄排序。

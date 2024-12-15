@@ -1,15 +1,13 @@
 ---
 title: 命令
-date: 2023-1-10
+date: 2023-01-10
 ---
-
-
 
 ## 命令行
 
 ![](/images/cmd.png)
 
-Go中的命令包含了一整套工具链，这些命令涵盖了文档，格式化，代码检查，编译，测试，依赖管理等多个方面，可以说是涉及到了Go开发的方方面面。
+Go 中的命令包含了一整套工具链，这些命令涵盖了文档，格式化，代码检查，编译，测试，依赖管理等多个方面，可以说是涉及到了 Go 开发的方方面面。
 
 ```text
 bug         报告漏洞
@@ -34,8 +32,6 @@ vet         扫描并输出源代码中可能存在的问题
 
 本文只是简单的叙述与介绍它们的使用，所有内容参考自官方文档，想要了解更多细节可以前往[cmd/go](https://pkg.go.dev/cmd/go)。
 
-
-
 ### help
 
 第一个要认识的是`help`命令，通过它可以阅读命令的用法。有两种用法，如果要获取简短的使用信息，可以在指定命令后面加上`-h`标志，比如
@@ -46,7 +42,7 @@ usage: go env [-json] [-u] [-w] [var ...]
 Run 'go help env' for details.
 ```
 
-go会简洁的展示该命令的用法，它也提示了，想要获得更详细的信息就需要使用help命令
+go 会简洁的展示该命令的用法，它也提示了，想要获得更详细的信息就需要使用 help 命令
 
 ```sh
 $ go help env
@@ -73,9 +69,7 @@ of the named environment variables to the given values.
 For more about environment variables, see 'go help environment'.
 ```
 
-善于利用help命令，通过它你可以获取很多有关命令的信息。
-
-
+善于利用 help 命令，通过它你可以获取很多有关命令的信息。
 
 ### doc
 
@@ -159,7 +153,7 @@ func GC()
 - `-all`：查看指定包的所有文档
 - `-short`：只一行简短描述
 - `-src`：输出源代码
-- `-cmd`：对于一些属于go命令的包，也输出它们包内的代码文档。
+- `-cmd`：对于一些属于 go 命令的包，也输出它们包内的代码文档。
 
 比如查看`runtime.inf`变量，这是一个不对外暴露的变量
 
@@ -172,9 +166,7 @@ var inf = float64frombits(0x7FF0000000000000)
 
 利用好`doc`命令可以帮助你更方便的阅读文档。
 
-<br/>
-
-另一个可以阅读命令文档的方式就是去阅读源代码，因为有些命令的文档并不会写的那么仔细，反而在源代码中会有比较详细的说明。由于这些命令全部都是由go编写的，阅读起来也相当的方便。这些命令都位于`src/cmd`包下，每一个子包就是一个单独的命令，入口位于`cmd/go/main.go`文件中
+另一个可以阅读命令文档的方式就是去阅读源代码，因为有些命令的文档并不会写的那么仔细，反而在源代码中会有比较详细的说明。由于这些命令全部都是由 go 编写的，阅读起来也相当的方便。这些命令都位于`src/cmd`包下，每一个子包就是一个单独的命令，入口位于`cmd/go/main.go`文件中
 
 ```go
 func init() {
@@ -221,9 +213,7 @@ func init() {
 }
 ```
 
-在这里你会找到go的所有子命令，以及它们的帮助文档信息。
-
-
+在这里你会找到 go 的所有子命令，以及它们的帮助文档信息。
 
 ### bug
 
@@ -235,27 +225,25 @@ Bug opens the default browser and starts a new bug report.
 The report includes useful system information.
 ```
 
-该命令没有任何参数和任何标志，它会用你的默认浏览器访问`github.com/golang/go`仓库的issue界面，方便你反馈bug，除此之外没有任何其它作用。
-
-
+该命令没有任何参数和任何标志，它会用你的默认浏览器访问`github.com/golang/go`仓库的 issue 界面，方便你反馈 bug，除此之外没有任何其它作用。
 
 ### version
 
-通过`version`命令可以查看当前go的版本信息。
+通过`version`命令可以查看当前 go 的版本信息。
 
 ```go
 $ go version -h
 usage: go version [-m] [-v] [file ...]
 ```
 
-在不带任何参数执行的情况下，它会输出当前go语言的版本
+在不带任何参数执行的情况下，它会输出当前 go 语言的版本
 
 ```sh
 $ go version
 go version go1.21.0 windows/amd64
 ```
 
-它还接收文件路径作为参数，它将输出该路径下所有可以被识别的二进制文件编译时所采用的go版本。
+它还接收文件路径作为参数，它将输出该路径下所有可以被识别的二进制文件编译时所采用的 go 版本。
 
 ```sh
 $ go version -v ./
@@ -276,7 +264,7 @@ swag.exe: go1.21.0
 wire.exe: go1.21.0
 ```
 
-其中`-v`参数指定`version`命令去尝试输出无法识别的文件的go版本，`-m`参数输出二进制文件的模块信息，以及一些编译参数，下面是一个简单的例子。
+其中`-v`参数指定`version`命令去尝试输出无法识别的文件的 go 版本，`-m`参数输出二进制文件的模块信息，以及一些编译参数，下面是一个简单的例子。
 
 ```sh
 $ go version -v -m wire.exe
@@ -299,13 +287,11 @@ wire.exe: go1.21.0
         build   GOAMD64=v1
 ```
 
-`go`自身也是一个二进制文件，其实在不带任何参数的情况下，`go version`输出的就是自身二进制文件的go语言版本，因为`cmd/go`的所有工具链都是由go语言自身实现的。
-
-
+`go`自身也是一个二进制文件，其实在不带任何参数的情况下，`go version`输出的就是自身二进制文件的 go 语言版本，因为`cmd/go`的所有工具链都是由 go 语言自身实现的。
 
 ### env
 
-通过`env`命令可以查看所有go环境变量的信息，修改这些环境变量将会影响go工具链的行为。
+通过`env`命令可以查看所有 go 环境变量的信息，修改这些环境变量将会影响 go 工具链的行为。
 
 ```sh
 $ go env -h
@@ -313,7 +299,7 @@ usage: go env [-json] [-u] [-w] [var ...]
 Run 'go help env' for details.
 ```
 
-不带任何参数执行该命令，会输出go所有环境变量的值
+不带任何参数执行该命令，会输出 go 所有环境变量的值
 
 ```sh
 $ go env
@@ -336,7 +322,7 @@ $ go env -json
 {
         "AR": "ar",
         "CC": "gcc",
-		......
+    ......
 }
 
 ```
@@ -385,16 +371,14 @@ General-purpose environment variables:
         GOCACHE
                 The directory where the go command will store cached
                 information for reuse in future builds.
-		......
+    ......
 ```
-
-<br/>
 
 下面介绍一些常用的环境变量
 
 **GOVERSION**
 
-该环境变量的值取决于go语言的版本，而版本号来自于`$GOROOT/VERSION`文件，该文件记录了当前go的版本号和构建时间。
+该环境变量的值取决于 go 语言的版本，而版本号来自于`$GOROOT/VERSION`文件，该文件记录了当前 go 的版本号和构建时间。
 
 ```sh
 $ cat $GOROOT/VERSION
@@ -403,8 +387,6 @@ time 2023-10-09T17:04:35Z
 ```
 
 `runtime.Version`变量值与`GOVERSION`的值相同，且该环境变量无法被修改。
-
-
 
 **GOENV**
 
@@ -428,19 +410,13 @@ GOTOOLCHAIN=auto
 
 它的格式就是简单的`key=value`这种形式，通过`go env -w key=value`命令修改的环境变量值将会被写入配置文件中。不过也可以不使用默认的配置文件，`GOENV`环境变量可以手动指定`env`配置文件的地址，并且`GOENV`环境变量的值只能被操作系统的环境变量所覆盖，无法被`go env -w`命令所修改。
 
-
-
 **GOHOSTARCH**
 
-代表着本机的CPU架构，只是用来展示，该环境变量的值并不是从配置文件中读取，也无法被修改。
-
-
+代表着本机的 CPU 架构，只是用来展示，该环境变量的值并不是从配置文件中读取，也无法被修改。
 
 **GOHOSTOS**
 
 代表着本机的操作系统，只是用来展示，该环境变量的值并不是从配置文件中读取，也无法被修改。
-
-
 
 **GOOS**
 
@@ -474,11 +450,9 @@ wasip1
 windows
 ```
 
-
-
 **GOARCH**
 
-编译时，`GOARCH`的值将会决定编译时采用哪个CPU架构的指令，默认值是`GOHOSTARCH`，也就是本机的CPU架构，它有以下几个可选项
+编译时，`GOARCH`的值将会决定编译时采用哪个 CPU 架构的指令，默认值是`GOHOSTARCH`，也就是本机的 CPU 架构，它有以下几个可选项
 
 - `amd64`
 - `386`
@@ -505,13 +479,11 @@ ppc64le
 s390x
 ```
 
-需要注意的是，`GOOS`和`GOARCh`并不能随意的进行组合，部分操作系统只能支持特定的CPU架构。
-
-
+需要注意的是，`GOOS`和`GOARCh`并不能随意的进行组合，部分操作系统只能支持特定的 CPU 架构。
 
 **GOROOT**
 
-`GOROOT`代表go语言安装位置的根目录， `GOROOT`的值无法被直接修改，且只能被操作系统的环境变量所覆盖。
+`GOROOT`代表 go 语言安装位置的根目录， `GOROOT`的值无法被直接修改，且只能被操作系统的环境变量所覆盖。
 
 ```sh
 $ ls $GOROOT -1
@@ -537,18 +509,16 @@ VERSION
 
 - `lib`，存放一些依赖，目前而言只有一个包含世界各国时区信息的库，位于`$GOROOT/lib/time`，编译后的二进制文件不会包含这些时区信息。
 
-- `pkg`，存放一些工具库和头文件，比如`go tool`命令会在`$GOROOT/pkg/tool`目录下寻找go工具链的二进制文件
-- `bin`，存放二进制文件，默认情况下只有`go`和`gofmt`这两个可执行文件，`$GOROOT/bin`应该被添加到系统变量中，否则无法使用go命令。
-- `src`，存放go源代码
+- `pkg`，存放一些工具库和头文件，比如`go tool`命令会在`$GOROOT/pkg/tool`目录下寻找 go 工具链的二进制文件
+- `bin`，存放二进制文件，默认情况下只有`go`和`gofmt`这两个可执行文件，`$GOROOT/bin`应该被添加到系统变量中，否则无法使用 go 命令。
+- `src`，存放 go 源代码
 
-- `VERSION`，该文件存放着go语言的版本信息
+- `VERSION`，该文件存放着 go 语言的版本信息
 - `go.env`，该文件是默认的`env`配置文件
-
-
 
 **GOPATH**
 
-`GOPATH`默认值是`$HOME/go`，该环境变量的值指定了在解析`import`语句时，去哪里寻找导入的文件。在早期没有gomod的时候，`GOPATH`是专门用来存放各种第三方库的，其结构如下
+`GOPATH`默认值是`$HOME/go`，该环境变量的值指定了在解析`import`语句时，去哪里寻找导入的文件。在早期没有 gomod 的时候，`GOPATH`是专门用来存放各种第三方库的，其结构如下
 
 ```sh
 GOPATH=/home/user/go
@@ -568,22 +538,18 @@ GOPATH=/home/user/go
                 bar.a          (installed package object)
 ```
 
-gomod诞生之后，`GOPATH`就只是一个用来存放`go get`下载的依赖的地方，以及用于存放`go install`下载并编译的二进制文件。需要注意的是`GOPATH`的位置不能与`GOROOT`相同，否则将不会起任何作用。
+gomod 诞生之后，`GOPATH`就只是一个用来存放`go get`下载的依赖的地方，以及用于存放`go install`下载并编译的二进制文件。需要注意的是`GOPATH`的位置不能与`GOROOT`相同，否则将不会起任何作用。
 
 ```sh
 $ go env GOBIN
 warning: GOPATH set to GOROOT (/home/user/go) has no effect
 ```
 
-截至目前笔者写下本文时，go语言版本已经来到了go1.21.3，除了非常古老的项目，基本上没有人会再使用gopath来管理依赖了。
-
-
+截至目前笔者写下本文时，go 语言版本已经来到了 go1.21.3，除了非常古老的项目，基本上没有人会再使用 gopath 来管理依赖了。
 
 **GOBIN**
 
 `GOBIN`是用于存放`go install`下载并编译的第三方二进制可执行文件，其默认值为`$GOPATH/bin`。与`$GOROOT/bin`一样，该目录应该被添加到操作系统的环境变量中，否则的话也无法使用`GOBIN`目录的下的二进制文件。
-
-
 
 **GOMODCACHE**
 
@@ -594,8 +560,6 @@ $GOMODCACHE/domain/username/project@verion
 ```
 
 在同级目录下还会有一个名为`sumdb`的文件夹，用于存放依赖校验和数据库的相关信息。
-
-
 
 **GOCACHE**
 
@@ -609,35 +573,29 @@ Run "go clean -fuzzcache" to delete the fuzz cache.
 See golang.org to learn more about Go.
 ```
 
-每一次`build`都会产生许多文件，go会缓存这些文件以便于下一次编译时复用。
-
-
+每一次`build`都会产生许多文件，go 会缓存这些文件以便于下一次编译时复用。
 
 **GOTEMPDIR**
 
-用于编译时产生的临时文件，例如`go run`要运行的临时二进制文件。其默认值为操作系统所指定的临时目录，在mac或linux上为`/tmp`，windows上为`%TEMP%`，也可以修改为用户所指定的位置。
-
-
+用于编译时产生的临时文件，例如`go run`要运行的临时二进制文件。其默认值为操作系统所指定的临时目录，在 mac 或 linux 上为`/tmp`，windows 上为`%TEMP%`，也可以修改为用户所指定的位置。
 
 **GO111MODULE**
 
-该环境变量表示使用何种方式来管理go项目的依赖，有以下三个可用的值
+该环境变量表示使用何种方式来管理 go 项目的依赖，有以下三个可用的值
 
-- `off`，关闭gomod，采用gopath，并且会忽略一切`go.mod`文件
-- `on`，采用gomod，不使用gopath（默认）。
-- `auto`，自动感知，如果项目文件包含`go.mod`就会采用gomod来进行管理
+- `off`，关闭 gomod，采用 gopath，并且会忽略一切`go.mod`文件
+- `on`，采用 gomod，不使用 gopath（默认）。
+- `auto`，自动感知，如果项目文件包含`go.mod`就会采用 gomod 来进行管理
 
 ::: tip
 
-为什么叫`GO111MODULE`，不直接叫`GOMODULE`，因为gomod是在go1.11版本第一次推出的。
+为什么叫`GO111MODULE`，不直接叫`GOMODULE`，因为 gomod 是在 go1.11 版本第一次推出的。
 
 :::
 
-
-
 **GOPROXY**
 
-go模块代理，默认值为`https://proxy.golang.org,direct`，url采用逗号分隔，`direct`意思是直接使用VCS跳过模块代理，只有在前者无法访问时才会执行后者，还有一个可用的选项是`off`，表示禁止下载任何模块。除此之外，`GOPROXY`还可以是文件地址，比如
+go 模块代理，默认值为`https://proxy.golang.org,direct`，url 采用逗号分隔，`direct`意思是直接使用 VCS 跳过模块代理，只有在前者无法访问时才会执行后者，还有一个可用的选项是`off`，表示禁止下载任何模块。除此之外，`GOPROXY`还可以是文件地址，比如
 
 ```
 GOPROXY=file://$(go env GOMODCACHE)/cache/download
@@ -680,17 +638,13 @@ go: added github.com/spf13/cast v1.5.1
 
 当然也有开源的自建模块代理方案：[goproxy](https://github.com/goproxy/goproxy)
 
-
-
 **GOSUMDB**
 
- `GOSUMDB`用于设置依赖库的校验和检测数据库地址，默认是`sum.golang.org`，当你设置了代理后，go就会通过代理来访问校验数据库。
-
-
+`GOSUMDB`用于设置依赖库的校验和检测数据库地址，默认是`sum.golang.org`，当你设置了代理后，go 就会通过代理来访问校验数据库。
 
 **GOPRIVATE**
 
-`GOPRIVATE`环境变量用于设置私有的库，匹配的库将不会通过sumdb进行校验，也不会走代理，将通过VCS直接下载依赖。该支持通配符设置，使用逗号分隔，如下所示，所有后缀为`corp.example.com`和名为`github.com/gohper/myproject`的依赖都不会走代理和sumdb。
+`GOPRIVATE`环境变量用于设置私有的库，匹配的库将不会通过 sumdb 进行校验，也不会走代理，将通过 VCS 直接下载依赖。该支持通配符设置，使用逗号分隔，如下所示，所有后缀为`corp.example.com`和名为`github.com/gohper/myproject`的依赖都不会走代理和 sumdb。
 
 ```
 GOPRIVATE=*.corp.example.com,github.com/gohper/myproject
@@ -702,86 +656,66 @@ GOPRIVATE=*.corp.example.com,github.com/gohper/myproject
 GOPRIVATE=github.com/gopher,github.com/myorganization
 ```
 
-
-
 **GONOPROXY**
 
 表明哪些依赖不需要走代理，规则与`GOPRIVATE`一致，并且会覆盖`GOPRIVATE`。
-
-
 
 **GONOSUMDB**
 
 表明哪些依赖不需要走校验数据库，规则与`GOPRIVATE`一致，并且会覆盖`GOPRIVATE`。
 
-
-
 **GOINSECURE**
 
-表示哪些依赖直接使用VCS进行下载，规则与`GOPRIVATE`一致，并且会被`GONOPROXY`和`GONOSUMDB`覆盖。
-
-
+表示哪些依赖直接使用 VCS 进行下载，规则与`GOPRIVATE`一致，并且会被`GONOPROXY`和`GONOSUMDB`覆盖。
 
 **GOVCS**
 
-设置模块管理的版本控制系统，默认`public:git|hg,private:all`。也可以限制指定域名的VCS，例如
+设置模块管理的版本控制系统，默认`public:git|hg,private:all`。也可以限制指定域名的 VCS，例如
 
 ```
 GOVCS=github.com:git,evil.com:off,*:git|hg
 ```
 
-在上述的限制中，github只能用git，evil.com则不允许使用，使用`|`来可以表示多个VCS。如果不做任何限制，可以如下设置
+在上述的限制中，github 只能用 git，evil.com 则不允许使用，使用`|`来可以表示多个 VCS。如果不做任何限制，可以如下设置
 
 ```
 GOVCS=*:all
 ```
 
-如果不允许任何VCS的使用，可以如下设置
+如果不允许任何 VCS 的使用，可以如下设置
 
 ```
 GOVCS=*:off
 ```
 
-
-
 **GOWORK**
 
 设置工作区是否启用，默认为空即启用，如果设置为`off`，则不启用，会忽略一切`go.work`文件。
 
-
-
 **GOTOOLDIR**
 
-设置要使用的go工具链的位置，默认是`$GOROOT/pkg/tool`，默认的工具链也存放在该位置。
-
-
+设置要使用的 go 工具链的位置，默认是`$GOROOT/pkg/tool`，默认的工具链也存放在该位置。
 
 **GODEBUG**
 
-设置调试选项，以键值对的形式控制go程序的部分执行行为，例如
+设置调试选项，以键值对的形式控制 go 程序的部分执行行为，例如
 
 ```
 GODEBUG=http2client=0,http2server=0
 ```
 
-这些设置是为了方便在版本更新过程中而出现了不兼容变化时，方便go回退到以前的旧行为，例如在`1.21`中不再允许`panic(nil)`这种情况发生，为此，go官方专门记录了`GODEBUG History`，前往[GODEBUG](https://go.dev/doc/godebug)了解更多细节。
-
-
+这些设置是为了方便在版本更新过程中而出现了不兼容变化时，方便 go 回退到以前的旧行为，例如在`1.21`中不再允许`panic(nil)`这种情况发生，为此，go 官方专门记录了`GODEBUG History`，前往[GODEBUG](https://go.dev/doc/godebug)了解更多细节。
 
 **CGO_ENABLED**
 
-表示是否开启cgo，默认为1，即开启，设置为0则关闭。
+表示是否开启 cgo，默认为 1，即开启，设置为 0 则关闭。
 
-<br/>
-
-上面这些环境变量都是比较常用的，对于一些不那么常用的不做过多的介绍，比如CGO，WASM之类的，感兴趣可以自己了解。
-
-
+上面这些环境变量都是比较常用的，对于一些不那么常用的不做过多的介绍，比如 CGO，WASM 之类的，感兴趣可以自己了解。
 
 ### build
 
-go支持的编译器有两种，gccgo和gc。gcc是一个老牌c/c++的编译器，支持多种语言包括go，后者gc并不是指的是垃圾回收的意思，它指的是go compiler，go语言在go1.5时完成了自举，gc是完全由go语言编写的编译器，它的源代码位于`cmd/compile`包下，由于完全是go语言实现，所以对于了解和学习其内部机制也十分的方便。在默认情况下，编译器采用gc进行编译。顺便提一嘴，go语言调试器也分两种，gdb和dlv，前者是老牌的c/c++调试器，支持多种语言，包括go，后者是go语言编写的调试器，对go语言的支持更友好，它同样也是开源的，推荐使用后者。
-`build`命令的作用就是将go源文件编译成可执行的二进制文件，你会体验到相当迅速的编译体验，这也正是go语言的特点之一。
+go 支持的编译器有两种，gccgo 和 gc。gcc 是一个老牌 c/c++的编译器，支持多种语言包括 go，后者 gc 并不是指的是垃圾回收的意思，它指的是 go compiler，go 语言在 go1.5 时完成了自举，gc 是完全由 go 语言编写的编译器，它的源代码位于`cmd/compile`包下，由于完全是 go 语言实现，所以对于了解和学习其内部机制也十分的方便。在默认情况下，编译器采用 gc 进行编译。顺便提一嘴，go 语言调试器也分两种，gdb 和 dlv，前者是老牌的 c/c++调试器，支持多种语言，包括 go，后者是 go 语言编写的调试器，对 go 语言的支持更友好，它同样也是开源的，推荐使用后者。
+`build`命令的作用就是将 go 源文件编译成可执行的二进制文件，你会体验到相当迅速的编译体验，这也正是 go 语言的特点之一。
 
 ```sh
 $ go build -h
@@ -811,8 +745,6 @@ $ go build -o ./bin/golearn main.go
 
 在编译的时候它会忽略掉所有以`_test.go`结尾的文件，因为些文件按照约定都是测试文件。
 
-<br/>
-
 除此之外，`build`命令还支持相当多的构建标志用于控制编译时的一些行为。
 
 - `-x`：输出编译过程中的详细指令
@@ -820,20 +752,20 @@ $ go build -o ./bin/golearn main.go
 - `-v`：输出编译的包
 - `-p`：编译过程中的并发数
 - `-a`：强制重新构建，即使已经是最新的了。
-- `-compiler`：指定使用哪个编译器，`gccgo`或者`gc`，后者是由go编写的编译器。
+- `-compiler`：指定使用哪个编译器，`gccgo`或者`gc`，后者是由 go 编写的编译器。
 - `-race`：开启竞态检测
 - `-msan`：开启内存分析
 - `-asan`：开启地址分析
 - `-cover`：开启代码覆盖检测
 - `-buildmode`：指定编译模式，有`archive`，`c-archive`，`c-shared`，`default`，`shared`，`exe`，`pie`，`plugin`这几个选项。
-- `-pgo`，指定pgo文件
-- `-trimpath`：消除源文件路径前缀，比如相对路径`/var/lib/go/src/main.go`，消除后在运行时通过`runtime `获取到的文件名就只有相对于模块路径的相对路径`/main.go`，开启此项后，编译耗时会明显上升，大概在20-40%左右，取决于文件数量。
-- `-toolexec`，在编译前执行的一些go命令，格式为`-toolexec 'cmd args'`。
-- `-gcflags`：指定编译器gc的一些tag
-- `-gccgoflags`：指定编译器gccgo的一些tag
-- `-ldflags`：指定link工具的一些tag
+- `-pgo`，指定 pgo 文件
+- `-trimpath`：消除源文件路径前缀，比如相对路径`/var/lib/go/src/main.go`，消除后在运行时通过`runtime `获取到的文件名就只有相对于模块路径的相对路径`/main.go`，开启此项后，编译耗时会明显上升，大概在 20-40%左右，取决于文件数量。
+- `-toolexec`，在编译前执行的一些 go 命令，格式为`-toolexec 'cmd args'`。
+- `-gcflags`：指定编译器 gc 的一些 tag
+- `-gccgoflags`：指定编译器 gccgo 的一些 tag
+- `-ldflags`：指定 link 工具的一些 tag
 
-对于一些ldflags之类的传递参数，可以传递`"-help"`这样的参数来获取其可能的值，比如
+对于一些 ldflags 之类的传递参数，可以传递`"-help"`这样的参数来获取其可能的值，比如
 
 ```sh
 $ go build -ldflags -help
@@ -847,11 +779,9 @@ usage: link [options] main.o
 
 上述这些是比较常用的，对于其它不怎么常用的可以自行了解。
 
-
-
 #### gcflags
 
-通过`gcflags`可以向编译器gc传递一些参数以控制特定的行为，它的使用格式是`-gcflags="pattern=args list"`，`ages list`就是参数列表，`pattern`就是作用范围，有以下几个可用的值
+通过`gcflags`可以向编译器 gc 传递一些参数以控制特定的行为，它的使用格式是`-gcflags="pattern=args list"`，`ages list`就是参数列表，`pattern`就是作用范围，有以下几个可用的值
 
 - `main`，入口文件所在的顶级包路径
 - `all`，当前模块以及当前模式的所有依赖
@@ -889,7 +819,7 @@ usage: compile [options] file.go...
 - `-m`：输出优化决策
 - `-l`：关闭函数内联
 - `-c`：编译的并发数
-- `-dwarf`：生成DWARF标志
+- `-dwarf`：生成 DWARF 标志
 
 比如如果要查看代码的汇编形式，可以使用`-S`参数，并且还要关闭优化和内联，这样才能还原其本来的形式，如下
 
@@ -912,11 +842,9 @@ main.main STEXT size=171 args=0x0 locals=0x58 funcid=0x0 align=0x0
         0x001d 00029 (./main.go:10)     MOVQ    CX, main..autotmp_2+32(SP)
 ```
 
-
-
 #### ldflags
 
-通过ldflags可以向链接器传递一些参数以控制特定的行为，通过如下命令来查看`ldflags`所有可用的值，接近二三十个。
+通过 ldflags 可以向链接器传递一些参数以控制特定的行为，通过如下命令来查看`ldflags`所有可用的值，接近二三十个。
 
 ```sh
 $ go build -ldflags -help
@@ -950,11 +878,11 @@ package main
 import "fmt"
 
 var (
-	Version string
+  Version string
 )
 
 func main() {
-	fmt.Println(Version)
+  fmt.Println(Version)
 }
 
 ```
@@ -965,7 +893,7 @@ func main() {
 go build -ldflags "-X main.Version=$(git describe --always)" main.go
 ```
 
-运行后就会输出git提交的sha1校验和。
+运行后就会输出 git 提交的 sha1 校验和。
 
 ```
 5e3fd7a
@@ -973,54 +901,50 @@ go build -ldflags "-X main.Version=$(git describe --always)" main.go
 
 另外一些比较实用的参数有
 
-- `-w`：不生成DWARF，这是一种方便调试源码的信息。
+- `-w`：不生成 DWARF，这是一种方便调试源码的信息。
 - `-s`：禁用符号表
 
-这两个通常放一块用，可以显著的减小编译后的二进制文件的体积，大概有40%-50%左右，缺点也很明显，没法进行调试，下面是一个例子。
+这两个通常放一块用，可以显著的减小编译后的二进制文件的体积，大概有 40%-50%左右，缺点也很明显，没法进行调试，下面是一个例子。
 
 ```sh
 $ go build -ldflags="-w -s" main.go
 ```
 
-
-
 #### 交叉编译
 
-go语言编译总共有两大特点，第一个就是快，另外一大特点就是交叉编译，交叉编译指的是可以在本地编译成其它系统的目标代码，例如在`windows`上编译成`linux`或`darwin`上的二进制文件，反过来也是一样。交叉编译支持的语言非常多，这并不是什么稀奇事，但是go语言交叉编译非常的简单，只需要以下两步
+go 语言编译总共有两大特点，第一个就是快，另外一大特点就是交叉编译，交叉编译指的是可以在本地编译成其它系统的目标代码，例如在`windows`上编译成`linux`或`darwin`上的二进制文件，反过来也是一样。交叉编译支持的语言非常多，这并不是什么稀奇事，但是 go 语言交叉编译非常的简单，只需要以下两步
 
-1. 设置GOOS环境变量，选择你的目标操作系统
-2. 设置GOARCH环境变量，选择你的目标CPU架构
+1. 设置 GOOS 环境变量，选择你的目标操作系统
+2. 设置 GOARCH 环境变量，选择你的目标 CPU 架构
 3. 像平时一样使用`go build`进行编译
 
 整个过程非常短，不需要使用额外的工具或配置，而且速度跟平时一样快。如下所示
 
 ```makefile
 build_linux:
-	SET CGO_ENABLED=0
-	SET GOOS="linux"
-	SET GOARCH="amd64"
-	go build -o golearn  main.go
+  SET CGO_ENABLED=0
+  SET GOOS="linux"
+  SET GOARCH="amd64"
+  go build -o golearn  main.go
 
 build_mac:
-	SET CGO_ENABLED=0
-	SET GOOS="darwin"
-	SET GOARCH="amd64"
-	go build -o golearn main.go
+  SET CGO_ENABLED=0
+  SET GOOS="darwin"
+  SET GOARCH="amd64"
+  go build -o golearn main.go
 
 build_win:
-	SET CGO_ENABLED=0
-	SET GOOS="win"
-	SET GOARCH="amd64"
-	go build -o golearn.exe main.go
+  SET CGO_ENABLED=0
+  SET GOOS="win"
+  SET GOARCH="amd64"
+  go build -o golearn.exe main.go
 
 .PHONY: build_linux \
-		build_mac \
-		build_win
+    build_mac \
+    build_win
 ```
 
-第一步`SET CGO_ENABLED=0`这一项禁用了cgo，一旦你的代码中使用了cgo，那么就无法正常使用交叉编译。第二步`SET GOOS`设置目标系统，可选的有`linux`，`darwin`，`windwos`，`netbsd`。第三步设置CPU架构，`SET GOARCH`，可选的有`amd64`，`386`，`arm`，`ppc64`。最后一步就是像往常一样进行编译。
-
-
+第一步`SET CGO_ENABLED=0`这一项禁用了 cgo，一旦你的代码中使用了 cgo，那么就无法正常使用交叉编译。第二步`SET GOOS`设置目标系统，可选的有`linux`，`darwin`，`windwos`，`netbsd`。第三步设置 CPU 架构，`SET GOARCH`，可选的有`amd64`，`386`，`arm`，`ppc64`。最后一步就是像往常一样进行编译。
 
 #### 编译控制
 
@@ -1034,7 +958,7 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("product")
+  fmt.Println("product")
 }
 ```
 
@@ -1048,7 +972,7 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("debug")
+  fmt.Println("debug")
 }
 ```
 
@@ -1066,7 +990,7 @@ package pkg_name
 2. 它必须位于包声明的上方
 3. 与包声明必须隔一行空行
 
-除此之外，它还可以通过简单的间隔来达到逻辑控制的目的，空格表示OR，逗号表示AND，！表示NOT。比如下面这个例子
+除此之外，它还可以通过简单的间隔来达到逻辑控制的目的，空格表示 OR，逗号表示 AND，！表示 NOT。比如下面这个例子
 
 ```go
 // +build windows linux
@@ -1074,7 +998,7 @@ package pkg_name
 package pkg_name
 ```
 
-表示在windows或者linux平台下会将当前文件编译进去。
+表示在 windows 或者 linux 平台下会将当前文件编译进去。
 
 ```go
 // +build windows,amd64,!cgo linux,i386,cgo
@@ -1082,7 +1006,7 @@ package pkg_name
 package pkg_name
 ```
 
-这个例子表示的是在windows平台amd64架构且未启用cgo或者是linux平台i386架构且启用了cgo才会将其编译。如果你只是单纯的不想让某个文件不参加编译，可以使用`ignore`。
+这个例子表示的是在 windows 平台 amd64 架构且未启用 cgo 或者是 linux 平台 i386 架构且启用了 cgo 才会将其编译。如果你只是单纯的不想让某个文件不参加编译，可以使用`ignore`。
 
 ```go
 // +build ignore
@@ -1099,7 +1023,7 @@ package pkg_name
 package pkg_name
 ```
 
-多行指令以AND方式进行处理。对于平台和架构这些tag，在编译时go会自动传入，我们也可以传入自定义的tag，就拿最开始的拿两个文件举例
+多行指令以 AND 方式进行处理。对于平台和架构这些 tag，在编译时 go 会自动传入，我们也可以传入自定义的 tag，就拿最开始的拿两个文件举例
 
 ```sh
 $ go build -tags="debug" . && ./golearn.exe
@@ -1109,9 +1033,7 @@ $ go build -tags="product" . && ./golearn.exe
 product
 ```
 
-可以看到传入不同tag时输出不同，编译控制的目的也就达到了。
-
-
+可以看到传入不同 tag 时输出不同，编译控制的目的也就达到了。
 
 ### run
 
@@ -1129,17 +1051,17 @@ Run 'go help run' for details.
 package main
 
 import (
-	"fmt"
-	"os"
+  "fmt"
+  "os"
 )
 
 var (
-	Version string
+  Version string
 )
 
 func main() {
-	fmt.Println(Version)
-	fmt.Println(os.Args[1:])
+  fmt.Println(Version)
+  fmt.Println(os.Args[1:])
 }
 ```
 
@@ -1152,8 +1074,6 @@ $ go run -ldflags="-X main.Version=$(git describe --always)" main.go hello
 ```
 
 总体上使用起来与`go build`没有太大的差别，就不再做过多的赘述。
-
-
 
 ### tool
 
@@ -1187,7 +1107,7 @@ trace
 vet
 ```
 
-这些工具存放在`GOROOT/pkg/tool`目录下，并且根据操作系统和CPU架构对工具进行分组，如下。
+这些工具存放在`GOROOT/pkg/tool`目录下，并且根据操作系统和 CPU 架构对工具进行分组，如下。
 
 ```sh
 $ ls $GOROOT/pkg/tool/windows_amd64/ -1
@@ -1252,9 +1172,7 @@ EOF
 ...
 ```
 
-在过程中可以看到有这么一段`/golang/pkg/tool/windows_amd64/compile.exe`，正是调用了编译器。除了`compile`之外，还有很多工具可以调用，很多go命令实际上都是它们的别名。
-
-
+在过程中可以看到有这么一段`/golang/pkg/tool/windows_amd64/compile.exe`，正是调用了编译器。除了`compile`之外，还有很多工具可以调用，很多 go 命令实际上都是它们的别名。
 
 ### clean
 
@@ -1297,18 +1215,16 @@ $ go clean -cache -n
 rm -r /cache/00 /cache/01 /cache/02
 ```
 
-清除fuzz test产生的缓存，这些缓存默认存放在`GOCACHE/fuzz/`目录下
+清除 fuzz test 产生的缓存，这些缓存默认存放在`GOCACHE/fuzz/`目录下
 
 ```sh
 $ go clean -fuzzcache -n
 rm -rf /cache/fuzz
 ```
 
-
-
 ### fix
 
-go语言截至到撰写本文时已经有十年了，在语言不断更新和修改的过程中，难免会出现一些因API的变化而导致的不兼容，`fix`命令就是为此而生的，它会检测源文件中那些已经过时的API并将其替换为新的API。
+go 语言截至到撰写本文时已经有十年了，在语言不断更新和修改的过程中，难免会出现一些因 API 的变化而导致的不兼容，`fix`命令就是为此而生的，它会检测源文件中那些已经过时的 API 并将其替换为新的 API。
 
 ```sh
 $ go fix -h
@@ -1368,13 +1284,13 @@ printerconfig
 package main
 
 import (
-	"fmt"
-	"golang.org/x/net/context"
+  "fmt"
+  "golang.org/x/net/context"
 )
 
 func main() {
-	background := context.Background()
-	fmt.Println(background.Err())
+  background := context.Background()
+  fmt.Println(background.Err())
 }
 ```
 
@@ -1404,13 +1320,11 @@ diff main.go fixed/main.go
  func main() {
 ```
 
-go语言诞生了十多年只有九个可用的替换参数，可见兼容性保持的还算可以。
-
-
+go 语言诞生了十多年只有九个可用的替换参数，可见兼容性保持的还算可以。
 
 ### fmt
 
-`fmt`命令是go语言自带的格式化工具，用于格式化go源代码文件。
+`fmt`命令是 go 语言自带的格式化工具，用于格式化 go 源代码文件。
 
 ```sh
 $ go fmt -h
@@ -1543,7 +1457,7 @@ func main() {
 
 ```
 
-你可以发现作为一个格式化工具，`gofmt`完全没有提供任何的自定义配置，而专为美化js代码的格式化器`prettify`它就提供了相当多的配置用于格式化代码，这里可以体现出go官方的一个态度，别想搞什么个性化，所有人代码风格最好都是一致的，至少有一个好处就是在阅读代码的时候不用去适应他人的习惯。不过其实它还是保留了一个自定义项的，就是格式化代码的替换规则，规则是可以自定义的，格式如下
+你可以发现作为一个格式化工具，`gofmt`完全没有提供任何的自定义配置，而专为美化 js 代码的格式化器`prettify`它就提供了相当多的配置用于格式化代码，这里可以体现出 go 官方的一个态度，别想搞什么个性化，所有人代码风格最好都是一致的，至少有一个好处就是在阅读代码的时候不用去适应他人的习惯。不过其实它还是保留了一个自定义项的，就是格式化代码的替换规则，规则是可以自定义的，格式如下
 
 ```
 pattern -> replacement
@@ -1574,11 +1488,9 @@ diff main.go.orig main.go
 
 可以看到`gofmt`会将冗余的括号删除掉。
 
-
-
 ### get
 
-`get`命令绝对是go开发过程中最常用的了，它的作用是将指定地址包源代码下载到`GOMODCACHE`所对应的目录中。
+`get`命令绝对是 go 开发过程中最常用的了，它的作用是将指定地址包源代码下载到`GOMODCACHE`所对应的目录中。
 
 ```sh
 $ go get -h
@@ -1590,7 +1502,7 @@ Run 'go help get' for details.
 - `-t`：更新测试中的依赖版本
 - `-v`：输出被编译的包，实际上属于`build flags`的参数之一
 
-在古早时期，`go get`的作用和`go install`类似，它会下载并编译这些包，然而随着go模块的诞生与完善，这一部分的作用渐渐的被废弃了，`get`命令现在最常用的作用就是对go模块下载并解析依赖，所以你可以看到`go get`命令还支持`build flags`这类构建标志，并且如果你尝试在模块外像使用`go install`一样使用`go get`，它会提示你此用法已经被废弃了。
+在古早时期，`go get`的作用和`go install`类似，它会下载并编译这些包，然而随着 go 模块的诞生与完善，这一部分的作用渐渐的被废弃了，`get`命令现在最常用的作用就是对 go 模块下载并解析依赖，所以你可以看到`go get`命令还支持`build flags`这类构建标志，并且如果你尝试在模块外像使用`go install`一样使用`go get`，它会提示你此用法已经被废弃了。
 
 ```sh
 $ go get github.com/wire/wire
@@ -1603,22 +1515,22 @@ go: go.mod file not found in current directory or any parent directory.
 
 ```
 
-至于为什么在文档描述中还保留这些也是不得而知，翻看`get`命令的源代码，你还会发现它保留了以前的那些flag。
+至于为什么在文档描述中还保留这些也是不得而知，翻看`get`命令的源代码，你还会发现它保留了以前的那些 flag。
 
 ```go
 var (
-	getD        = CmdGet.Flag.Bool("d", true, "")
-	getF        = CmdGet.Flag.Bool("f", false, "")
-	getFix      = CmdGet.Flag.Bool("fix", false, "")
-	getM        = CmdGet.Flag.Bool("m", false, "")
-	getT        = CmdGet.Flag.Bool("t", false, "")
-	getU        upgradeFlag
-	getInsecure = CmdGet.Flag.Bool("insecure", false, "")
-	// -v is cfg.BuildV
+  getD        = CmdGet.Flag.Bool("d", true, "")
+  getF        = CmdGet.Flag.Bool("f", false, "")
+  getFix      = CmdGet.Flag.Bool("fix", false, "")
+  getM        = CmdGet.Flag.Bool("m", false, "")
+  getT        = CmdGet.Flag.Bool("t", false, "")
+  getU        upgradeFlag
+  getInsecure = CmdGet.Flag.Bool("insecure", false, "")
+  // -v is cfg.BuildV
 )
 ```
 
-回到正题，`get`命令会将指定的包的源代码下载到本地的全局依赖目录中，也就是`GOCACHE`对应的目录，然后将信息记录到`go.mod`和`go.sum`文件中，前者负责记录版本，后者负责记录sha1校验和确保安全性。`get`命令实际上是基于VCS，也就是本地的版本控制系统，总共支持下面几个
+回到正题，`get`命令会将指定的包的源代码下载到本地的全局依赖目录中，也就是`GOCACHE`对应的目录，然后将信息记录到`go.mod`和`go.sum`文件中，前者负责记录版本，后者负责记录 sha1 校验和确保安全性。`get`命令实际上是基于 VCS，也就是本地的版本控制系统，总共支持下面几个
 
 - git
 - hg (Mercurial)
@@ -1626,13 +1538,13 @@ var (
 - svn
 - fossil
 
-其中，默认只支持git和hg，可以`GOVCS`中进行配置，格式如下
+其中，默认只支持 git 和 hg，可以`GOVCS`中进行配置，格式如下
 
 ```
 GOVCS=github.com:git,example.com:hg,*:git|hg,*:all
 ```
 
-`GOVCS`仅支持git和hg作为VCS，其它三个需要在`GOPRIVATE`中配置。
+`GOVCS`仅支持 git 和 hg 作为 VCS，其它三个需要在`GOPRIVATE`中配置。
 
 `go get`命令总共有下面几种用法，可以直接将依赖地址作为参数
 
@@ -1664,9 +1576,7 @@ $ go get -u golang.org/x/net
 $ go get golang.org/x/net@none
 ```
 
-<br/>
-
-上面这些是用来管理普通的依赖，它还可以用来管理不那么普通的依赖，比如更新go语言的版本
+上面这些是用来管理普通的依赖，它还可以用来管理不那么普通的依赖，比如更新 go 语言的版本
 
 ```sh
 $ go get go@latest
@@ -1675,13 +1585,13 @@ go: downloading go1.21.3 (windows/amd64)
 go: upgraded go 1.21.0 => 1.21.3
 ```
 
-甚至还可以用来更新go工具链的版本
+甚至还可以用来更新 go 工具链的版本
 
 ```sh
 $ go get toolchain@latest
 ```
 
-当你使用`go get`更新go和工具链版本时，它们会在`GOMODCACHE/golang.org/`目录下安装新版本的go
+当你使用`go get`更新 go 和工具链版本时，它们会在`GOMODCACHE/golang.org/`目录下安装新版本的 go
 
 ```sh
 $ ls $(go env GOMODCACHE)/golang.org -1
@@ -1691,11 +1601,9 @@ x/
 
 这时候再手动修改一下`GOROOT`就可以切换到指定的版本了。
 
-
-
 ### install
 
-`install`命令与`get`命令类似，它们都是用于下载第三方的依赖，不过区别在于`get`命令下载的是源码，而`install`命令会将源码编译成本机可执行的二进制文件，二进制文件存放路径首先在`GOBIN`目录下，其次是`GOPATH/bin`。该命令的主要功能是用来下载第三方公开的一些命令行工具，得益于go语言的编译速度和可移植性，并不需要下载二进制文件，而是直接下载源代码然后在本地进行编译。
+`install`命令与`get`命令类似，它们都是用于下载第三方的依赖，不过区别在于`get`命令下载的是源码，而`install`命令会将源码编译成本机可执行的二进制文件，二进制文件存放路径首先在`GOBIN`目录下，其次是`GOPATH/bin`。该命令的主要功能是用来下载第三方公开的一些命令行工具，得益于 go 语言的编译速度和可移植性，并不需要下载二进制文件，而是直接下载源代码然后在本地进行编译。
 
 ```sh
 $ go install -h
@@ -1703,7 +1611,7 @@ usage: go install [build flags] [packages]
 Run 'go help install' for details.
 ```
 
-`install`命令接收构建标志和包名作为参数，在gomod开启的情况下，包名必须携带版本号。例如下载delve调试器
+`install`命令接收构建标志和包名作为参数，在 gomod 开启的情况下，包名必须携带版本号。例如下载 delve 调试器
 
 ```sh
 $ go install -x github.com/go-delve/delve/cmd/dlv@latest
@@ -1728,7 +1636,7 @@ mv $WORK/b001/exe/a.out /home/wyh/gomod/bin/dlv
 rm -r $WORK/b001/
 ```
 
-它首先会将源代码下载到`GOMODCACHE`所存放的路径，这一点跟`get`命令一致，然后切换到临时工作目录，对其进行编译，编译完成后将二进制文件移动到`GOPATH/bin`目录下，最后再删除临时文件夹。`install`命令还有一个限制就是下载的包必须是该项目的入口包，也就是说必须要包含`main.go`入口文件，否则的话会提示你无法安装。例如，使用`go install`下载gin
+它首先会将源代码下载到`GOMODCACHE`所存放的路径，这一点跟`get`命令一致，然后切换到临时工作目录，对其进行编译，编译完成后将二进制文件移动到`GOPATH/bin`目录下，最后再删除临时文件夹。`install`命令还有一个限制就是下载的包必须是该项目的入口包，也就是说必须要包含`main.go`入口文件，否则的话会提示你无法安装。例如，使用`go install`下载 gin
 
 ```sh
 $ go install -x github.com/gin-gonic/gin@latest
@@ -1741,13 +1649,11 @@ $ go install -x github.com/gin-gonic/gin@latest
 package github.com/gin-gonic/gin is not a main package
 ```
 
-gin是一个web框架依赖库，并不是一个命令行工具，自然也就没有入口文件，所以也就会安装失败。
-
-
+gin 是一个 web 框架依赖库，并不是一个命令行工具，自然也就没有入口文件，所以也就会安装失败。
 
 ### list
 
-`list`命令会列出指定位置的包，一行一个，并且支持自定义格式化输出，支持很多的参数，使用它的前提是必须在一个支持gomod的项目内。
+`list`命令会列出指定位置的包，一行一个，并且支持自定义格式化输出，支持很多的参数，使用它的前提是必须在一个支持 gomod 的项目内。
 
 ```sh
 $ go list -h
@@ -1758,7 +1664,7 @@ Run 'go help list' for details.
 它支持的参数如下
 
 - `-f`：格式化参数
-- `-json`：json格式输出
+- `-json`：json 格式输出
 - `-compiled`：展示所有会被编译器编译的包
 - `-deps`：展示每一个包及其所依赖的每一个包的名称
 - `-test`：展示每一个包的测试包
@@ -1774,8 +1680,6 @@ Run 'go help list' for details.
 - `-retracted`：展示一个模块的撤回版本
 
 `[packages]`参数可以是一个指定的包名，或者文件夹，也可以是`all`，表示任何地方，当使用`-m`参数时，`all`表示当前模块引用的所有依赖。
-
-<br>
 
 例如，当前文件只有一个`main.go`文件，且只有一行输出`"hello world"`的代码，执行`go list -deps .`后，它输出了从当前项目到`fmt`及其引用的所有依赖的包。
 
@@ -1835,8 +1739,6 @@ github.com/andeya/ameda v1.5.3
 github.com/andeya/goutil v1.0.1
 ...
 ```
-
-
 
 #### format
 
@@ -1973,11 +1875,9 @@ $ go list -m -f "mod {{.Path}} {{.Version}} {{.GoVersion}} {{.GoMod}}"
 mod golearn  1.21.3 /golearn/go.mod
 ```
 
-
-
 ### mod
 
-`go mod`是专用于管理go模块的命令。
+`go mod`是专用于管理 go 模块的命令。
 
 ```sh
 $ go mod help
@@ -2010,16 +1910,12 @@ Use "go help mod <command>" for more information about a command.
 
 - `download`：将`go.mod`文件中所有标明的依赖下载到本地缓存
 - `edit`：编辑`go.mod`文件，它提供的命令行接口主要是提供给其它工具或脚本调用的。
-- `init`：在当前目录初始化一个gomod项目
+- `init`：在当前目录初始化一个 gomod 项目
 - `tidy`：下载缺失的依赖，删除无用的依赖
 - `graph`：输出依赖图
 - `verify`：验证本地的依赖
 - `why`：解释为什么会依赖这些模块
-- `vendor`：导出项目依赖到vendor目录
-
-
-
-
+- `vendor`：导出项目依赖到 vendor 目录
 
 #### init
 
@@ -2028,13 +1924,13 @@ $ go help mod init
 usage: go mod init [module-path]
 ```
 
-`init`命令用于初始化一个gomod项目，其唯一的参数是模块路径，日后如果别人要下载你的依赖就需要通过此模块路径来作为依据。它的命名规则一般为
+`init`命令用于初始化一个 gomod 项目，其唯一的参数是模块路径，日后如果别人要下载你的依赖就需要通过此模块路径来作为依据。它的命名规则一般为
 
 ```
 domain_name/user_name/repo_name
 ```
 
-比如一般大家都会把项目放在github上，所以可以是
+比如一般大家都会把项目放在 github 上，所以可以是
 
 ```
 github.com/jack/gotour
@@ -2051,8 +1947,6 @@ $ go mod init "github.com/jack/gotour"
 go: creating new go.mod: module github.com/jack/gotour
 ```
 
-
-
 #### tidy
 
 ```
@@ -2065,8 +1959,8 @@ usage: go mod tidy [-e] [-v] [-x] [-go=version] [-compat=version]
 - `-v`，输出那些被删除的模块依赖
 - `-e`，如果过程中发生错误则忽略它继续执行
 - `-x`，输出执行过程
-- `-go=version`，更新`go.mod`文件中的go版本
-- `-compact=version`，保留从指定的主要Go版本中所需的任何附加校验和，以便成功加载模块图，并且如果该版本的`go`命令从不同模块版本中加载任何已导入的包，将导致tidy出错。通常很少会用到这个参数，一般在版本版本变更时才会出错，可以前往stackoverflow看看这个回答[go modules - go mod tidy error message: "but go 1.16 would select" - Stack Overflow](https://stackoverflow.com/questions/71973152/go-mod-tidy-error-message-but-go-1-16-would-select)
+- `-go=version`，更新`go.mod`文件中的 go 版本
+- `-compact=version`，保留从指定的主要 Go 版本中所需的任何附加校验和，以便成功加载模块图，并且如果该版本的`go`命令从不同模块版本中加载任何已导入的包，将导致 tidy 出错。通常很少会用到这个参数，一般在版本版本变更时才会出错，可以前往 stackoverflow 看看这个回答[go modules - go mod tidy error message: "but go 1.16 would select" - Stack Overflow](https://stackoverflow.com/questions/71973152/go-mod-tidy-error-message-but-go-1-16-would-select)
 
 看一个使用例子
 
@@ -2092,8 +1986,6 @@ unused github.com/chenzhuoyu/base64x
 ......
 ```
 
-
-
 #### download
 
 ```sh
@@ -2117,8 +2009,6 @@ $ go mod download -x gorm.io/gorm
 go: no module dependencies to download
 ```
 
-
-
 #### edit
 
 ```sh
@@ -2126,10 +2016,10 @@ $ go help mod edit
 usage: go mod edit [editing flags] [-fmt|-print|-json] [go.mod]
 ```
 
-`edit`是一个命令行接口，用于修改`go.mod`文件，通常是提供给其它程序使用的，一些编辑器IDE为提供gomod支持就会使用这些命令。它支持下面几个参数
+`edit`是一个命令行接口，用于修改`go.mod`文件，通常是提供给其它程序使用的，一些编辑器 IDE 为提供 gomod 支持就会使用这些命令。它支持下面几个参数
 
 - `-module`，修改模块路径
-- `-go=version`，修改期望的go版本
+- `-go=version`，修改期望的 go 版本
 - `-require=path@version`，新增一个依赖项
 - `-droprequire=path@version`，删除一个依赖项
 - `-exclude=path@version`，新增一个排除依赖项
@@ -2142,7 +2032,7 @@ usage: go mod edit [editing flags] [-fmt|-print|-json] [go.mod]
 还有一些其它用于展示的参数
 
 - `-print`，输出文件内容
-- `-json`，以json格式输出
+- `-json`，以 json 格式输出
 
 比如下面这个例子
 
@@ -2160,8 +2050,6 @@ require (
         gorm.io/gorm v1.25.5
 )
 ```
-
-
 
 #### graph
 
@@ -2184,7 +2072,7 @@ golearn go@1.21.3
 
 它还支持两个参数
 
-- `-go=version`，使用给定go版本加载依赖图，其值不能小于`go.mod`文件中的版本。
+- `-go=version`，使用给定 go 版本加载依赖图，其值不能小于`go.mod`文件中的版本。
 - `-x`，展示过程中所执行的命令。
 
 看一个简单的使用例子
@@ -2208,8 +2096,6 @@ golearn github.com/bytedance/go-tagexpr/v2@v2.9.11
 ......
 ```
 
-
-
 #### vendor
 
 ```sh
@@ -2217,9 +2103,9 @@ $ go help mod vendor
 usage: go mod vendor [-e] [-v] [-o outdir]
 ```
 
-vendor是早期gomod没有推出之前的一个gopath的替代方案，每一个go项目下都会有一个vendor目录，按照`domain/user/project`这种格式单独存放每一个项目的依赖，就像隔壁nodeJs臃肿的`node_module`一样每一个项目的依赖分开放，这种依赖管理方式现在看起来确实很愚蠢，但是在那个时候确实没有更好的方案了，之所以保留vendor是因为go秉承的向下兼容的承诺，有一些老项目包括go源代码里面可能还在使用vendor。
+vendor 是早期 gomod 没有推出之前的一个 gopath 的替代方案，每一个 go 项目下都会有一个 vendor 目录，按照`domain/user/project`这种格式单独存放每一个项目的依赖，就像隔壁 nodeJs 臃肿的`node_module`一样每一个项目的依赖分开放，这种依赖管理方式现在看起来确实很愚蠢，但是在那个时候确实没有更好的方案了，之所以保留 vendor 是因为 go 秉承的向下兼容的承诺，有一些老项目包括 go 源代码里面可能还在使用 vendor。
 
-回到正题，`vendor`是`go mod`的一个子命令，它可以将当前模块所引用的全局依赖导出到vendor目录中。
+回到正题，`vendor`是`go mod`的一个子命令，它可以将当前模块所引用的全局依赖导出到 vendor 目录中。
 
 ```sh
 $ go mod vendor -h
@@ -2237,17 +2123,17 @@ Run 'go help mod vendor' for details.
 
 ```sh
 $ go list -m all
-github.com/dstgo/task                               
-github.com/davecgh/go-spew v1.1.1                   
-github.com/pkg/errors v0.9.1                        
-github.com/pmezard/go-difflib v1.0.0                
-github.com/stretchr/objx v0.5.0                     
-github.com/stretchr/testify v1.8.4                  
+github.com/dstgo/task
+github.com/davecgh/go-spew v1.1.1
+github.com/pkg/errors v0.9.1
+github.com/pmezard/go-difflib v1.0.0
+github.com/stretchr/objx v0.5.0
+github.com/stretchr/testify v1.8.4
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405
-gopkg.in/yaml.v3 v3.0.1 
+gopkg.in/yaml.v3 v3.0.1
 ```
 
-导出到当前的vendor目录下
+导出到当前的 vendor 目录下
 
 ```sh
 $ go mod vendor -v -e -o vendor
@@ -2292,8 +2178,6 @@ gopkg.in/yaml.v3
 
 其中的`modules.txt`是描述所有依赖项的文件，就类似于现在的`go.mod`。
 
-
-
 #### verify
 
 ```sh
@@ -2315,8 +2199,6 @@ $ go mod verify
 gorm.io/gorm v1.25.5: dir has been modified (/go/mod/libs/gorm.io/gorm@v1.25.5)
 ```
 
-
-
 #### why
 
 ```
@@ -2329,17 +2211,15 @@ usage: go mod why [-m] [-vendor] packages...
 ```sh
 $ go mod why gorm.io/gorm
 # gorm.io/gorm
-golearn       
-gorm.io/gorm  
+golearn
+gorm.io/gorm
 ```
 
 默认只会解析从`main`的导入，加上`-m`参数可以分析每一个包的导入情况。
 
-
-
 ### work
 
-命令work是一个用于go多模块管理的本地开发工具
+命令 work 是一个用于 go 多模块管理的本地开发工具
 
 ```bash
 $ go work help
@@ -2359,15 +2239,13 @@ The commands are:
 Use "go help work <command>" for more information about a command.
 ```
 
-
-
 #### init
 
-`init`子命令用于初始化一个workspace，该命令会创建一个名为`go.work`的文件
+`init`子命令用于初始化一个 workspace，该命令会创建一个名为`go.work`的文件
 
 ```bash
-$ go work init -h                                             
-usage: go work init [moddirs]       
+$ go work init -h
+usage: go work init [moddirs]
 Run 'go help work init' for details.
 ```
 
@@ -2376,8 +2254,6 @@ Run 'go help work init' for details.
 ```bash
 $ go work init ./service ./api
 ```
-
-
 
 #### use
 
@@ -2396,8 +2272,6 @@ directories, optionally recursively, to a go.work file.
 ```bash
 $ go work use -r ./oss-api ./multi_modules
 ```
-
-
 
 #### edit
 
@@ -2422,35 +2296,35 @@ directory and its parent directories
 
 - `-replace=old[@v]=new[@v]`，`-dropreplace=old[@v]=new[@v]`，用于添加和移除要替换的模块
 
-- `-go`，`-toolchain=name`，指定go版本，以及指定要使用的工具链
+- `-go`，`-toolchain=name`，指定 go 版本，以及指定要使用的工具链
 
 - `-print`，将最后的修改打印出来，不写回文件
 
 - `-json`，以`json`格式输出，无法与`-print`同时存在，对应类型结构如下所示
 
-    ```go
-    type GoWork struct {
-            Go        string
-            Toolchain string
-            Use       []Use
-            Replace   []Replace
-    }
-    
-    type Use struct {
-            DiskPath   string
-            ModulePath string
-    }
-    
-    type Replace struct {
-            Old Module
-            New Module
-    }
-    
-    type Module struct {
-            Path    string
-            Version string
-    }
-    ```
+  ```go
+  type GoWork struct {
+          Go        string
+          Toolchain string
+          Use       []Use
+          Replace   []Replace
+  }
+
+  type Use struct {
+          DiskPath   string
+          ModulePath string
+  }
+
+  type Replace struct {
+          Old Module
+          New Module
+  }
+
+  type Module struct {
+          Path    string
+          Version string
+  }
+  ```
 
 一些使用示例如下，格式化输出
 
@@ -2465,7 +2339,7 @@ use (
 )
 ```
 
-json输出
+json 输出
 
 ```bash
 $ go work edit -fmt -json
@@ -2486,11 +2360,9 @@ $ go work edit -fmt -json
 }
 ```
 
-
-
 #### sync
 
-`sync`子命令用于将`go.work`中的模块列表回到workspace中的各个模块中。
+`sync`子命令用于将`go.work`中的模块列表回到 workspace 中的各个模块中。
 
 ```bash
 $ go help work sync
@@ -2500,13 +2372,11 @@ Sync syncs the workspace's build list back to the
 workspace's modules
 ```
 
-这个过程主要发生在**本地开发完成后**，各个模块**已经完成发版工作**，此时使用`sync`，它会根据各个模块的依赖关系来更新worksapce所有模块的`go.mod`中的依赖，从而不需要我们去手动更新。
-
-
+这个过程主要发生在**本地开发完成后**，各个模块**已经完成发版工作**，此时使用`sync`，它会根据各个模块的依赖关系来更新 worksapce 所有模块的`go.mod`中的依赖，从而不需要我们去手动更新。
 
 #### vendor
 
-`vendor`命令会将workspace中所有模块依赖的库做一份复制到`vendor`目录下。
+`vendor`命令会将 workspace 中所有模块依赖的库做一份复制到`vendor`目录下。
 
 ```bash
 $ go work help vendor
@@ -2515,11 +2385,9 @@ usage: go work vendor [-e] [-v] [-o outdir]
 
 功能同`go mod vendor`，不再做过多的赘述。
 
-
-
 ### vet
 
-命令`vet`是一个go语言源代码的静态错误检查工具，就像其它语言的lint工具，比如`Eslint`。
+命令`vet`是一个 go 语言源代码的静态错误检查工具，就像其它语言的 lint 工具，比如`Eslint`。
 
 ```sh
 $ go vet -h
@@ -2626,10 +2494,10 @@ $ go vet -timeformat main.go
 $ go vet -timeformat=false main.go
 ```
 
-这些分析器的源代码位于`cmd/vendor/golang.org/x/tools/go/analysis/passes`，每一个分析器都是go语言容易犯的一个坑，所以十分建议使用`vet`命令来检查你的代码。除此这些之外，它还支持一些其它的标志参数
+这些分析器的源代码位于`cmd/vendor/golang.org/x/tools/go/analysis/passes`，每一个分析器都是 go 语言容易犯的一个坑，所以十分建议使用`vet`命令来检查你的代码。除此这些之外，它还支持一些其它的标志参数
 
 - `-V`，仅打印版本然后退出
-- `-json`，以json形式输出
+- `-json`，以 json 形式输出
 - `-c=n`，显示上下文中指定数目的冲突行（似乎并没有任何作用）
 
 还有一些外置的分析器，比如`shadows`，它负责检测短变量命名的变量隐藏问题，由于是外置的所以需要用`go install`来进行下载
@@ -2644,8 +2512,6 @@ $ go install golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow@latest
 $ go vet -vettool=$(which shadow)
 ```
 
-
-
 ### test
 
 ```sh
@@ -2654,14 +2520,14 @@ usage: go test [build/test flags] [packages] [build/test flags & test binary fla
 Run 'go help test' and 'go help testflag' for details.
 ```
 
- `test`命令是go语言工具链中提供测试功能的命令，这个功能相当的重要，对于一个软件而言，完善的测试的是必不可少的。这里只是简单的介绍下如何使用`test`命令，如果要了解更多测试相关，前往：[测试](/essential/senior/120.test.md)
+`test`命令是 go 语言工具链中提供测试功能的命令，这个功能相当的重要，对于一个软件而言，完善的测试的是必不可少的。这里只是简单的介绍下如何使用`test`命令，如果要了解更多测试相关，前往：[测试](/essential/senior/120.test.md)
 
 它除了支持`build`命令的编译参数之外，`test`还支持下面几个参数
 
 - `-args`，程序的入口参数
 - `-c`，编译当前包的测试二进制文件到当前目录但并不执行，以`pkg.test`方式命名
 - `-exec`，在测试开始之前执行一些其它的命令
-- `-json`，测试的输出风格变为json
+- `-json`，测试的输出风格变为 json
 - `-o`，指定测试二进制文件的路径名
 
 它还支持许多`testflag `，使用`help`命令查看所有`testflag`
@@ -2676,7 +2542,7 @@ control the execution of any test:
         -bench regexp
         -benchtime t
         -count n
-		......
+    ......
 ```
 
 介绍几个常用的
@@ -2688,7 +2554,7 @@ control the execution of any test:
 - `-shuffle`，打乱所有测试用例的执行顺序
 - `-run regexp`，运行指定的测试用例
 - `-list regexp`，列出每一个测试用例
-- `-cpu 1,2,4`，指定cpu数量
+- `-cpu 1,2,4`，指定 cpu 数量
 - `-count n`，指定每个测试用例执行多少次
 
 最简单的用法就是，不带任何参数，它会执行当前所在包下的所有测试用例，并输出结果。
@@ -2747,7 +2613,7 @@ $ go test .
 $ go test -v net/http
 ```
 
-在列表模式下，go会将指定包下的每一个包的测试文件编译成二进制文件并执行，为了避免重复运行测试，go默认会将结果缓存，二次运行时不会重新编译。使用下列参数时将会默认开启缓存
+在列表模式下，go 会将指定包下的每一个包的测试文件编译成二进制文件并执行，为了避免重复运行测试，go 默认会将结果缓存，二次运行时不会重新编译。使用下列参数时将会默认开启缓存
 
 - `-benchtime`
 - `-cpu`
@@ -2765,20 +2631,16 @@ $ go test -v net/http
 $ go test -v -count=1 ./...
 ```
 
-
-
 ## 指令
 
-与命令不同，go的指令是以硬编码的形式存在于源文件中的，它们有另一个比较术语化的名字：编译指示（progma directives）。
+与命令不同，go 的指令是以硬编码的形式存在于源文件中的，它们有另一个比较术语化的名字：编译指示（progma directives）。
 
-编译器和链接器会因为它们改变自身的行为从而达到控制编译的效果，就有点类似于c语言中的宏，当然并非所有指令都是用来影响编译的，部分用于其它功能性行为，比如`generate`指令通常用于代码生成的功能。这些指令通常以注释的形式存在，并且以`//go:`作为前缀，中间不能包含任何的空格，比如`//go:generate`指令。所有指令类型总共分为两种
+编译器和链接器会因为它们改变自身的行为从而达到控制编译的效果，就有点类似于 c 语言中的宏，当然并非所有指令都是用来影响编译的，部分用于其它功能性行为，比如`generate`指令通常用于代码生成的功能。这些指令通常以注释的形式存在，并且以`//go:`作为前缀，中间不能包含任何的空格，比如`//go:generate`指令。所有指令类型总共分为两种
 
-- 功能性指令，这类是go提供的功能性指令可以随意使用，比如`generate`，`embed`，`build`。
+- 功能性指令，这类是 go 提供的功能性指令可以随意使用，比如`generate`，`embed`，`build`。
 - 编译器指令，这类指令需要谨慎使用，胡乱使用可能导致无法预测的结果。
 
 除了功能性指令外，大多数指令都只能作用于函数签名上。对于编译器指令可以执行命令`go doc compile`查看其指令。对于全部指令，可以在`cmd/compile/internal/ir/node.go: 440`找到有关它们的信息。
-
-
 
 ### generate
 
@@ -2787,24 +2649,24 @@ $ go help generate
 usage: go generate [-run regexp] [-n] [-v] [-x] [build flags] [file.go... | packages]
 ```
 
-`generate`指令顾名思义就是跟生成有关的，通常它的作用是用于执行那些会生成代码以及更新源代码的命令，不过实际上它可以执行任何命令。并且，`generate`指令与其它指令不同，它有一个专门的命令可以用于执行所有位于源文件中的generate指令。它可以以文件名或者包名来作为输入参数来表示执行哪些文件的`generate`指令，下面是它的其它参数。
+`generate`指令顾名思义就是跟生成有关的，通常它的作用是用于执行那些会生成代码以及更新源代码的命令，不过实际上它可以执行任何命令。并且，`generate`指令与其它指令不同，它有一个专门的命令可以用于执行所有位于源文件中的 generate 指令。它可以以文件名或者包名来作为输入参数来表示执行哪些文件的`generate`指令，下面是它的其它参数。
 
-- `-run=regex` ，运行指定的generate指令
-- `-skip=regex`，跳过指定的generate指令
+- `-run=regex` ，运行指定的 generate 指令
+- `-skip=regex`，跳过指定的 generate 指令
 - `-n`，打印将要执行的命令
 - `-x`，打印过程中执行的命令
 - `-v`，输出处理的文件
 
 除此之外，在`generate`指令中执行的命令还支持以下几个内置参数
 
-- `$GOARCH`，cpu架构
+- `$GOARCH`，cpu 架构
 - `$GOOS`，操作系统
 - `$GOFILE`，文件名
 - `$GOLINE`，行号
 - `$GOPACKAGE`，包名
 - `$GOROOT`，go root
 - `$DOLLAR`，美元符号
-- `$PATH`，path环境变量
+- `$PATH`，path 环境变量
 
 看个例子，什么代码都没有只有一行注释
 
@@ -2821,7 +2683,7 @@ $ go generate .
 hello world!
 ```
 
-这个例子是执行go命令 
+这个例子是执行 go 命令
 
 ```go
 package main
@@ -2836,19 +2698,17 @@ $ go generate .
 go version go1.21.3 windows/amd64
 ```
 
-`generate`指令可以用于执行任何命令，比如swagger生成API文档，或者Wire生成IOC代码。不过这个指令不适合执行特别复杂的命令，它适合执行简短的命令，如果有复杂的需求可以使用脚本或者makefile来代替。
-
-
+`generate`指令可以用于执行任何命令，比如 swagger 生成 API 文档，或者 Wire 生成 IOC 代码。不过这个指令不适合执行特别复杂的命令，它适合执行简短的命令，如果有复杂的需求可以使用脚本或者 makefile 来代替。
 
 ### embed
 
-`embed`指令是1.16新增的，它的作用是将可以将静态文件一同打包进二进制文件中，比如HTML模板之类的。它的格式如下
+`embed`指令是 1.16 新增的，它的作用是将可以将静态文件一同打包进二进制文件中，比如 HTML 模板之类的。它的格式如下
 
 ```go
 //go:embed pattern
 ```
 
-`pattern`可以是glob表达式，也可以是文件夹或者某一个具体文件。看一个例子
+`pattern`可以是 glob 表达式，也可以是文件夹或者某一个具体文件。看一个例子
 
 ```go
 package main
@@ -2867,19 +2727,19 @@ var static embed.FS
 package main
 
 import (
-	"embed"
-	"fmt"
+  "embed"
+  "fmt"
 )
 
 //go:embed *.txt
 var static embed.FS
 
 func main() {
-	bytes, err := static.ReadFile("hello.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(bytes))
+  bytes, err := static.ReadFile("hello.txt")
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(string(bytes))
 }
 ```
 
@@ -2887,26 +2747,26 @@ func main() {
 
 ```go
 func (f FS) Open(name string) (fs.File, error)
-func (f FS) ReadFile(name string) ([]byte, error) 
-func (f FS) ReadDir(name string) ([]fs.DirEntry, error) 
+func (f FS) ReadFile(name string) ([]byte, error)
+func (f FS) ReadDir(name string) ([]fs.DirEntry, error)
 ```
 
-下面这个例子展示了通过`embed`指令嵌入html文件，并通过http服务访问。
+下面这个例子展示了通过`embed`指令嵌入 html 文件，并通过 http 服务访问。
 
 ```go
 package main
 
 import (
-	"embed"
-	"net/http"
+  "embed"
+  "net/http"
 )
 
 //go:embed index.html
 var htmlFs embed.FS
 
 func main() {
-	http.Handle("/", http.FileServer(http.FS(htmlFs)))
-	http.ListenAndServe(":8080", http.DefaultServeMux)
+  http.Handle("/", http.FileServer(http.FS(htmlFs)))
+  http.ListenAndServe(":8080", http.DefaultServeMux)
 }
 ```
 
@@ -2935,18 +2795,18 @@ $ curl -s -GET 127.0.0.1:8080
 package main
 
 import (
-	_ "embed"
-	"net/http"
+  _ "embed"
+  "net/http"
 )
 
 //go:embed index.html
 var rawdata []byte
 
 func main() {
-	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
-		writer.Write(rawdata)
-	})
-	http.ListenAndServe(":8080", http.DefaultServeMux)
+  http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
+    writer.Write(rawdata)
+  })
+  http.ListenAndServe(":8080", http.DefaultServeMux)
 }
 ```
 
@@ -2969,11 +2829,9 @@ $ curl -s -GET 127.0.0.1:8080
 </html>
 ```
 
-
-
 ### build
 
-在[build-编译控制](#编译控制)部分，讲到了用`// +build`指令来控制编译行为。而`//go:build`指令是在1.17新出的，意在取代先前的指令，不过现在都1.21也还没有取代，估计以后会以共存的方式存在，关于这个新指令，官方文档也有介绍：[build constraints](https://pkg.go.dev/cmd/go#hdr-Build_constraints)。它的功能与前者没什么区别，但是语法更加严格，支持布尔表达式，看一个例子
+在[build-编译控制](#编译控制)部分，讲到了用`// +build`指令来控制编译行为。而`//go:build`指令是在 1.17 新出的，意在取代先前的指令，不过现在都 1.21 也还没有取代，估计以后会以共存的方式存在，关于这个新指令，官方文档也有介绍：[build constraints](https://pkg.go.dev/cmd/go#hdr-Build_constraints)。它的功能与前者没什么区别，但是语法更加严格，支持布尔表达式，看一个例子
 
 ```go
 //go:build (linux && 386) || (darwin && !cgo)
@@ -2982,8 +2840,6 @@ package pkg_name
 ```
 
 这种方式可读性要比原来那种高得多。
-
-
 
 ### line
 
@@ -3032,8 +2888,6 @@ abc.go:10:106: undefined: undefinedType
 
 可以看到它并不需要`go:`作为前缀。
 
-
-
 ### linkname
 
 这个指令的操作可以用于链接其它包的函数或者全局变量，即便它是私有类型，这种操作经常在标准库尤其是`runtime`中出现，有一些函数没有函数体就是通过这种方式来实现的，另一部分空函数体的函数则是由汇编实现。来看下它的用法，使用格式如下
@@ -3046,20 +2900,20 @@ abc.go:10:106: undefined: undefinedType
 
 ```go
 import (
-	"fmt"
-	"unsafe"
+  "fmt"
+  "unsafe"
 )
 
 //go:linkname memhash runtime.memhash
 func memhash(p unsafe.Pointer, h, s uintptr) uintptr
 
 func MemHash(data []byte) uint64 {
-	ptr := unsafe.Pointer(unsafe.SliceData(data))
-	return uint64(memhash(ptr, 0, uintptr(len(data))))
+  ptr := unsafe.Pointer(unsafe.SliceData(data))
+  return uint64(memhash(ptr, 0, uintptr(len(data))))
 }
 
 func main() {
-	fmt.Println(MemHash([]byte("hello")))
+  fmt.Println(MemHash([]byte("hello")))
 }
 ```
 
@@ -3078,7 +2932,7 @@ package example
 
 // 一个私有类型，外界无法访问。
 func test() string {
-	return "a"
+  return "a"
 }
 ```
 
@@ -3086,16 +2940,16 @@ func test() string {
 package main
 
 import (
-	"fmt"
-	_ "golearn/example"
-	_ "unsafe"
+  "fmt"
+  _ "golearn/example"
+  _ "unsafe"
 )
 
 //go:linkname test golearn/example.test
 func test() string
 
 func main() {
-	fmt.Println(test())
+  fmt.Println(test())
 }
 ```
 
@@ -3105,9 +2959,7 @@ func main() {
 a
 ```
 
-可以看到已经链接成功了，这种方法可以绕过go的模块系统为所欲为，不过不建议大规模使用，除非你知道你自己干什么。
-
-
+可以看到已经链接成功了，这种方法可以绕过 go 的模块系统为所欲为，不过不建议大规模使用，除非你知道你自己干什么。
 
 ### noinline
 
@@ -3117,12 +2969,12 @@ a
 package main
 
 func val() string {
-	return "val"
+  return "val"
 }
 
 func main() {
-	var c = val()
-	_ = c
+  var c = val()
+  _ = c
 }
 ```
 
@@ -3132,8 +2984,8 @@ func main() {
 package main
 
 func main() {
-	var c = "val"
-	_ = c
+  var c = "val"
+  _ = c
 }
 ```
 
@@ -3157,12 +3009,12 @@ package main
 
 //go:noinline
 func val() string {
-	return "val"
+  return "val"
 }
 
 func main() {
-	var c = val()
-	_ = c
+  var c = val()
+  _ = c
 }
 ```
 
@@ -3185,20 +3037,16 @@ RET
 
 这次可以非常明显的看到了`main.val`这个调用，而这也正是`noinline`指令发挥的功能，阻止编译器优化时的函数内联。
 
-
-
 ### nospilit
 
-`nospilit`指令的作用是跳过栈溢出检测。由于go的并发调度模型是抢占式调度，假设一个函数会运行非常底层的代码，其它协程在调用此函数时不适合被抢占，就可以使用该指令来表示。
+`nospilit`指令的作用是跳过栈溢出检测。由于 go 的并发调度模型是抢占式调度，假设一个函数会运行非常底层的代码，其它协程在调用此函数时不适合被抢占，就可以使用该指令来表示。
 
 ```go
 //go:nosplit
-func nospilitFn() 
+func nospilitFn()
 ```
 
 使用该指令后，也就不会再进行栈增长。
-
-
 
 ### noescape
 
@@ -3214,8 +3062,6 @@ func memhash(p unsafe.Pointer, h, s uintptr) uintptr
 
 这样一来，编译器不会对其进行逃逸分析，前提是你得保证它不会发生逃逸，如果发生了，那就不知道会有什么后果了。
 
-
-
 ### uintptrescapes
 
 `uintptrescapes`指令表示该函数中`uinptr`类型的参数被转换为了指针值并且逃逸到了堆上，且必须保持其存活。这个指令一般用于一些低级的系统调用，大部分情况下不需要去了解它。
@@ -3227,8 +3073,6 @@ func nospilit(ptr uintptr) uintptr
 
 在以前应该还有一个`notinheaps`指令用于表示一个类型不允许分配内存到堆上，不知道在哪个版本被删掉了。
 
-
-
 ### norace
 
 `norace`指令表示一个函数的内存访问不再需要竞态分析，通常是在运行低层次代码不适合进行竞态分析时使用。
@@ -3238,12 +3082,8 @@ func nospilit(ptr uintptr) uintptr
 func low_level_code(ptr uintptr) uintptr
 ```
 
-
-
 ::: tip
 
 还有部分指令限制了只能由`runtime`包使用，外部是无法使用的， 它们会涉及到更深的东西，想要了解可以在[Runtime-only compiler directives](https://github.com/golang/go/blob/master/src/runtime/HACKING.md#runtime-only-compiler-directives)中看到有关它们的介绍。
 
 :::
-
-### 

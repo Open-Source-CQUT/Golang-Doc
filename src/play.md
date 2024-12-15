@@ -1,38 +1,32 @@
 # Playgrounds
 
-
-
 ## 介绍
 
-对于一些简单的单文件演示代码，go提供了playground来在线运行go代码，不需要安装go环境，只需要一个浏览器即可。
+对于一些简单的单文件演示代码，go 提供了 playground 来在线运行 go 代码，不需要安装 go 环境，只需要一个浏览器即可。
 
-Playground开源地址：[go-playground (github.com)](https://github.com/golang/playground)
+Playground 开源地址：[go-playground (github.com)](https://github.com/golang/playground)
 
-官方Playground地址：[Go Playground - The Go Programming Language](https://go.dev/play/)
+官方 Playground 地址：[Go Playground - The Go Programming Language](https://go.dev/play/)
 
 ![](/images/play.png)
 
-第三方Playground地址：[The Go Play Space](https://goplay.space/)
+第三方 Playground 地址：[The Go Play Space](https://goplay.space/)
 
 ![](/images/goplay.png)
 
-由于它是一个开源项目，你也可以选择在自己的服务器上搭建个人playground，安装方法见官方文档。Playground服务器会将上传的代码段存储到谷歌云存储，所以不建议分享敏感代码。对于国内用户，建议使用第二个因为不需要魔法上网，但它依旧是基于官方的Playground服务器，代码也会同步到官方那边的服务器里面。
+由于它是一个开源项目，你也可以选择在自己的服务器上搭建个人 playground，安装方法见官方文档。Playground 服务器会将上传的代码段存储到谷歌云存储，所以不建议分享敏感代码。对于国内用户，建议使用第二个因为不需要魔法上网，但它依旧是基于官方的 Playground 服务器，代码也会同步到官方那边的服务器里面。
 
-笔者自己整了一个玩具[goplay](https://github.com/246859/goplay)，用于在命令行内与playground服务器交互，也可以当作playground HTTP客户端库来使用。
-
-
+笔者自己整了一个玩具[goplay](https://github.com/246859/goplay)，用于在命令行内与 playground 服务器交互，也可以当作 playground HTTP 客户端库来使用。
 
 ## HTTP API
 
-上面提到的都是浏览器的方式交互，如果想要从客户端的角度与playground服务器交互，比如编写一个vuepress go playground的插件。由于playground服务器本身是一个HTTP服务器，我们可以使用HTTP的方式来与其进行交互。官方本身没有提供API文档，下面的HTTP API是我从playground代码里面了解到的，随着时间的推移可能会有些出入，为了获取最准确的信息可以自行去仓库里面查阅。
+上面提到的都是浏览器的方式交互，如果想要从客户端的角度与 playground 服务器交互，比如编写一个 vuepress go playground 的插件。由于 playground 服务器本身是一个 HTTP 服务器，我们可以使用 HTTP 的方式来与其进行交互。官方本身没有提供 API 文档，下面的 HTTP API 是我从 playground 代码里面了解到的，随着时间的推移可能会有些出入，为了获取最准确的信息可以自行去仓库里面查阅。
 
-官方playground服务器地址：`play.golang.org`，下面演示都以官方服务器为准，如果使用第三方服务器的话替换域名即可。
-
-
+官方 playground 服务器地址：`play.golang.org`，下面演示都以官方服务器为准，如果使用第三方服务器的话替换域名即可。
 
 ### share
 
-分享代码段到playground服务器上，返回对应的snippet id。
+分享代码段到 playground 服务器上，返回对应的 snippet id。
 
 ```http
 POST https://play.golang.org/share
@@ -47,8 +41,6 @@ POST https://play.golang.org/share
 ```
 13AbsRp7_S9
 ```
-
-
 
 ### compile
 
@@ -67,21 +59,19 @@ POST https://play.golang.org/compile
 
 ```json
 {
-    "Errors": "",
-    "Events": [
-        {
-            "Message": "Hello, world\n",
-            "Kind": "stdout",
-            "Delay": 0
-        }
-    ],
-    "Status": 0,
-    "IsTest": false,
-    "TestsFailed": 0
+  "Errors": "",
+  "Events": [
+    {
+      "Message": "Hello, world\n",
+      "Kind": "stdout",
+      "Delay": 0
+    }
+  ],
+  "Status": 0,
+  "IsTest": false,
+  "TestsFailed": 0
 }
 ```
-
-
 
 ### fmt
 
@@ -100,16 +90,14 @@ POST https://play.golang.org/fmt
 
 ```json
 {
-    "Body": "// You can edit this code!\n// Click here and start typing.\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, world\")\n}\n",
-    "Error": ""
+  "Body": "// You can edit this code!\n// Click here and start typing.\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, world\")\n}\n",
+  "Error": ""
 }
 ```
 
-
-
 ### health
 
-对playground服务器进行健康检查
+对 playground 服务器进行健康检查
 
 ```http
 GET https://play.golang.org/_ah/health
@@ -121,11 +109,9 @@ GET https://play.golang.org/_ah/health
 ok
 ```
 
-
-
 ### version
 
-查看playground服务器go版本
+查看 playground 服务器 go 版本
 
 ```http
 GET https://play.golang.org/version
@@ -141,11 +127,9 @@ GET https://play.golang.org/version
 }
 ```
 
-
-
 ### view
 
-查看指定snippet id的代码段
+查看指定 snippet id 的代码段
 
 ```http
 GET https://play.golang.org/p/{id}.go
@@ -161,15 +145,13 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("Hello, world")
+  fmt.Println("Hello, world")
 }
 ```
 
-
-
 ### download
 
-post方法携带download form参数会以attachment方式返回结果
+post 方法携带 download form 参数会以 attachment 方式返回结果
 
 ```http
 POST https://play.golang.org/p/{id}.go
@@ -189,7 +171,7 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("Hello, world")
+  fmt.Println("Hello, world")
 }
 ```
 
@@ -201,14 +183,14 @@ func main() {
 Viewing and/or sharing code snippets is not available in your country for legal reasons.
 ```
 
-这是因为某种不可抗力中国大陆地区的用户无法访问服务器，并且在playground源代码中也有这么一个函数
+这是因为某种不可抗力中国大陆地区的用户无法访问服务器，并且在 playground 源代码中也有这么一个函数
 
 ```go
 func allowShare(r *http.Request) bool {
-	if r.Header.Get("X-AppEngine-Country") == "CN" {
-		return false
-	}
-	return true
+  if r.Header.Get("X-AppEngine-Country") == "CN" {
+    return false
+  }
+  return true
 }
 ```
 

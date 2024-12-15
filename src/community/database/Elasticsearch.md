@@ -2,9 +2,7 @@
 
 官方网址：[Elasticsearch：官方分布式搜索和分析引擎 | Elastic](https://www.elastic.co/cn/elasticsearch/)
 
-Elasticsearch 是一个分布式、RESTful 风格的搜索和数据分析引擎，能够解决不断涌现出的各种用例。作为 Elastic Stack 的核心，Elasticsearch 会集中存储您的数据，让您飞快完成搜索，微调相关性，进行强大的分析，并轻松缩放规模。本文会讲解如何用Go来进行对Elastisearch的一些基本操作，比如增删改查之类的，如果你对Elasticsearch并不了解，请先自行学习。
-
-
+Elasticsearch 是一个分布式、RESTful 风格的搜索和数据分析引擎，能够解决不断涌现出的各种用例。作为 Elastic Stack 的核心，Elasticsearch 会集中存储您的数据，让您飞快完成搜索，微调相关性，进行强大的分析，并轻松缩放规模。本文会讲解如何用 Go 来进行对 Elastisearch 的一些基本操作，比如增删改查之类的，如果你对 Elasticsearch 并不了解，请先自行学习。
 
 ## 依赖
 
@@ -14,7 +12,7 @@ Elasticsearch 是一个分布式、RESTful 风格的搜索和数据分析引擎�
 $ github.com/elastic/go-elasticsearch/v7
 ```
 
-如果你是ES8，就换个版本
+如果你是 ES8，就换个版本
 
 ```bash
 $ github.com/elastic/go-elasticsearch/v8
@@ -22,11 +20,9 @@ $ github.com/elastic/go-elasticsearch/v8
 
 ::: tip
 
-本文用ES8来进行演示
+本文用 ES8 来进行演示
 
 :::
-
-
 
 ## 连接
 
@@ -36,7 +32,7 @@ $ github.com/elastic/go-elasticsearch/v8
 func NewClient(cfg Config) (*Client, error)
 ```
 
-ES8+默认使用HTTPS连接了，在建立HTTPS连接时，要么使用CA证书，要么用CA指纹，两者都是在Elaticsearch服务端生成的，一个例子如下
+ES8+默认使用 HTTPS 连接了，在建立 HTTPS 连接时，要么使用 CA 证书，要么用 CA 指纹，两者都是在 Elaticsearch 服务端生成的，一个例子如下
 
 ```go
 client, err := elasticsearch.NewClient(elasticsearch.Config{
@@ -47,7 +43,7 @@ client, err := elasticsearch.NewClient(elasticsearch.Config{
 })
 ```
 
-`elasticsearch`提供的Go API基本上都是选项式函数，比如通过ping API测试服务是否可以用
+`elasticsearch`提供的 Go API 基本上都是选项式函数，比如通过 ping API 测试服务是否可以用
 
 ```go
 pingResp, err := client.Ping(client.Ping.WithPretty(), client.Ping.WithHuman())
@@ -63,7 +59,7 @@ fmt.Println(pingResp)
 [200 OK]
 ```
 
-再比如，通过Info API查看服务状态
+再比如，通过 Info API 查看服务状态
 
 ```go
 infoResp, err := client.Info(client.Info.WithHuman())
@@ -95,17 +91,15 @@ fmt.Println(infoResp)
 }
 ```
 
-
-
 ::: tip
 
-有关ES API的任何问题，请查阅官方文档[ES Restful API](https://www.elastic.co/guide/en/elasticsearch/reference/master/api-conventions.html)。
+有关 ES API 的任何问题，请查阅官方文档[ES Restful API](https://www.elastic.co/guide/en/elasticsearch/reference/master/api-conventions.html)。
 
 :::
 
 ## 索引
 
-通过go api操作索引，所有关于索引操作的API都位于`esapi.Indices`结构体中
+通过 go api 操作索引，所有关于索引操作的 API 都位于`esapi.Indices`结构体中
 
 ```go
 // Indices contains the Indices APIs
@@ -117,11 +111,9 @@ type Indices struct {
     Close                 IndicesClose
     ...
     ...
-	ValidateQuery         IndicesValidateQuery
+  ValidateQuery         IndicesValidateQuery
 }
 ```
-
-
 
 ### 创建
 
@@ -129,60 +121,60 @@ type Indices struct {
 
 ```json
 {
-	"settings": {
-		"number_of_shards": 3,
-		"number_of_replicas": 2
-	},
-	"mappings": {
-		"properties": {
-				"name": {
-					"type": "text"
-				},
-				"age": {
-					"type": "long"
-				},
-				"salary": {
-					"type": "double"
-				}
-			}
-	}
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 2
+  },
+  "mappings": {
+    "properties": {
+      "name": {
+        "type": "text"
+      },
+      "age": {
+        "type": "long"
+      },
+      "salary": {
+        "type": "double"
+      }
+    }
+  }
 }
 ```
 
- 实际操作，就跟发HTTP请求一样差不多
+实际操作，就跟发 HTTP 请求一样差不多
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
-	dsl := bytes.NewBufferString(`{
-	"settings": {
-		"number_of_shards": 3,
-		"number_of_replicas": 2
-	},
-	"mappings": {
-		"properties": {
-				"name": {
-					"type": "text"
-				},
-				"age": {
-					"type": "long"
-				},
-				"salary": {
-					"type": "double"
-				}
-			}
-	}
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
+  dsl := bytes.NewBufferString(`{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 2
+  },
+  "mappings": {
+    "properties": {
+        "name": {
+          "type": "text"
+        },
+        "age": {
+          "type": "long"
+        },
+        "salary": {
+          "type": "double"
+        }
+      }
+  }
 }`)
 
-	createIndices := client.Indices.Create
-	resp, err := createIndices("user", createIndices.WithBody(dsl))
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(resp)
+  createIndices := client.Indices.Create
+  resp, err := createIndices("user", createIndices.WithBody(dsl))
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(resp)
 }
 ```
 
@@ -192,25 +184,23 @@ func main() {
 [200 OK] {"acknowledged":true,"shards_acknowledged":true,"index":"user"}
 ```
 
-
-
 ### 获取
 
 获取若干个索引的信息
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
 
-	get := client.Indices.Get
-	response, err := get([]string{"user"}, get.WithPretty(), get.WithHuman())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response)
+  get := client.Indices.Get
+  response, err := get([]string{"user"}, get.WithPretty(), get.WithHuman())
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(response)
 }
 ```
 
@@ -258,16 +248,14 @@ func main() {
 }
 ```
 
-
-
 ### 分析
 
 针对指定索引对文本字符串进行分析，并返回结果，文本如下
 
 ```json
 {
-  "analyzer" : "standard",
-  "text" : ["this is a test", "the second text"]
+  "analyzer": "standard",
+  "text": ["this is a test", "the second text"]
 }
 ```
 
@@ -275,21 +263,21 @@ func main() {
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
 
-	analyze := client.Indices.Analyze
-	dsl := bytes.NewBufferString(`{
+  analyze := client.Indices.Analyze
+  dsl := bytes.NewBufferString(`{
   "analyzer" : "standard",
   "text" : ["this is a test", "the second text"]
 }`)
-	response, err := analyze(analyze.WithIndex("user"), analyze.WithBody(dsl), analyze.WithPretty(), analyze.WithHuman())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response)
+  response, err := analyze(analyze.WithIndex("user"), analyze.WithBody(dsl), analyze.WithPretty(), analyze.WithHuman())
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(response)
 }
 ```
 
@@ -351,25 +339,23 @@ func main() {
 }
 ```
 
-
-
 ### 删除
 
 删除若干个指定的索引
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
 
-	indicesDelete := client.Indices.Delete
-	response, err := indicesDelete([]string{"user"})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response)
+  indicesDelete := client.Indices.Delete
+  response, err := indicesDelete([]string{"user"})
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(response)
 }
 ```
 
@@ -379,19 +365,9 @@ func main() {
 [200 OK] {"acknowledged":true}
 ```
 
-<br/>
-
-
-
-在上面这些API中，可以看到请求体是需要自己手动序列化的，官方并没有映射成Go结构体，响应体也是需要自己手动处理的。这些是比较常用的API，其他的使用起来都大差不差，没有太大区别。
-
-
-
-
+在上面这些 API 中，可以看到请求体是需要自己手动序列化的，官方并没有映射成 Go 结构体，响应体也是需要自己手动处理的。这些是比较常用的 API，其他的使用起来都大差不差，没有太大区别。
 
 ## 文档
-
-
 
 ### 创建
 
@@ -399,9 +375,9 @@ func main() {
 
 ```json
 {
-    "name": "jack",
-    "age": 12,
-    "salary": 5701.1
+  "name": "jack",
+  "age": 12,
+  "salary": 5701.1
 }
 ```
 
@@ -409,22 +385,22 @@ func main() {
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
 
-	doc := bytes.NewBufferString(`{
+  doc := bytes.NewBufferString(`{
     "name": "jack",
     "age": 12,
     "salary": 5701.1
 }`)
-	create := client.Create
-	response, err := create("user", "1", doc, create.WithPretty())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response)
+  create := client.Create
+  response, err := create("user", "1", doc, create.WithPretty())
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(response)
 }
 ```
 
@@ -446,25 +422,23 @@ func main() {
 }
 ```
 
-
-
 ### 获取
 
-获取一个指定ID的文档
+获取一个指定 ID 的文档
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
 
-	get := client.Get
-	response, err := get("user", "1", get.WithPretty())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response)
+  get := client.Get
+  response, err := get("user", "1", get.WithPretty())
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(response)
 }
 ```
 
@@ -486,19 +460,17 @@ func main() {
 }
 ```
 
-
-
 ### 更新
 
 更新文档内容
 
 ```json
 {
-   "doc":  { 
+  "doc": {
     "name": "jack",
     "age": 35,
     "salary": 5701.1
-   }
+  }
 }
 ```
 
@@ -506,22 +478,22 @@ func main() {
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
 
-	doc := bytes.NewBufferString(`{
+  doc := bytes.NewBufferString(`{
    "doc":  { "name": "jack",
     "age": 35,
     "salary": 5701.1
 }}`)
-	update := client.Update
-	response, err := update("user", "1", doc, update.WithPretty())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response)
+  update := client.Update
+  response, err := update("user", "1", doc, update.WithPretty())
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(response)
 }
 ```
 
@@ -543,13 +515,11 @@ func main() {
 }
 ```
 
-Update API还可以支持script实现upsert等之类的操作，前往[Update API](https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-update.html)了解更多信息。
-
-
+Update API 还可以支持 script 实现 upsert 等之类的操作，前往[Update API](https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-update.html)了解更多信息。
 
 ### 删除
 
-通过ID删除一个指定的文档
+通过 ID 删除一个指定的文档
 
 ```go
 func main() {
@@ -585,61 +555,58 @@ func main() {
 }
 ```
 
-
-
 ### 搜索
-ES API最常用的就是搜索API，下面会简单演示用法，先准备数据。
+
+ES API 最常用的就是搜索 API，下面会简单演示用法，先准备数据。
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
 
-	for i := range 10 {
-		doc := bytes.NewBufferString(fmt.Sprintf(`{
+  for i := range 10 {
+    doc := bytes.NewBufferString(fmt.Sprintf(`{
     "name": "%s",
     "age": %d,
     "salary": %f
 }`, randomName(), rand.Intn(18)+18, rand.Float64()))
-		create := client.Create
-		response, err := create("user", string('0'+i), doc, create.WithPretty())
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(response)
-	}
+    create := client.Create
+    response, err := create("user", string('0'+i), doc, create.WithPretty())
+    if err != nil {
+      panic(err)
+    }
+    fmt.Println(response)
+  }
 }
 
 func randomName() string {
-	var b []byte
-	for range 10 {
-		b = append(b, byte(rand.Intn(26)+'a'))
-	}
-	return string(b)
+  var b []byte
+  for range 10 {
+    b = append(b, byte(rand.Intn(26)+'a'))
+  }
+  return string(b)
 }
 ```
 
-搜索API就跟平时HTTP API用起来完全一样。
-
-
+搜索 API 就跟平时 HTTP API 用起来完全一样。
 
 查询所有文档
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
-	dsl := bytes.NewBufferString(`{"query": {"match_all":{}}, "size": 1}`)
-	search := client.Search
-	response, err := search(search.WithBody(dsl), search.WithPretty())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response)
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
+  dsl := bytes.NewBufferString(`{"query": {"match_all":{}}, "size": 1}`)
+  search := client.Search
+  response, err := search(search.WithBody(dsl), search.WithPretty())
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(response)
 }
 ```
 
@@ -647,24 +614,20 @@ func main() {
 
 ```go
 func main() {
-	client, err := newClient()
-	if err != nil {
-		panic(err)
-	}
-	dsl := bytes.NewBufferString(`{"query": {"term":{ "age": 22 } }, "size": 1}`)
-	search := client.Search
-	response, err := search(search.WithBody(dsl), search.WithPretty())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response)
+  client, err := newClient()
+  if err != nil {
+    panic(err)
+  }
+  dsl := bytes.NewBufferString(`{"query": {"term":{ "age": 22 } }, "size": 1}`)
+  search := client.Search
+  response, err := search(search.WithBody(dsl), search.WithPretty())
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(response)
 }
 ```
 
-<br/>
-
-
-
 ## 小结
 
-基础操作差不多就是这些，用起来跟HTTP API完全一样，把ES学会了，操作Go API完全没问题，像一些比较高级的操作比如`cluster`，`data stream`等之类的API，就请自行探索。
+基础操作差不多就是这些，用起来跟 HTTP API 完全一样，把 ES 学会了，操作 Go API 完全没问题，像一些比较高级的操作比如`cluster`，`data stream`等之类的 API，就请自行探索。

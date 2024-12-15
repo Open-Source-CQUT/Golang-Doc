@@ -1,19 +1,16 @@
 ---
 date: 2022-10-01
 ---
+
 # flag
 
 Go语言内置的Flag包实现了命令行参数的解析，Flag包使得开发命令行工具更加简单。
-
-
 
 ## 导入
 
 ```go
 import flag
 ```
-
-
 
 ## 类型
 
@@ -28,8 +25,6 @@ import flag
 - float64
 - string
 - duration
-
-
 
 ## 定义
 
@@ -52,8 +47,6 @@ flag.IntVar(&age, "age", 15, "年龄")
 flag.BoolVar(&sex, "sex", true, "性别")
 ```
 
-
-
 ## 解析
 
 通过调用`flag.Parse()`来解析参数，支持的命令行参数格式有如下几种:
@@ -65,8 +58,6 @@ flag.BoolVar(&sex, "sex", true, "性别")
 
 布尔类型的参数必须使用等号，Flag解析会在第一个非命令行参数之前停止。
 
-
-
 ## 其他
 
 ```go
@@ -74,10 +65,8 @@ func Args() []string //返回所有非命令参数
 
 func NArg() int //返回非命令行参数的个数
 
-func NFlag() int //返回命令行参数的个数 
+func NFlag() int //返回命令行参数的个数
 ```
-
-
 
 ## 示例
 
@@ -110,4 +99,3 @@ PS D:\WorkSpace\Code\GoProject\bin> .\go_build_GoProject_src_main.exe -age 15 -n
 李四 15 false
 PS D:\WorkSpace\Code\GoProject\bin>
 ```
-
