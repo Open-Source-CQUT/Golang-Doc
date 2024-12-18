@@ -1,1 +1,0 @@
-import{_ as t,V as a,W as r,X as e,Y as o}from"./framework-f06be456.js";const c={},s=e("h1",{id:"waitgroup",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#waitgroup","aria-hidden":"true"},"#"),o(" waitgroup")],-1),_=[s];function n(i,d){return a(),r("div",null,_)}const l=t(c,[["render",n],["__file","5.wg.html.vue"]]);export{l as default};
