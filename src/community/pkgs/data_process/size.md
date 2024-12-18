@@ -1,12 +1,10 @@
 # size
 
-dstgo/size是一个很方便的将字符串与文件大小相互转换的库
+dstgo/size 是一个很方便的将字符串与文件大小相互转换的库
 
 仓库地址：[dstgo/size: Fast conversion between file size and string (github.com)](https://github.com/dstgo/size)
 
 文档地址：[dstgo/size: Fast conversion between file size and string (github.com)](https://github.com/dstgo/size#readme)
-
-
 
 ## 安装
 
@@ -14,25 +12,23 @@ dstgo/size是一个很方便的将字符串与文件大小相互转换的库
 $ go get https://github.com/dstgo/size
 ```
 
-
-
 ## 使用
 
 ```go
 const (
-	B  Size = 1
-	KB      = B * 1024
-	MB      = KB * 1024
-	GB      = MB * 1024
-	TB      = GB * 1024
-	PB      = TB * 1024
+  B  Size = 1
+  KB      = B * 1024
+  MB      = KB * 1024
+  GB      = MB * 1024
+  TB      = GB * 1024
+  PB      = TB * 1024
 )
 ```
 
 ```go
 type SizeMeta struct {
-	Data float64
-	Unit Size
+  Data float64
+  Unit Size
 }
 ```
 
@@ -56,21 +52,21 @@ func ParseTargetSize(str string, size Size) SizeMeta
 package main
 
 import (
-	"fmt"
-	"github.com/dstgo/size"
+  "fmt"
+  "github.com/dstgo/size"
 )
 
 func main() {
-	parseSize := size.ParseSize("1.2MB")
-	fmt.Printf("%+v\n", parseSize)
-	fmt.Printf("%+v\n", parseSize.Round(1))
+  parseSize := size.ParseSize("1.2MB")
+  fmt.Printf("%+v\n", parseSize)
+  fmt.Printf("%+v\n", parseSize.Round(1))
 
-	parseSize1 := size.ParseSize("2.3-asdajl")
-	fmt.Printf("%+v\n", parseSize1)
+  parseSize1 := size.ParseSize("2.3-asdajl")
+  fmt.Printf("%+v\n", parseSize1)
 
-	targetSize := size.ParseTargetSize("2.65MB", size.KB)
-	fmt.Printf("%+v", targetSize)
-	fmt.Printf("%+v", targetSize.String())
+  targetSize := size.ParseTargetSize("2.65MB", size.KB)
+  fmt.Printf("%+v", targetSize)
+  fmt.Printf("%+v", targetSize.String())
 }
 
 ```
@@ -79,8 +75,7 @@ func main() {
 
 ```
 1.20MB
-1.2      
-         
+1.2
+
 2713.60KB
 ```
-

@@ -6,9 +6,7 @@ date: 2022-09-07
 
 官方文档：[template package - text/template - Go Packages](https://pkg.go.dev/text/template)
 
-在平时我们经常会使用`fmt.Sprintf`函数来进行字符串格式化，但它只适用于处理小字符串的情况，而且需要使用格式化动词来指定类型，无法做到参数命名，不支持复杂情况下的处理，而这就是模板引擎所需要解决的问题，比如在直接挂到后端的静态`HTML`页面就需要用到模板引擎。社区里面有很多优秀的第三方模板引擎库，比如`pongo2` ,`sprig`，`jet`，不过本文要讲述的主角是go内置的模板引擎库`text/template`，在实际开发中一般用的是`html/template`，后者基于前者并做了很多关于`HTML`的安全处理，一般情况使用前者即可，若是涉及到`HTML`的模板处理建议使用后者会更安全。
-
-
+在平时我们经常会使用`fmt.Sprintf`函数来进行字符串格式化，但它只适用于处理小字符串的情况，而且需要使用格式化动词来指定类型，无法做到参数命名，不支持复杂情况下的处理，而这就是模板引擎所需要解决的问题，比如在直接挂到后端的静态`HTML`页面就需要用到模板引擎。社区里面有很多优秀的第三方模板引擎库，比如`pongo2` ,`sprig`，`jet`，不过本文要讲述的主角是 go 内置的模板引擎库`text/template`，在实际开发中一般用的是`html/template`，后者基于前者并做了很多关于`HTML`的安全处理，一般情况使用前者即可，若是涉及到`HTML`的模板处理建议使用后者会更安全。
 
 ## 快速开始
 
@@ -18,27 +16,27 @@ date: 2022-09-07
 package main
 
 import (
-	"fmt"
-	"os"
-	"text/template"
+  "fmt"
+  "os"
+  "text/template"
 )
 
 func main() {
-	tmpl := `This is the first template string, {{ .message }}`
+  tmpl := `This is the first template string, {{ .message }}`
 
-	te, err := template.New("texTmpl").Parse(tmpl)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+  te, err := template.New("texTmpl").Parse(tmpl)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
 
-	data := map[string]any{
-		"message": "hello world!",
-	}
-	execErr := te.Execute(os.Stdout, data)
-	if execErr != nil {
-		fmt.Println(err)
-	}
+  data := map[string]any{
+    "message": "hello world!",
+  }
+  execErr := te.Execute(os.Stdout, data)
+  if execErr != nil {
+    fmt.Println(err)
+  }
 }
 ```
 
@@ -68,15 +66,11 @@ func (t *Template) Execute(wr io.Writer, data any) error
 
 可见模板引擎的使用其实相当简单，稍微复杂一点的是模板引擎的模板语法，这才是本文主要讲解的内容。
 
-
-
 ## 模板语法
-
-
 
 ### 参数
 
-go通过两对花括号`{{ }}`，来在模板中表示这是一个模板参数，通过`.`来表示根对象，根对象就是传入的`data`。就像是访问一个类型的成员变量一样，通过`.`符号衔接变量名就可以在模板中访问对应的值，例如
+go 通过两对花括号`{{ }}`，来在模板中表示这是一个模板参数，通过`.`来表示根对象，根对象就是传入的`data`。就像是访问一个类型的成员变量一样，通过`.`符号衔接变量名就可以在模板中访问对应的值，例如
 
 ```
 {{ .data }}
@@ -94,70 +88,70 @@ go通过两对花括号`{{ }}`，来在模板中表示这是一个模板参数�
 
 ```go
 func main() {
-	out := os.Stdout
+  out := os.Stdout
 
-	tmpl := "data-> {{ . }}\n"
+  tmpl := "data-> {{ . }}\n"
 
-	datas := []any{
-		"hello world!",
-		6379,
-		3.1415926,
-		[]any{1, "2*2", 3.6},
-		map[string]any{"data": "hello world!"},
-		struct {
-			Data string
-		}{Data: "hello world!"},
-	}
+  datas := []any{
+    "hello world!",
+    6379,
+    3.1415926,
+    []any{1, "2*2", 3.6},
+    map[string]any{"data": "hello world!"},
+    struct {
+      Data string
+    }{Data: "hello world!"},
+  }
 
-	for _, data := range datas {
-		err := ExecTmpl(out, tmpl, data)
-		if err != nil {
-			panic(err)
-		}
-	}
+  for _, data := range datas {
+    err := ExecTmpl(out, tmpl, data)
+    if err != nil {
+      panic(err)
+    }
+  }
 }
 
 func ExecTmpl(writer io.Writer, tmpl string, data any) error {
-	parsedTmpl, err := template.New("template").Parse(tmpl)
-	if err != nil {
-		return err
-	}
-	return parsedTmpl.Execute(writer, data)
+  parsedTmpl, err := template.New("template").Parse(tmpl)
+  if err != nil {
+    return err
+  }
+  return parsedTmpl.Execute(writer, data)
 }
 ```
 
 输出如下
 
 ```
-data-> hello world!          
-data-> 6379                  
-data-> 3.1415926             
-data-> [1 2*2 3.6]           
+data-> hello world!
+data-> 6379
+data-> 3.1415926
+data-> [1 2*2 3.6]
 data-> map[data:hello world!]
-data-> {hello world!}   
+data-> {hello world!}
 ```
 
-可以看到其输出形式跟直接使用`fmt.Sprintf`一致。对于结构体和map，可以通过字段名来访问其值，如下所示
+可以看到其输出形式跟直接使用`fmt.Sprintf`一致。对于结构体和 map，可以通过字段名来访问其值，如下所示
 
 ```go
 func main() {
-	out := os.Stdout
+  out := os.Stdout
 
-	tmpl := "data-> {{ .Data }}\n"
+  tmpl := "data-> {{ .Data }}\n"
 
-	datas := []any{
-		map[string]any{"Data": "hello world!"},
-		struct {
-			Data string
-		}{Data: "hello world!"},
-	}
+  datas := []any{
+    map[string]any{"Data": "hello world!"},
+    struct {
+      Data string
+    }{Data: "hello world!"},
+  }
 
-	for _, data := range datas {
-		err := ExecTmpl(out, tmpl, data)
-		if err != nil {
-			panic(err)
-		}
-	}
+  for _, data := range datas {
+    err := ExecTmpl(out, tmpl, data)
+    if err != nil {
+      panic(err)
+    }
+  }
 }
 ```
 
@@ -172,21 +166,21 @@ data-> hello world!
 
 ```go
 func main() {
-	out := os.Stdout
+  out := os.Stdout
 
-	tmpl := "data-> {{ index . 1}}\n"
+  tmpl := "data-> {{ index . 1}}\n"
 
-	datas := []any{
-		[]any{"first", "second"},
-		map[int]any{1: "first"},
-	}
+  datas := []any{
+    []any{"first", "second"},
+    map[int]any{1: "first"},
+  }
 
-	for _, data := range datas {
-		err := ExecTmpl(out, tmpl, data)
-		if err != nil {
-			panic(err)
-		}
-	}
+  for _, data := range datas {
+    err := ExecTmpl(out, tmpl, data)
+    if err != nil {
+      panic(err)
+    }
+  }
 }
 ```
 
@@ -194,7 +188,7 @@ func main() {
 
 ```
 data-> second
-data-> first 
+data-> first
 ```
 
 如果是多维切片，可以通过如下方式来访问对应下标的值，等同于`s[i][j][k]`
@@ -203,7 +197,7 @@ data-> first
 {{ index . i j k }}
 ```
 
-对于嵌套的结构体或map，可以使用`.k1.k2.k3`这种方式访问，例如
+对于嵌套的结构体或 map，可以使用`.k1.k2.k3`这种方式访问，例如
 
 ```
 {{ .person.father.name }}
@@ -213,20 +207,20 @@ data-> first
 
 ```go
 func main() {
-	out := os.Stdout
+  out := os.Stdout
 
-	tmpl := `{{ .x }} {{ - .op - }} {{ .y }}`
+  tmpl := `{{ .x }} {{ - .op - }} {{ .y }}`
 
-	datas := []any{
-		map[string]any{"x": "10", "op": ">", "y": "2"},
-	}
+  datas := []any{
+    map[string]any{"x": "10", "op": ">", "y": "2"},
+  }
 
-	for _, data := range datas {
-		err := ExecTmpl(out, tmpl, data)
-		if err != nil {
-			panic(err)
-		}
-	}
+  for _, data := range datas {
+    err := ExecTmpl(out, tmpl, data)
+    if err != nil {
+      panic(err)
+    }
+  }
 }
 ```
 
@@ -237,8 +231,6 @@ func main() {
 ```
 
 需要注意的是，在花括号中，`-`符号与参数必须相隔一个空格，也就说必须是`{{- . -}}`这种格式，在例子中之所以会在两边额外加个空格写成`{{ - . - }}`这种格式纯粹是个人觉得看的顺眼，实际上并没有这个语法限制。
-
-
 
 ### 注释
 
@@ -254,11 +246,9 @@ func main() {
 {{- /* this is a comment */ -}}
 ```
 
-
-
 ### 变量
 
-在模板中也可以声明变量，通过`$`符号来表示这是一个变量，并通过`:= `来进行赋值，就跟go代码一样，例子如下。
+在模板中也可以声明变量，通过`$`符号来表示这是一个变量，并通过`:= `来进行赋值，就跟 go 代码一样，例子如下。
 
 ```
 {{ $name := .Name }}
@@ -276,20 +266,20 @@ func main() {
 
 ```go
 func main() {
-	out := os.Stdout
+  out := os.Stdout
 
-	tmpl := `{{ $name := .name }} {{- $name }}`
+  tmpl := `{{ $name := .name }} {{- $name }}`
 
-	datas := []any{
-		map[string]any{"name": "jack"},
-	}
+  datas := []any{
+    map[string]any{"name": "jack"},
+  }
 
-	for _, data := range datas {
-		err := ExecTmpl(out, tmpl, data)
-		if err != nil {
-			panic(err)
-		}
-	}
+  for _, data := range datas {
+    err := ExecTmpl(out, tmpl, data)
+    if err != nil {
+      panic(err)
+    }
+  }
 }
 ```
 
@@ -300,8 +290,6 @@ jack
 ```
 
 变量必须先声明才能使用，否则将会提示`undefined variable`，并且也要在作用域内才能使用。
-
-
 
 ### 函数
 
@@ -344,13 +332,13 @@ type FuncMap map[string]any
 | `ge`       | 大于等于               | `{{ ge 1 2 }}`          |
 | `len`      | 返回长度               | `{{ len .slice }}`      |
 | `index`    | 获取目标指定索引的元素 | `{{ index . 0 }}`       |
-| `slice`    | 切片，等价于s[1:2:3]   | `{{ slice . 1 2 3 }}`   |
-| `html`     | HTML转义               | `{{ html .name }}`      |
-| `js`       | js转义                 | `{{ js .name }}`        |
+| `slice`    | 切片，等价于 s[1:2:3]  | `{{ slice . 1 2 3 }}`   |
+| `html`     | HTML 转义              | `{{ html .name }}`      |
+| `js`       | js 转义                | `{{ js .name }}`        |
 | `print`    | fmt.Sprint             | `{{ print . }}`         |
 | `printf`   | fmt.Sprintf            | `{{ printf "%s" .}}`    |
 | `println`  | fmt.Sprintln           | `{{ println . }}`       |
-| `urlquery` | url query转义          | `{{ urlquery .query }}` |
+| `urlquery` | url query 转义         | `{{ urlquery .query }}` |
 
 除了这些之外，还有一个比较特殊的内置函数`call`，它是用于直接调用通过在`Execute`时期传入的`data`中的函数，例如下面的模板
 
@@ -398,8 +386,6 @@ template.FuncMap{
 1024 + 1
 ```
 
-
-
 ### 管道
 
 这个管道与`chan`是两个东西，官方文档里面称其为`pipeline`，任何能够产生数据的操作都称其为`pipeline`。下面的模板操作都属于管道操作
@@ -411,7 +397,7 @@ template.FuncMap{
 {{ .name }}
 ```
 
-熟悉linux的应该都知道管道运算符`|`，模板中也支持这样的写法。管道操作在模板中经常出现，例如
+熟悉 linux 的应该都知道管道运算符`|`，模板中也支持这样的写法。管道操作在模板中经常出现，例如
 
 ```
 {{ $name := 1 }}{{ $name | print | printf "%s+1=?" }}
@@ -425,25 +411,23 @@ template.FuncMap{
 
 在后续的`with`，`if`，`range`中也会频繁用到。
 
-
-
 ### with
 
 通过`with`语句可以控制变量和根对象的作用域，格式如下
 
 ```
-{{ with pipeline }} 
-	text 
+{{ with pipeline }}
+  text
 {{ end }}
 ```
 
 `with`会检查管道操作返回的值，如果值为空的话，中间的`text`模板就不会生成。如果想要处理空的情况，可以使用`with else`，格式如下
 
 ```
-{{ with pipeline }} 
-	text1 
-{{ else }} 
-	text2 
+{{ with pipeline }}
+  text1
+{{ else }}
+  text2
 {{ end }}
 ```
 
@@ -451,8 +435,8 @@ template.FuncMap{
 
 ```
 {{ $name := "mike" }}
-{{ with $name := "jack"  }} 
-	{{- $name -}}
+{{ with $name := "jack"  }}
+  {{- $name -}}
 {{ end }}
 {{- $name -}}
 ```
@@ -467,7 +451,7 @@ jackmike
 
 ```
 {{ with .name }}
-	name: {{- .second }}-{{ .first -}}
+  name: {{- .second }}-{{ .first -}}
 {{ end }}
 age: {{ .age }}
 address: {{ .address }}
@@ -490,17 +474,11 @@ map[string]any{
 
 ```
 name:bob-jack
-age: 1       
-address: usa 
+age: 1
+address: usa
 ```
 
 可以看到在`with`语句内部，根对象`.`已经变成了`.name`。
-
-
-
-
-
-
 
 ### 条件
 
@@ -508,11 +486,11 @@ address: usa
 
 ```
 {{ if pipeline }}
-	text1
+  text1
 {{ else if pipeline }}
-	text2
+  text2
 {{ else }}
-	text3
+  text3
 {{ end }}
 ```
 
@@ -520,11 +498,11 @@ address: usa
 
 ```
 {{ if eq .lang "en" }}
-	{{- .content.en -}}
+  {{- .content.en -}}
 {{ else if eq .lang "zh" }}
-	{{- .content.zh -}}
+  {{- .content.zh -}}
 {{ else }}
-	{{- .content.fallback -}}
+  {{- .content.fallback -}}
 {{ end }}
 ```
 
@@ -547,25 +525,23 @@ map[string]any{
 你好，世界！
 ```
 
-
-
 ### 迭代
 
 迭代语句的格式如下，`range`所支持的`pipeline`必须是数组，切片，`map`，以及`channel`。
 
 ```
 {{ range pipeline }}
-	loop body
+  loop body
 {{ end }}
 ```
 
-结合`else`使用，当长度为0时，就会执行`else`块的内容。
+结合`else`使用，当长度为 0 时，就会执行`else`块的内容。
 
 ```
 {{ range pipeline }}
-	loop body
+  loop body
 {{ else }}
-	fallback
+  fallback
 {{ end }}
 ```
 
@@ -573,13 +549,13 @@ map[string]any{
 
 ```
 {{ range pipeline }}
-	{{ if pipeline }}
-		{{ break }}
-	{{ end }}
-	{{ if pipeline }}
-		{{ continue }}
-	{{ end }}
-	loop body
+  {{ if pipeline }}
+    {{ break }}
+  {{ end }}
+  {{ if pipeline }}
+    {{ continue }}
+  {{ end }}
+  loop body
 {{ end }}
 ```
 
@@ -587,10 +563,10 @@ map[string]any{
 
 ```
 {{ range $index, $val := . }}
-	{{- if eq $index 0 }}
-		{{- continue -}}
-	{{ end -}}
-	{{- $index}}: {{ $val }} 
+  {{- if eq $index 0 }}
+    {{- continue -}}
+  {{ end -}}
+  {{- $index}}: {{ $val }}
 {{ end }}
 ```
 
@@ -603,13 +579,11 @@ map[string]any{
 输出
 
 ```
-1: 2    
-2: 3.14 
+1: 2
+2: 3.14
 ```
 
 迭代`map`也是同理。
-
-
 
 ### 嵌套
 
@@ -631,12 +605,12 @@ func (t *Template) ExecuteTemplate(wr io.Writer, name string, data any) error
 ```
 {{ define "t1" }}
     {{- with .t1 }}
-    	{{- .data -}}
+      {{- .data -}}
     {{ end -}}
 {{ end }}
 {{ define "t2" }}
     {{- with .t2 }}
-    	{{- .data -}}
+      {{- .data -}}
     {{ end}}
 {{ end -}}
 ```
@@ -654,44 +628,44 @@ map[string]any{
 
 ```go
 func main() {
-	out := os.Stdout
+  out := os.Stdout
 
-	tmpl :=
-		`{{ define "t1" }}
+  tmpl :=
+    `{{ define "t1" }}
     {{- with .t1 }}
-    	{{- .data -}}
+      {{- .data -}}
     {{ end -}}
 {{ end }}
 {{ define "t2" }}
     {{- with .t2 }}
-    	{{- .data -}}
+      {{- .data -}}
     {{ end}}
 {{ end -}}`
 
-	datas := []any{
-		map[string]any{
-			"t1": map[string]any{"data": "template body 1"},
-			"t2": map[string]any{"data": "template body 2"},
-		},
-	}
+  datas := []any{
+    map[string]any{
+      "t1": map[string]any{"data": "template body 1"},
+      "t2": map[string]any{"data": "template body 2"},
+    },
+  }
 
-	name := "t1"
+  name := "t1"
 
-	for _, data := range datas {
-		err := ExecTmpl(out, tmpl, name, data)
-		if err != nil {
-			panic(err)
-		}
-	}
+  for _, data := range datas {
+    err := ExecTmpl(out, tmpl, name, data)
+    if err != nil {
+      panic(err)
+    }
+  }
 }
 
 func ExecTmpl(writer io.Writer, tmpl string, name string, data any) error {
-	t := template.New("template")
-	parsedTmpl, err := t.Parse(tmpl)
-	if err != nil {
-		return err
-	}
-	return parsedTmpl.ExecuteTemplate(writer, name, data)
+  t := template.New("template")
+  parsedTmpl, err := t.Parse(tmpl)
+  if err != nil {
+    return err
+  }
+  return parsedTmpl.ExecuteTemplate(writer, name, data)
 }
 ```
 
@@ -706,20 +680,18 @@ template body 1
 ```
 {{ define "t1" }}
     {{- with .t1 }}
-    	{{- .data -}}
+      {{- .data -}}
     {{ end -}}
 {{ end }}
 {{ define "t2" }}
     {{- with .t2 }}
-    	{{- .data -}}
+      {{- .data -}}
     {{ end}}
 {{ end -}}
 {{ template "t2" .}}
 ```
 
-那么在解析时是否指定模板名称，t2都会加载。
-
-
+那么在解析时是否指定模板名称，t2 都会加载。
 
 ### 关联
 
@@ -733,54 +705,54 @@ template body 1
 
 ```go
 func main() {
-	tmpl1 := `name: {{ .name }}`
+  tmpl1 := `name: {{ .name }}`
 
-	tmpl2 := `age: {{ .age }}`
+  tmpl2 := `age: {{ .age }}`
 
-	tmpl3 := `Person Info
+  tmpl3 := `Person Info
 {{template "t1" .}}
 {{template "t2" .}}`
 
-	t1, err := template.New("t1").Parse(tmpl1)
-	if err != nil {
-		panic(err)
-	}
+  t1, err := template.New("t1").Parse(tmpl1)
+  if err != nil {
+    panic(err)
+  }
 
-	t2, err := template.New("t2").Parse(tmpl2)
-	if err != nil {
-		panic(err)
-	}
+  t2, err := template.New("t2").Parse(tmpl2)
+  if err != nil {
+    panic(err)
+  }
 
-	t3, err := template.New("t3").Parse(tmpl3)
-	if err != nil {
-		panic(err)
-	}
+  t3, err := template.New("t3").Parse(tmpl3)
+  if err != nil {
+    panic(err)
+  }
 
-	if err := associate(t3, t1, t2); err != nil {
-		panic(err)
-	}
+  if err := associate(t3, t1, t2); err != nil {
+    panic(err)
+  }
 
-	err = t3.Execute(os.Stdout, map[string]any{
-		"name": "jack",
-		"age":  18,
-	})
-	if err != nil {
-		panic(err)
-	}
+  err = t3.Execute(os.Stdout, map[string]any{
+    "name": "jack",
+    "age":  18,
+  })
+  if err != nil {
+    panic(err)
+  }
 }
 
 func associate(t *template.Template, ts ...*template.Template) error {
-	for _, tt := range ts {
-		_, err := t.AddParseTree(tt.Name(), tt.Tree)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+  for _, tt := range ts {
+    _, err := t.AddParseTree(tt.Name(), tt.Tree)
+    if err != nil {
+      return err
+    }
+  }
+  return nil
 }
 ```
 
-在上述的地面中，t3关联了t1，和t2，使用`*Template.AddParseTree`方法进行关联
+在上述的地面中，t3 关联了 t1，和 t2，使用`*Template.AddParseTree`方法进行关联
 
 ```go
 func (t *Template) AddParseTree(name string, tree *parse.Tree) (*Template, error)
@@ -791,14 +763,12 @@ func (t *Template) AddParseTree(name string, tree *parse.Tree) (*Template, error
 ```
 Person Info
 name: jack
-age: 18  
+age: 18
 ```
-
-
 
 ### 插槽
 
-通过`block`语句，可以实现类似vue插槽的效果，其目的是为了复用某一个模板而用的。看一个使用案例就知道怎么用了，在t1模板中定义插槽
+通过`block`语句，可以实现类似 vue 插槽的效果，其目的是为了复用某一个模板而用的。看一个使用案例就知道怎么用了，在 t1 模板中定义插槽
 
 ```
 Basic Person Info
@@ -808,7 +778,7 @@ address: {{ .address }}
 {{ block "slot" . }} default content body {{ end }}
 ```
 
-`block`语句可以插槽中的默认内容，在后续其它模板使用插槽时，会覆盖默认的内容。在t2模板中引用t1模板，并使用`define`定义嵌入的内容
+`block`语句可以插槽中的默认内容，在后续其它模板使用插槽时，会覆盖默认的内容。在 t2 模板中引用 t1 模板，并使用`define`定义嵌入的内容
 
 ```
 {{ template "person.txt" . }}
@@ -833,23 +803,19 @@ map[string]any{
 
 ```
 Basic Person Info
-name: jack  
-age: 18     
+name: jack
+age: 18
 address: usa
-            
-school: mit 
+
+school: mit
 ```
-
-
-
-
 
 ## 模板文件
 
 在模板语法的案例中，都是使用的字符串字面量来作为模板，在实际的使用情况中大多数都是将模板放在文件中。
 
 ```go
-func ParseFS(fsys fs.FS, patterns ...string) (*Template, error) 
+func ParseFS(fsys fs.FS, patterns ...string) (*Template, error)
 ```
 
 比如`template.ParseFs`就是从指定的文件系统中加载匹配`pattern`的模板。下面的例子以`embed.FS`作为文件系统，准备三个文件
@@ -879,35 +845,35 @@ company: {{ .company }}
 
 ```go
 import (
-	"embed"
-	"os"
-	"text/template"
+  "embed"
+  "os"
+  "text/template"
 )
 
 //go:embed *.txt
 var fs embed.FS
 
 func main() {
-	data := map[string]any{
-		"name":    "jack",
-		"age":     18,
-		"address": "usa",
-		"company": "google",
-		"school":  "mit",
-	}
+  data := map[string]any{
+    "name":    "jack",
+    "age":     18,
+    "address": "usa",
+    "company": "google",
+    "school":  "mit",
+  }
 
-	t1, err := template.ParseFS(fs, "person.txt", "student.txt")
-	if err != nil {
-		panic(err)
-	}
+  t1, err := template.ParseFS(fs, "person.txt", "student.txt")
+  if err != nil {
+    panic(err)
+  }
 
-	t1.Execute(os.Stdout, data)
-	
-	t2, err := template.ParseFS(fs, "person.txt", "employee.txt")
-	if err != nil {
-		panic(err)
-	}
-	t2.Execute(os.Stdout, data)
+  t1.Execute(os.Stdout, data)
+
+  t2, err := template.ParseFS(fs, "person.txt", "employee.txt")
+  if err != nil {
+    panic(err)
+  }
+  t2.Execute(os.Stdout, data)
 }
 ```
 
@@ -915,17 +881,17 @@ func main() {
 
 ```
 Basic Person Info
-name: jack       
-age: 18          
-address: usa     
-                 
-school: mit      
+name: jack
+age: 18
+address: usa
+
+school: mit
 Basic Person Info
-name: jack       
-age: 18          
-address: usa     
-                 
-company: google  
+name: jack
+age: 18
+address: usa
+
+company: google
 ```
 
 这是一个很简单的模板文件使用案例，`person.txt`作为插槽文件，其它两个复用其内容并嵌入自定义的新内容。也可以使用下面两个函数
@@ -933,7 +899,7 @@ company: google
 ```go
 func ParseGlob(pattern string) (*Template, error)
 
-func ParseFiles(filenames ...string) (*Template, error) 
+func ParseFiles(filenames ...string) (*Template, error)
 ```
 
-`ParseGlob`基于通配符匹配，`ParseFiles`基于文件名，它们都是使用的本地文件系统。如果是用于展示在前端的`html`文件，建议使用`html/template`包，它提供的API与`text/template`完全一致，但是针对`html`，`css`，`js`做了安全处理。
+`ParseGlob`基于通配符匹配，`ParseFiles`基于文件名，它们都是使用的本地文件系统。如果是用于展示在前端的`html`文件，建议使用`html/template`包，它提供的 API 与`text/template`完全一致，但是针对`html`，`css`，`js`做了安全处理。

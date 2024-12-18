@@ -1,6 +1,7 @@
 ---
 date: 2022-10-23
 ---
+
 # time
 
 `time`包提供了时间和日历的相关的函数与方法。
@@ -8,7 +9,7 @@ date: 2022-10-23
 `time.Now()`函数可以获取当前时间
 
 ```go
-func Now() Time 
+func Now() Time
 ```
 
 ```go
@@ -43,35 +44,31 @@ func (t Time) Sub(u Time) Duration //求两个时间的差值
 func (t Time) Add(d Duration) Time //增加一段时间间隔
 ```
 
-
-
 ## 时间单位
 
 `time`包存放了基础的时间单位常量
 
 ```go
 const (
-	minDuration Duration = -1 << 63
-	maxDuration Duration = 1<<63 - 1
+  minDuration Duration = -1 << 63
+  maxDuration Duration = 1<<63 - 1
 )
 
 const (
-	Nanosecond  Duration = 1
-	Microsecond          = 1000 * Nanosecond
-	Millisecond          = 1000 * Microsecond
-	Second               = 1000 * Millisecond
-	Minute               = 60 * Second
-	Hour                 = 60 * Minute
+  Nanosecond  Duration = 1
+  Microsecond          = 1000 * Nanosecond
+  Millisecond          = 1000 * Microsecond
+  Second               = 1000 * Millisecond
+  Minute               = 60 * Second
+  Hour                 = 60 * Minute
 )
 ```
 
 它们的类型是`time.Duration`，最小的单位是纳秒，最大的是小时。
 
-
-
 ## 格式化
 
-时间类型可以格式化输出，不过需要注意的是在Go中格式化模板不是常见的yyyy-mm-dd这类，而是以Go诞生时间为模板。Go的诞生的时间是 2006年1月2日下午15点04分。
+时间类型可以格式化输出，不过需要注意的是在 Go 中格式化模板不是常见的 yyyy-mm-dd 这类，而是以 Go 诞生时间为模板。Go 的诞生的时间是 2006 年 1 月 2 日下午 15 点 04 分。
 
 例子
 
@@ -79,7 +76,7 @@ const (
 now := time.Now()
 ```
 
-24小时格式化输出
+24 小时格式化输出
 
 ```go
 fmt.Println(now.Format("2006-01-02 15:04:05 Monday Jan"))
@@ -93,18 +90,16 @@ fmt.Println(now.Format("2006-01-02"))
 //2022-11-17
 ```
 
-只输入12小时制的时间
+只输入 12 小时制的时间
 
 ```go
 fmt.Println(now.Format("15:04:05 PM"))
 //10:48:47 AM
 ```
 
-
-
 ## 解析时间
 
-通常我们会有一个需求就是，将一个字符串时间按照一定格式转换为Go中的时间结构体，接下来我们要做的就是这件事。
+通常我们会有一个需求就是，将一个字符串时间按照一定格式转换为 Go 中的时间结构体，接下来我们要做的就是这件事。
 
 ```go
 func main() {
@@ -129,11 +124,9 @@ func main() {
 2012-10-12 00:00:00 +0800 CST
 ```
 
-
-
 ## Timer
 
-Timer是一个计时器，对外暴露一个channel，当指定时间到了以后，channel就会收到消息并关闭。
+Timer 是一个计时器，对外暴露一个 channel，当指定时间到了以后，channel 就会收到消息并关闭。
 
 ```go
 func NewTimer(d Duration) *Timer
@@ -143,12 +136,12 @@ func NewTimer(d Duration) *Timer
 
 ```sh
 func main() {
-	timer := time.NewTimer(time.Second)
-	defer timer.Stop()
-	select {
-	case t := <-timer.C:
-		fmt.Println(t)
-	}
+  timer := time.NewTimer(time.Second)
+  defer timer.Stop()
+  select {
+  case t := <-timer.C:
+    fmt.Println(t)
+  }
 }
 ```
 
@@ -156,13 +149,11 @@ func main() {
 2023-09-25 21:25:03.5696803 +0800 CST m=+1.007908001
 ```
 
-在使用完timer以后，应及时的关闭。
-
-
+在使用完 timer 以后，应及时的关闭。
 
 ## Ticker
 
-Ticker是一个定时器，与timer的区别在于，timer是一次性的，而Ticker是定时触发。
+Ticker 是一个定时器，与 timer 的区别在于，timer 是一次性的，而 Ticker 是定时触发。
 
 ```go
 func NewTicker(d Duration) *Ticker
@@ -172,14 +163,14 @@ func NewTicker(d Duration) *Ticker
 
 ```go
 func main() {
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
-	for i := 0; i < 3; i++ {
-		select {
-		case t := <-ticker.C:
-			fmt.Println(t)
-		}
-	}
+  ticker := time.NewTicker(time.Second)
+  defer ticker.Stop()
+  for i := 0; i < 3; i++ {
+    select {
+    case t := <-ticker.C:
+      fmt.Println(t)
+    }
+  }
 }
 ```
 
@@ -189,13 +180,11 @@ func main() {
 2023-09-25 21:29:22.4501592 +0800 CST m=+3.016742001
 ```
 
-同样的，在使用完ticker后，也要及时关闭。
-
-
+同样的，在使用完 ticker 后，也要及时关闭。
 
 ## sleep
 
-`time.Sleep()`可以使用当前goroutine处于挂起状态一定的时间，在这期间goroutine将被阻塞，直到恢复运行状态。
+`time.Sleep()`可以使用当前 goroutine 处于挂起状态一定的时间，在这期间 goroutine 将被阻塞，直到恢复运行状态。
 
 ```go
 func Sleep(d Duration)
@@ -203,11 +192,11 @@ func Sleep(d Duration)
 
 ```sh
 func main() {
-	start := time.Now()
-	fmt.Println(start)
-	time.Sleep(time.Second * 2)
-	end := time.Now()
-	fmt.Println(end)
+  start := time.Now()
+  fmt.Println(start)
+  time.Sleep(time.Second * 2)
+  end := time.Now()
+  fmt.Println(end)
 }
 ```
 

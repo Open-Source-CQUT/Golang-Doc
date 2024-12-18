@@ -4,82 +4,72 @@
 
 开源仓库：[go-gorm/gorm: The fantastic ORM library for Golang, aims to be developer friendly (github.com)](https://github.com/go-gorm/gorm)
 
-<br/>
-
-在go社区中，对于数据库交互这一块，有两派人，一派人更喜欢简洁的`sqlx`这一类的库，功能并不那么强大但是自己可以时时刻刻把控sql，性能优化到极致。另一派人喜欢为了开发效率而生的ORM，可以省去开发过程中许多不必要的麻烦。而提到ORM，在go语言社区中就绝对绕不开`gorm`，它是一个非常老牌的ORM，与之类似的还有相对比较年轻的`xorm`，`ent`等。这篇文章讲的就是关于gorm的内容，本文只是对它的基础入门内容做一个讲解，权当是抛砖引玉，想要了解更深的细节可以阅读官方文档，它的中文文档已经相当完善了，并且笔者也是gorm文档的翻译人员之一。
-
-
+在 go 社区中，对于数据库交互这一块，有两派人，一派人更喜欢简洁的`sqlx`这一类的库，功能并不那么强大但是自己可以时时刻刻把控 sql，性能优化到极致。另一派人喜欢为了开发效率而生的 ORM，可以省去开发过程中许多不必要的麻烦。而提到 ORM，在 go 语言社区中就绝对绕不开`gorm`，它是一个非常老牌的 ORM，与之类似的还有相对比较年轻的`xorm`，`ent`等。这篇文章讲的就是关于 gorm 的内容，本文只是对它的基础入门内容做一个讲解，权当是抛砖引玉，想要了解更深的细节可以阅读官方文档，它的中文文档已经相当完善了，并且笔者也是 gorm 文档的翻译人员之一。
 
 ## 特点
 
--  全功能 ORM
--  关联 (拥有一个，拥有多个，属于，多对多，多态，单表继承)
--  Create，Save，Update，Delete，Find 中钩子方法
--  支持 Preload、Joins 的预加载
--  事务，嵌套事务，Save Point，Rollback To to Saved Point
--  Context、预编译模式、DryRun 模式
--  批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD
--  SQL 构建器，Upsert，锁，Optimizer/Index/Comment Hint，命名参数，子查询
--  复合主键，索引，约束
--  自动迁移
--  自定义 Logger
--  灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus…
--  每个特性都经过了测试的重重考验
--  开发者友好
+- 全功能 ORM
+- 关联 (拥有一个，拥有多个，属于，多对多，多态，单表继承)
+- Create，Save，Update，Delete，Find 中钩子方法
+- 支持 Preload、Joins 的预加载
+- 事务，嵌套事务，Save Point，Rollback To to Saved Point
+- Context、预编译模式、DryRun 模式
+- 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD
+- SQL 构建器，Upsert，锁，Optimizer/Index/Comment Hint，命名参数，子查询
+- 复合主键，索引，约束
+- 自动迁移
+- 自定义 Logger
+- 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus…
+- 每个特性都经过了测试的重重考验
+- 开发者友好
 
+gorm 当然也有一些缺点，比如几乎所有的方法参数都是空接口类型，不去看文档恐怕根本就不知道到底该传什么参数，有时候可以传结构体，有时候可以传字符串，有时候可以传 map，有时候可以传切片，语义比较模糊，并且很多情况还是需要自己手写 SQL。
 
-
-gorm当然也有一些缺点，比如几乎所有的方法参数都是空接口类型，不去看文档恐怕根本就不知道到底该传什么参数，有时候可以传结构体，有时候可以传字符串，有时候可以传map，有时候可以传切片，语义比较模糊，并且很多情况还是需要自己手写SQL。
-
-作为替代的有两个orm可以试一试，第一个是`aorm`，刚开源不久，它不再需要去自己手写表的字段名，大多情况下都是链式操作，基于反射实现，由于star数目不多，可以再观望下。第二个就是`ent`，是`facebook`开源的orm，它同样支持链式操作，并且大多数情况下不需要自己去手写SQL，它的设计理念上是基于图（数据结构里面的那个图），实现上基于代码生成而非反射（比较认同这个），但是文档是全英文的，有一定的上手门槛。
-
-
+作为替代的有两个 orm 可以试一试，第一个是`aorm`，刚开源不久，它不再需要去自己手写表的字段名，大多情况下都是链式操作，基于反射实现，由于 star 数目不多，可以再观望下。第二个就是`ent`，是`facebook`开源的 orm，它同样支持链式操作，并且大多数情况下不需要自己去手写 SQL，它的设计理念上是基于图（数据结构里面的那个图），实现上基于代码生成而非反射（比较认同这个），但是文档是全英文的，有一定的上手门槛。
 
 ## 安装
 
-安装gorm库
+安装 gorm 库
 
 ```sh
 $ go get -u gorm.io/gorm
 ```
 
-
-
 ## 连接
 
-gorm目前支持以下几种数据库
+gorm 目前支持以下几种数据库
 
 - MySQL ：`"gorm.io/driver/mysql"`
 - PostgreSQL： `"gorm.io/driver/postgres"`
 - SQLite：`"gorm.io/driver/sqlite"`
 - SQL Server：`"gorm.io/driver/sqlserver"`
-- TIDB：`"gorm.io/driver/mysql"`，TIDB兼容mysql协议
+- TIDB：`"gorm.io/driver/mysql"`，TIDB 兼容 mysql 协议
 - ClickHouse：`"gorm.io/driver/clickhouse"`
 
-除此之外，还有一些其它的数据库驱动是由第三方开发者提供的，比如oracle的驱动[CengSin/oracle](https://github.com/CengSin/oracle)。本文接下来将使用MySQL来进行演示，使用的什么数据库，就需要安装什么驱动，这里安装Mysql的gorm驱动。
+除此之外，还有一些其它的数据库驱动是由第三方开发者提供的，比如 oracle 的驱动[CengSin/oracle](https://github.com/CengSin/oracle)。本文接下来将使用 MySQL 来进行演示，使用的什么数据库，就需要安装什么驱动，这里安装 Mysql 的 gorm 驱动。
 
 ```sh
 $ go get -u gorm.io/driver/mysql
 ```
 
-然后使用dsn（data source name）连接到数据库，驱动库会自行将dsn解析为对应的配置
+然后使用 dsn（data source name）连接到数据库，驱动库会自行将 dsn 解析为对应的配置
 
 ```go
 package main
 
 import (
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"log/slog"
+  "gorm.io/driver/mysql"
+  "gorm.io/gorm"
+  "log/slog"
 )
 
 func main() {
-	dsn := "root:123456@tcp(192.168.48.138:3306)/hello?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn))
-	if err != nil {
-		slog.Error("db connect error", err)
-	}
-	slog.Info("db connect success")
+  dsn := "root:123456@tcp(192.168.48.138:3306)/hello?charset=utf8mb4&parseTime=True&loc=Local"
+  db, err := gorm.Open(mysql.Open(dsn))
+  if err != nil {
+    slog.Error("db connect error", err)
+  }
+  slog.Info("db connect success")
 }
 ```
 
@@ -89,27 +79,25 @@ func main() {
 package main
 
 import (
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"log/slog"
+  "gorm.io/driver/mysql"
+  "gorm.io/gorm"
+  "log/slog"
 )
 
 func main() {
-	db, err := gorm.Open(mysql.New(mysql.Config{}))
-	if err != nil {
-		slog.Error("db connect error", err)
-	}
-	slog.Info("db connect success")
+  db, err := gorm.Open(mysql.New(mysql.Config{}))
+  if err != nil {
+    slog.Error("db connect error", err)
+  }
+  slog.Info("db connect success")
 }
 ```
 
 两种方法都是等价的，看自己使用习惯。
 
-
-
 ### 连接配置
 
-通过传入`gorm.Config`配置结构体，我们可以控制gorm的一些行为
+通过传入`gorm.Config`配置结构体，我们可以控制 gorm 的一些行为
 
 ```go
 db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -119,88 +107,80 @@ db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 ```go
 type Config struct {
-	// 禁用默认事务，gorm在单个创建和更新时都会开启事务以保持数据一致性
-	SkipDefaultTransaction bool
-	// 自定义的命名策略
-	NamingStrategy schema.Namer
-	// 保存完整的关联
-	FullSaveAssociations bool
-	// 自定义logger
-	Logger logger.Interface
-	// 自定义nowfunc，用于注入CreatedAt和UpdatedAt字段
-	NowFunc func() time.Time
-	// 只生成sql不执行
-	DryRun bool
-	// 使用预编译语句
-	PrepareStmt bool
-	// 建立连接后，ping一下数据库
-	DisableAutomaticPing bool
-	// 在迁移数据库时忽略外键
-	DisableForeignKeyConstraintWhenMigrating bool
-	// 在迁移数据库时忽略关联引用
-	IgnoreRelationshipsWhenMigrating bool
-	// 禁用嵌套事务
-	DisableNestedTransaction bool
-	// 运行全局更新，就是不加where的update
-	AllowGlobalUpdate bool
-	// 对表的所有字段进行查询
-	QueryFields bool
-	// 批量创建的size
-	CreateBatchSize int
-	// 启用错误转换
-	TranslateError bool
+  // 禁用默认事务，gorm在单个创建和更新时都会开启事务以保持数据一致性
+  SkipDefaultTransaction bool
+  // 自定义的命名策略
+  NamingStrategy schema.Namer
+  // 保存完整的关联
+  FullSaveAssociations bool
+  // 自定义logger
+  Logger logger.Interface
+  // 自定义nowfunc，用于注入CreatedAt和UpdatedAt字段
+  NowFunc func() time.Time
+  // 只生成sql不执行
+  DryRun bool
+  // 使用预编译语句
+  PrepareStmt bool
+  // 建立连接后，ping一下数据库
+  DisableAutomaticPing bool
+  // 在迁移数据库时忽略外键
+  DisableForeignKeyConstraintWhenMigrating bool
+  // 在迁移数据库时忽略关联引用
+  IgnoreRelationshipsWhenMigrating bool
+  // 禁用嵌套事务
+  DisableNestedTransaction bool
+  // 运行全局更新，就是不加where的update
+  AllowGlobalUpdate bool
+  // 对表的所有字段进行查询
+  QueryFields bool
+  // 批量创建的size
+  CreateBatchSize int
+  // 启用错误转换
+  TranslateError bool
 
-	// ClauseBuilders clause builder
-	ClauseBuilders map[string]clause.ClauseBuilder
-	// ConnPool db conn pool
-	ConnPool ConnPool
-	// Dialector database dialector
-	Dialector
-	// Plugins registered plugins
-	Plugins map[string]Plugin
+  // ClauseBuilders clause builder
+  ClauseBuilders map[string]clause.ClauseBuilder
+  // ConnPool db conn pool
+  ConnPool ConnPool
+  // Dialector database dialector
+  Dialector
+  // Plugins registered plugins
+  Plugins map[string]Plugin
 
-	callbacks  *callbacks
-	cacheStore *sync.Map
+  callbacks  *callbacks
+  cacheStore *sync.Map
 }
 ```
-
-
-
-
 
 ## 模型
 
-在gorm中，模型与数据库表相对应，它通常由结构体的方式展现，例如下面的结构体。
+在 gorm 中，模型与数据库表相对应，它通常由结构体的方式展现，例如下面的结构体。
 
 ```go
 type Person struct {
-	Id      uint
-	Name    string
-	Address string
-	Mom     string
-	Dad     string
+  Id      uint
+  Name    string
+  Address string
+  Mom     string
+  Dad     string
 }
 ```
 
-结构体的内部可以由基本数据类型与实现了`sql.Scanner`和 `sql.Valuer`接口的类型组成。在默认情况下，`Person`结构体所映射的表名为`perons`，其为蛇形复数风格，以下划线分隔。列名同样是以蛇形风格，比如`Id`对应列名`id`，gorm同样也提供了一些方式来对其进行配置。
-
-
+结构体的内部可以由基本数据类型与实现了`sql.Scanner`和 `sql.Valuer`接口的类型组成。在默认情况下，`Person`结构体所映射的表名为`perons`，其为蛇形复数风格，以下划线分隔。列名同样是以蛇形风格，比如`Id`对应列名`id`，gorm 同样也提供了一些方式来对其进行配置。
 
 ### 指定列名
 
-通过结构体标签，我们可以对结构体字段指定列名，这样在实体映射的时候，gorm就会使用指定的列名。
+通过结构体标签，我们可以对结构体字段指定列名，这样在实体映射的时候，gorm 就会使用指定的列名。
 
 ```go
 type Person struct {
-	Id      uint   `gorm:"column:ID;"`
-	Name    string `gorm:"column:Name;"`
-	Address string
-	Mom     string
-	Dad     string
+  Id      uint   `gorm:"column:ID;"`
+  Name    string `gorm:"column:Name;"`
+  Address string
+  Mom     string
+  Dad     string
 }
 ```
-
-
 
 ### 指定表名
 
@@ -208,80 +188,78 @@ type Person struct {
 
 ```go
 type Tabler interface {
-	TableName() string
+  TableName() string
 }
 ```
 
-在实现的方法中，它返回了字符串`person`，在数据库迁移的时候，gorm会创建名为`person`的表。
+在实现的方法中，它返回了字符串`person`，在数据库迁移的时候，gorm 会创建名为`person`的表。
 
 ```go
 type Person struct {
-	Id      uint   `gorm:"column:ID;"`
-	Name    string `gorm:"column:Name;"`
-	Address string
-	Mom     string
-	Dad     string
+  Id      uint   `gorm:"column:ID;"`
+  Name    string `gorm:"column:Name;"`
+  Address string
+  Mom     string
+  Dad     string
 }
 
 func (p Person) TableName() string {
-	return "person"
+  return "person"
 }
 ```
 
 对于命名策略，也可以在创建连接时传入自己的策略实现来达到自定义的效果。
 
-
-
 ### 时间追踪
 
 ```go
 type Person struct {
-	Id      uint
-	Name    string
-	Address string
-	Mom     string
-	Dad     string
+  Id      uint
+  Name    string
+  Address string
+  Mom     string
+  Dad     string
 
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+  CreatedAt sql.NullTime
+  UpdatedAt sql.NullTime
 }
 
 func (p Person) TableName() string {
-	return "person"
+  return "person"
 }
 ```
 
-当包含`CreatedAt`或`UpdatedAt`字段时，在创建或更新记录时，如果其为零值，那么gorm会自动使用`time.Now()`来设置时间。
+当包含`CreatedAt`或`UpdatedAt`字段时，在创建或更新记录时，如果其为零值，那么 gorm 会自动使用`time.Now()`来设置时间。
 
 ```go
 db.Create(&Person{
-		Name:    "jack",
-		Address: "usa",
-		Mom:     "lili",
-		Dad:     "tom",
-	})
+    Name:    "jack",
+    Address: "usa",
+    Mom:     "lili",
+    Dad:     "tom",
+  })
 
 // INSERT INTO `person` (`name`,`address`,`mom`,`dad`,`created_at`,`updated_at`) VALUES ('jack','usa','lili','tom','2023-10-25 14:43:57.16','2023-10-25 14:43:57.16')
 ```
 
-gorm也支持时间戳追踪
+gorm 也支持时间戳追踪
 
 ```go
 type Person struct {
-	Id      uint   `gorm:"primaryKey;"`
-	Name    string `gorm:"primaryKey;"`
-	Address string
-	Mom     string
-	Dad     string
+  Id      uint   `gorm:"primaryKey;"`
+  Name    string `gorm:"primaryKey;"`
+  Address string
+  Mom     string
+  Dad     string
 
-	// nanoseconds
-	CreatedAt uint64 `gorm:"autoCreateTime:nano;"`
-	// milliseconds
-	UpdatedAt uint64 `gorm:"autoUpdateTime;milli;"`
+  // nanoseconds
+  CreatedAt uint64 `gorm:"autoCreateTime:nano;"`
+  // milliseconds
+  UpdatedAt uint64 `gorm:"autoUpdateTime;milli;"`
 }
 ```
 
-那么在`Create`执行时，等价于下面的SQL
+那么在`Create`执行时，等价于下面的 SQL
 
 ```sql
 INSERT INTO `person` (`name`,`address`,`mom`,`dad`,`created_at`,`updated_at`) VALUES ('jack','usa','lili','tom',1698216540519000000,1698216540)
@@ -289,11 +267,9 @@ INSERT INTO `person` (`name`,`address`,`mom`,`dad`,`created_at`,`updated_at`) VA
 
 在实际情况中，如果有时间追踪的需要，我更推荐后端存储时间戳，在跨时区的情况下，处理更为简单。
 
-
-
 ### Model
 
-gorm提供了一个预设的`Model`结构体，它包含ID主键，以及两个时间追踪字段，和一个软删除记录字段。
+gorm 提供了一个预设的`Model`结构体，它包含 ID 主键，以及两个时间追踪字段，和一个软删除记录字段。
 
 ```go
 type Model struct {
@@ -308,14 +284,12 @@ type Model struct {
 
 ```go
 type Order struct {
-	gorm.Model
-	Name string
+  gorm.Model
+  Name string
 }
 ```
 
 这样它就会自动具备`gorm.Model`所有的特性。
-
-
 
 ### 主键
 
@@ -323,14 +297,14 @@ type Order struct {
 
 ```go
 type Person struct {
-	Id      uint `gorm:"primaryKey;"`
-	Name    string
-	Address string
-	Mom     string
-	Dad     string
+  Id      uint `gorm:"primaryKey;"`
+  Name    string
+  Address string
+  Mom     string
+  Dad     string
 
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+  CreatedAt sql.NullTime
+  UpdatedAt sql.NullTime
 }
 ```
 
@@ -338,18 +312,16 @@ type Person struct {
 
 ```go
 type Person struct {
-	Id      uint `gorm:"primaryKey;"`
-	Name    string `gorm:"primaryKey;"`
-	Address string
-	Mom     string
-	Dad     string
+  Id      uint `gorm:"primaryKey;"`
+  Name    string `gorm:"primaryKey;"`
+  Address string
+  Mom     string
+  Dad     string
 
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+  CreatedAt sql.NullTime
+  UpdatedAt sql.NullTime
 }
 ```
-
-
 
 ### 索引
 
@@ -357,16 +329,16 @@ type Person struct {
 
 ```go
 type Person struct {
-	Id      uint   `gorm:"primaryKey;"`
-	Name    string `gorm:"primaryKey;"`
+  Id      uint   `gorm:"primaryKey;"`
+  Name    string `gorm:"primaryKey;"`
     Address string `gorm:"index:idx_addr,unique,sort:desc;"`
-	Mom     string
-	Dad     string
+  Mom     string
+  Dad     string
 
-	// nanoseconds
-	CreatedAt uint64 `gorm:"autoCreateTime:nano;"`
-	// milliseconds
-	UpdatedAt uint64 `gorm:"autoUpdateTime;milli;"`
+  // nanoseconds
+  CreatedAt uint64 `gorm:"autoCreateTime:nano;"`
+  // milliseconds
+  UpdatedAt uint64 `gorm:"autoUpdateTime;milli;"`
 }
 ```
 
@@ -388,36 +360,34 @@ type Person struct {
 }
 ```
 
-
-
 ### 外键
 
 在结构体中定义外键关系，是通过嵌入结构体的方式来进行的，比如
 
 ```go
 type Person struct {
-	Id   uint `gorm:"primaryKey;"`
-	Name string
+  Id   uint `gorm:"primaryKey;"`
+  Name string
 
-	MomId uint
-	Mom   Mom `gorm:"foreignKey:MomId;"`
+  MomId uint
+  Mom   Mom `gorm:"foreignKey:MomId;"`
 
-	DadId uint
-	Dad   Dad `gorm:"foreignKey:DadId;"`
+  DadId uint
+  Dad   Dad `gorm:"foreignKey:DadId;"`
 }
 
 type Mom struct {
-	Id   uint
-	Name string
+  Id   uint
+  Name string
 
-	Persons []Person `gorm:"foreignKey:MomId;"`
+  Persons []Person `gorm:"foreignKey:MomId;"`
 }
 
 type Dad struct {
-	Id   uint
-	Name string
+  Id   uint
+  Name string
 
-	Persons []Person `gorm:"foreignKey:DadId;"`
+  Persons []Person `gorm:"foreignKey:DadId;"`
 }
 ```
 
@@ -431,30 +401,26 @@ Mom   Mom `gorm:"foreignKey:MomId;"`
 
 ```go
 type Person struct {
-	Id   uint `gorm:"primaryKey;"`
-	Name string
+  Id   uint `gorm:"primaryKey;"`
+  Name string
 
-	MomId uint
-	Mom   Mom `gorm:"foreignKey:MomId;references:Sid;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+  MomId uint
+  Mom   Mom `gorm:"foreignKey:MomId;references:Sid;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
-	DadId uint
-	Dad   Dad `gorm:"foreignKey:DadId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+  DadId uint
+  Dad   Dad `gorm:"foreignKey:DadId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type Mom struct {
-	Id   uint
-	Sid  uint `gorm:"uniqueIndex;"`
-	Name string
+  Id   uint
+  Sid  uint `gorm:"uniqueIndex;"`
+  Name string
 
-	Persons []Person `gorm:"foreignKey:MomId;"`
+  Persons []Person `gorm:"foreignKey:MomId;"`
 }
 ```
 
 其中`constraint:OnUpdate:CASCADE,OnDelete:SET NULL;`便是定义的外键约束。
-
-
-
-
 
 ### 钩子
 
@@ -516,45 +482,43 @@ type AfterFindInterface interface {
 
 结构体通过实现这些接口，可以自定义一些行为。
 
-
-
 ### 标签
 
-下面是gorm支持的一些标签
+下面是 gorm 支持的一些标签
 
-| 标签名                   | 说明                                                         |
-| :----------------------- | :----------------------------------------------------------- |
-| `column`                 | 指定 db 列名                                                 |
+| 标签名                   | 说明                                                                                                                                                                                                                                                                                                                                             |
+| :----------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| `column`                 | 指定 db 列名                                                                                                                                                                                                                                                                                                                                     |
 | `type`                   | 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持 bool、int、uint、float、string、time、bytes 并且可以和其他标签一起使用，例如：`not null`、`size`, `autoIncrement`… 像 `varbinary(8)` 这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：`MEDIUMINT UNSIGNED not NULL AUTO_INCREMENT` |
-| `serializer`             | 指定将数据序列化或反序列化到数据库中的序列化器, 例如: `serializer:json/gob/unixtime` |
-| `size`                   | 定义列数据类型的大小或长度，例如 `size: 256`                 |
-| `primaryKey`             | 将列定义为主键                                               |
-| `unique`                 | 将列定义为唯一键                                             |
-| `default`                | 定义列的默认值                                               |
-| `precision`              | 指定列的精度                                                 |
-| `scale`                  | 指定列大小                                                   |
-| `not null`               | 指定列为 NOT NULL                                            |
-| `autoIncrement`          | 指定列为自动增长                                             |
-| `autoIncrementIncrement` | 自动步长，控制连续记录之间的间隔                             |
-| `embedded`               | 嵌套字段                                                     |
-| `embeddedPrefix`         | 嵌入字段的列名前缀                                           |
-| `autoCreateTime`         | 创建时追踪当前时间，对于 `int` 字段，它会追踪时间戳秒数，您可以使用 `nano`/`milli` 来追踪纳秒、毫秒时间戳，例如：`autoCreateTime:nano` |
-| `autoUpdateTime`         | 创建/更新时追踪当前时间，对于 `int` 字段，它会追踪时间戳秒数，您可以使用 `nano`/`milli` 来追踪纳秒、毫秒时间戳，例如：`autoUpdateTime:milli` |
-| `index`                  | 根据参数创建索引，多个字段使用相同的名称则创建复合索引，查看 [索引open in new window](https://gorm.io/zh_CN/docs/indexes.html) 获取详情 |
-| `uniqueIndex`            | 与 `index` 相同，但创建的是唯一索引                          |
-| `check`                  | 创建检查约束，例如 `check:age > 13`，查看 [约束open in new window](https://gorm.io/zh_CN/docs/constraints.html) 获取详情 |
-| `<-`                     | 设置字段写入的权限， `<-:create` 只创建、`<-:update` 只更新、`<-:false` 无写入权限、`<-` 创建和更新权限 |
-| `->`                     | 设置字段读的权限，`->:false` 无读权限                        |
-| `-`                      | 忽略该字段，`-` 表示无读写，`-:migration` 表示无迁移权限，`-:all` 表示无读写迁移权限 |
-| `comment`                | 迁移时为字段添加注释                                         |                                                   |
-| `foreignKey`       | 指定当前模型的列作为连接表的外键         |
-| `references`       | 指定引用表的列名，其将被映射为连接表外键 |
-| `polymorphic`      | 指定多态类型，比如模型名                 |
-| `polymorphicValue` | 指定多态值、默认表名                     |
-| `many2many`        | 指定连接表表名                           |
-| `joinForeignKey`   | 指定连接表的外键列名，其将被映射到当前表 |
-| `joinReferences`   | 指定连接表的外键列名，其将被映射到引用表 |
-| `constraint`       | 关系约束，例如：`OnUpdate`、`OnDelete`   |
+| `serializer`             | 指定将数据序列化或反序列化到数据库中的序列化器, 例如: `serializer:json/gob/unixtime`                                                                                                                                                                                                                                                             |
+| `size`                   | 定义列数据类型的大小或长度，例如 `size: 256`                                                                                                                                                                                                                                                                                                     |
+| `primaryKey`             | 将列定义为主键                                                                                                                                                                                                                                                                                                                                   |
+| `unique`                 | 将列定义为唯一键                                                                                                                                                                                                                                                                                                                                 |
+| `default`                | 定义列的默认值                                                                                                                                                                                                                                                                                                                                   |
+| `precision`              | 指定列的精度                                                                                                                                                                                                                                                                                                                                     |
+| `scale`                  | 指定列大小                                                                                                                                                                                                                                                                                                                                       |
+| `not null`               | 指定列为 NOT NULL                                                                                                                                                                                                                                                                                                                                |
+| `autoIncrement`          | 指定列为自动增长                                                                                                                                                                                                                                                                                                                                 |
+| `autoIncrementIncrement` | 自动步长，控制连续记录之间的间隔                                                                                                                                                                                                                                                                                                                 |
+| `embedded`               | 嵌套字段                                                                                                                                                                                                                                                                                                                                         |
+| `embeddedPrefix`         | 嵌入字段的列名前缀                                                                                                                                                                                                                                                                                                                               |
+| `autoCreateTime`         | 创建时追踪当前时间，对于 `int` 字段，它会追踪时间戳秒数，您可以使用 `nano`/`milli` 来追踪纳秒、毫秒时间戳，例如：`autoCreateTime:nano`                                                                                                                                                                                                           |
+| `autoUpdateTime`         | 创建/更新时追踪当前时间，对于 `int` 字段，它会追踪时间戳秒数，您可以使用 `nano`/`milli` 来追踪纳秒、毫秒时间戳，例如：`autoUpdateTime:milli`                                                                                                                                                                                                     |
+| `index`                  | 根据参数创建索引，多个字段使用相同的名称则创建复合索引，查看 [索引 open in new window](https://gorm.io/zh_CN/docs/indexes.html) 获取详情                                                                                                                                                                                                         |
+| `uniqueIndex`            | 与 `index` 相同，但创建的是唯一索引                                                                                                                                                                                                                                                                                                              |
+| `check`                  | 创建检查约束，例如 `check:age > 13`，查看 [约束 open in new window](https://gorm.io/zh_CN/docs/constraints.html) 获取详情                                                                                                                                                                                                                        |
+| `<-`                     | 设置字段写入的权限， `<-:create` 只创建、`<-:update` 只更新、`<-:false` 无写入权限、`<-` 创建和更新权限                                                                                                                                                                                                                                          |
+| `->`                     | 设置字段读的权限，`->:false` 无读权限                                                                                                                                                                                                                                                                                                            |
+| `-`                      | 忽略该字段，`-` 表示无读写，`-:migration` 表示无迁移权限，`-:all` 表示无读写迁移权限                                                                                                                                                                                                                                                             |
+| `comment`                | 迁移时为字段添加注释                                                                                                                                                                                                                                                                                                                             |     |
+| `foreignKey`             | 指定当前模型的列作为连接表的外键                                                                                                                                                                                                                                                                                                                 |
+| `references`             | 指定引用表的列名，其将被映射为连接表外键                                                                                                                                                                                                                                                                                                         |
+| `polymorphic`            | 指定多态类型，比如模型名                                                                                                                                                                                                                                                                                                                         |
+| `polymorphicValue`       | 指定多态值、默认表名                                                                                                                                                                                                                                                                                                                             |
+| `many2many`              | 指定连接表表名                                                                                                                                                                                                                                                                                                                                   |
+| `joinForeignKey`         | 指定连接表的外键列名，其将被映射到当前表                                                                                                                                                                                                                                                                                                         |
+| `joinReferences`         | 指定连接表的外键列名，其将被映射到引用表                                                                                                                                                                                                                                                                                                         |
+| `constraint`             | 关系约束，例如：`OnUpdate`、`OnDelete`                                                                                                                                                                                                                                                                                                           |
 
 ### 迁移
 
@@ -568,14 +532,14 @@ func (db *DB) AutoMigrate(dst ...interface{}) error
 
 ```go
 type Person struct {
-	Id      uint   `gorm:"primaryKey;"`
-	Name    string `gorm:"type:varchar(100);uniqueIndex;"`
-	Address string
+  Id      uint   `gorm:"primaryKey;"`
+  Name    string `gorm:"type:varchar(100);uniqueIndex;"`
+  Address string
 }
 
 type Order struct {
-	Id   uint
-	Name string
+  Id   uint
+  Name string
 }
 
 db.AutoMigrate(Person{}, Order{})
@@ -586,59 +550,57 @@ db.AutoMigrate(Person{}, Order{})
 或者也可以我们手动来操作，通过`Migrator`方法访问`Migrator`接口
 
 ```go
-func (db *DB) Migrator() Migrator 
+func (db *DB) Migrator() Migrator
 ```
 
 它支持以下接口方法
 
 ```go
 type Migrator interface {
-	// AutoMigrate
-	AutoMigrate(dst ...interface{}) error
+  // AutoMigrate
+  AutoMigrate(dst ...interface{}) error
 
-	// Database
-	CurrentDatabase() string
-	FullDataTypeOf(*schema.Field) clause.Expr
-	GetTypeAliases(databaseTypeName string) []string
+  // Database
+  CurrentDatabase() string
+  FullDataTypeOf(*schema.Field) clause.Expr
+  GetTypeAliases(databaseTypeName string) []string
 
-	// Tables
-	CreateTable(dst ...interface{}) error
-	DropTable(dst ...interface{}) error
-	HasTable(dst interface{}) bool
-	RenameTable(oldName, newName interface{}) error
-	GetTables() (tableList []string, err error)
-	TableType(dst interface{}) (TableType, error)
+  // Tables
+  CreateTable(dst ...interface{}) error
+  DropTable(dst ...interface{}) error
+  HasTable(dst interface{}) bool
+  RenameTable(oldName, newName interface{}) error
+  GetTables() (tableList []string, err error)
+  TableType(dst interface{}) (TableType, error)
 
-	// Columns
-	AddColumn(dst interface{}, field string) error
-	DropColumn(dst interface{}, field string) error
-	AlterColumn(dst interface{}, field string) error
-	MigrateColumn(dst interface{}, field *schema.Field, columnType ColumnType) error
-	HasColumn(dst interface{}, field string) bool
-	RenameColumn(dst interface{}, oldName, field string) error
-	ColumnTypes(dst interface{}) ([]ColumnType, error)
+  // Columns
+  AddColumn(dst interface{}, field string) error
+  DropColumn(dst interface{}, field string) error
+  AlterColumn(dst interface{}, field string) error
+  MigrateColumn(dst interface{}, field *schema.Field, columnType ColumnType) error
+  HasColumn(dst interface{}, field string) bool
+  RenameColumn(dst interface{}, oldName, field string) error
+  ColumnTypes(dst interface{}) ([]ColumnType, error)
 
-	// Views
-	CreateView(name string, option ViewOption) error
-	DropView(name string) error
+  // Views
+  CreateView(name string, option ViewOption) error
+  DropView(name string) error
 
-	// Constraints
-	CreateConstraint(dst interface{}, name string) error
-	DropConstraint(dst interface{}, name string) error
-	HasConstraint(dst interface{}, name string) bool
+  // Constraints
+  CreateConstraint(dst interface{}, name string) error
+  DropConstraint(dst interface{}, name string) error
+  HasConstraint(dst interface{}, name string) bool
 
-	// Indexes
-	CreateIndex(dst interface{}, name string) error
-	DropIndex(dst interface{}, name string) error
-	HasIndex(dst interface{}, name string) bool
-	RenameIndex(dst interface{}, oldName, newName string) error
-	GetIndexes(dst interface{}) ([]Index, error)
+  // Indexes
+  CreateIndex(dst interface{}, name string) error
+  DropIndex(dst interface{}, name string) error
+  HasIndex(dst interface{}, name string) bool
+  RenameIndex(dst interface{}, oldName, newName string) error
+  GetIndexes(dst interface{}) ([]Index, error)
 }
 ```
 
 方法列表中涉及到了数据库，表，列，视图，索引，约束多个维度，对需要自定义的用户来说可以更加精细化的操作。
-
-
 
 ### 指定表注释
 
@@ -648,15 +610,13 @@ type Migrator interface {
 db.Set("gorm:table_options", " comment 'person table'").Migrator().CreateTable(Person{})
 ```
 
-需要注意的是如果使用的是`AutoMigrate()`方法来进行迁移，且结构体之间具引用关系，gorm会进行递归先创建引用表，这就会导致被引用表和引用表的注释都是重复的，所以推荐使用`CreateTable`方法来创建。
+需要注意的是如果使用的是`AutoMigrate()`方法来进行迁移，且结构体之间具引用关系，gorm 会进行递归先创建引用表，这就会导致被引用表和引用表的注释都是重复的，所以推荐使用`CreateTable`方法来创建。
 
 ::: tip
 
 在创建表时`CreateTable`方法需要保证被引用表比引用表先创建，否则会报错，而`AutoMigrate`方法则不需要，因为它会顺着关系引用关系递归创建。
 
 :::
-
-
 
 ## 创建
 
@@ -672,8 +632,8 @@ func (db *DB) Create(value interface{}) (tx *DB)
 
 ```go
 type Person struct {
-	Id   uint `gorm:"primaryKey;"`
-	Name string
+  Id   uint `gorm:"primaryKey;"`
+  Name string
 }
 ```
 
@@ -693,7 +653,7 @@ err = db.Error
 affected := db.RowsAffected
 ```
 
-创建完成后，gorm会将主键写入user结构体中，所以这也是为什么必须得传入指针。如果传入的是一个切片，就会批量创建
+创建完成后，gorm 会将主键写入 user 结构体中，所以这也是为什么必须得传入指针。如果传入的是一个切片，就会批量创建
 
 ```go
 user := []Person{
@@ -705,7 +665,7 @@ user := []Person{
 db = db.Create(&user)
 ```
 
-同样的，gorm也会将主键写入切片中。当数据量过大时，也可以使用`CreateInBatches`方法分批次创建，因为生成的`INSERT INTO table VALUES (),()`这样的SQL语句会变的很长，每个数据库对SQL长度是有限制的，所以必要的时候可以选择分批次创建。
+同样的，gorm 也会将主键写入切片中。当数据量过大时，也可以使用`CreateInBatches`方法分批次创建，因为生成的`INSERT INTO table VALUES (),()`这样的 SQL 语句会变的很长，每个数据库对 SQL 长度是有限制的，所以必要的时候可以选择分批次创建。
 
 ```go
 db = db.CreateInBatches(&user, 50)
@@ -727,11 +687,9 @@ user := []Person{
 db = db.Save(&user)
 ```
 
-
-
 ### Upsert
 
-`Save`方法只能是匹配主键，我们可以通过构建`Clause`来完成更加自定义的upsert。比如下面这行代码
+`Save`方法只能是匹配主键，我们可以通过构建`Clause`来完成更加自定义的 upsert。比如下面这行代码
 
 ```go
 db.Clauses(clause.OnConflict{
@@ -760,15 +718,13 @@ db.Clauses(clause.OnConflict{
 }).Create(&p)
 ```
 
-在使用upsert之前，记得给冲突字段添加索引。
-
-
+在使用 upsert 之前，记得给冲突字段添加索引。
 
 ## 查询
 
 ### First
 
-gorm对于查询而言，提供了相当多的方法可用，第一个就是`First`方法
+gorm 对于查询而言，提供了相当多的方法可用，第一个就是`First`方法
 
 ```go
 func (db *DB) First(dest interface{}, conds ...interface{}) (tx *DB)
@@ -783,7 +739,7 @@ err := result.Error
 affected := result.RowsAffected
 ```
 
-传入`dest`指针方便让gorm将查询到的数据映射到结构体中。
+传入`dest`指针方便让 gorm 将查询到的数据映射到结构体中。
 
 或者使用`Table`和`Model`方法可以指定查询表，前者接收字符串表名，后者接收实体模型。
 
@@ -798,14 +754,12 @@ db.Model(Person{}).Find(&p)
 
 :::
 
-
-
 ### Take
 
 `Take`方法与`First`类似，区别就是不会根据主键排序。
 
 ```go
-func (db *DB) Take(dest interface{}, conds ...interface{}) (tx *DB) 
+func (db *DB) Take(dest interface{}, conds ...interface{}) (tx *DB)
 ```
 
 ```go
@@ -814,8 +768,6 @@ result := db.Take(&person)
 err := result.Error
 affected := result.RowsAffected
 ```
-
-
 
 ### Pluck
 
@@ -840,8 +792,6 @@ db.Model(Person{}).Where("name IN ?", []string{"jack", "lili"}).Pluck("address",
 db.Select("address").Where("name IN ?", []string{"jack", "lili"}).Find(&adds)
 ```
 
-
-
 ### Count
 
 `Count`方法用于统计实体记录的数量
@@ -859,8 +809,6 @@ var count int64
 db.Model(Person{}).Count(&count)
 ```
 
-
-
 ### Find
 
 批量查询最常用的是`Find`方法
@@ -877,11 +825,9 @@ var ps []Person
 db.Find(&ps)
 ```
 
-
-
 ### Select
 
-gorm在默认情况下是查询所有字段，我们可以通过`Select`方法来指定字段
+gorm 在默认情况下是查询所有字段，我们可以通过`Select`方法来指定字段
 
 ```go
 func (db *DB) Select(query interface{}, args ...interface{}) (tx *DB)
@@ -914,8 +860,6 @@ db.Omit("address").Where("id IN ?", []int{1, 2, 3, 4}).Find(&ps)``
 ```
 
 由`Select`和`Omit`选择或忽略的字段，在创建更新查询的时候都会起作用。
-
-
 
 ### Where
 
@@ -982,18 +926,16 @@ db.Where("address IN ?", []string{"cn", "us"}).Find(&ps)
 db.Where("(id, name, address) IN ?", [][]any{{1, "jack", "uk"}, {2, "mike", "usa"}}).Find(&ps)
 ```
 
- gorm支持where分组使用，就是将上述几个语句结合起来
+gorm 支持 where 分组使用，就是将上述几个语句结合起来
 
 ```go
 db.Where(
-		db.Where("name IN ?", []string{"cn", "uk"}).Where("id IN ?", []uint{1, 2}),
-	).Or(
-		db.Where("name IN ?", []string{"usa", "jp"}).Where("id IN ?", []uint{3, 4}),
-	).Find(&ps)
+    db.Where("name IN ?", []string{"cn", "uk"}).Where("id IN ?", []uint{1, 2}),
+  ).Or(
+    db.Where("name IN ?", []string{"usa", "jp"}).Where("id IN ?", []uint{3, 4}),
+  ).Find(&ps)
 // SELECT * FROM `person` WHERE (name IN ('cn','uk') AND id IN (1,2)) OR (name IN ('usa','jp') AND id IN (3,4))
 ```
-
-
 
 ### Order
 
@@ -1019,8 +961,6 @@ db.Order("name ASC, id DESC").Find(&ps)
 db.Order("name ASC, id DESC").Order("address").Find(&ps)
 ```
 
-
-
 ### Limit
 
 `Limit`和`Offset`方法常常用于分页查询
@@ -1044,8 +984,6 @@ var (
 db.Offset((page - 1) * size).Limit(size).Find(&ps)
 ```
 
-
-
 ### Group
 
 `Group`和`Having`方法多用于分组操作
@@ -1067,8 +1005,6 @@ var (
 db.Select("address").Group("address").Having("address IN ?", []string{"cn", "us"}).Find(&ps)
 ```
 
-
-
 ### Distinct
 
 `Distinct`方法多用于去重
@@ -1084,8 +1020,6 @@ func (db *DB) Distinct(args ...interface{}) (tx *DB)
 db.Where("address IN ?", []string{"cn", "us"}).Distinct("name").Find(&ps)
 ```
 
-
-
 ### 子查询
 
 子查询就是嵌套查询，例如想要查询出所有`id`值大于平均值的人
@@ -1095,18 +1029,16 @@ db.Where("address IN ?", []string{"cn", "us"}).Distinct("name").Find(&ps)
 db.Where("id > (?)", db.Model(Person{}).Select("AVG(id)")).Find(&ps)
 ```
 
-from子查询
+from 子查询
 
 ```go
 // SELECT * FROM (SELECT * FROM `person` WHERE address IN ('cn','uk')) as p
 db.Table("(?) as p", db.Model(Person{}).Where("address IN ?", []string{"cn", "uk"})).Find(&ps)
 ```
 
-
-
 ### 锁
 
-gorm使用`clause.Locking`子句来提供锁的支持
+gorm 使用`clause.Locking`子句来提供锁的支持
 
 ```go
 // SELECT * FROM `person` FOR UPDATE
@@ -1116,14 +1048,12 @@ db.Clauses(clause.Locking{Strength: "UPDATE"}).Find(&ps)
 db.Clauses(clause.Locking{Strength: "SHARE", Options: "NOWAIT"}).Find(&ps)
 ```
 
-
-
 ### 迭代
 
 通过`Rows`方法可以获取一个迭代器
 
 ```go
-func (db *DB) Rows() (*sql.Rows, error) 
+func (db *DB) Rows() (*sql.Rows, error)
 ```
 
 通过遍历迭代器，使用`ScanRows`方法可以将每一行的结果扫描到结构体中。
@@ -1143,8 +1073,6 @@ for rows.Next() {
     }
 }
 ```
-
-
 
 ## 修改
 
@@ -1183,14 +1111,12 @@ db.First(&p)
 db.Model(Person{}).Where("id = ?", p.Id).Update("address", "poland")
 ```
 
-
-
 ### updates
 
-`Updates`方法用于更新多列，接收结构体和map作为参数，并且当结构体字段为零值时，会忽略该字段，但在map中不会。
+`Updates`方法用于更新多列，接收结构体和 map 作为参数，并且当结构体字段为零值时，会忽略该字段，但在 map 中不会。
 
 ```go
-func (db *DB) Updates(values interface{}) (tx *DB) 
+func (db *DB) Updates(values interface{}) (tx *DB)
 ```
 
 下面是一个例子
@@ -1207,11 +1133,9 @@ db.Model(p).Updates(Person{Name: "jojo", Address: "poland"})
 db.Model(p).Updates(map[string]any{"name": "jojo", "address": "poland"})
 ```
 
+### SQL 表达式
 
-
-### SQL表达式
-
-有些时候，常常会会需要对字段进行一些自增或者自减等与自身进行运算的操作，一般是先查再计算然后更新，或者是使用SQL表达式。
+有些时候，常常会会需要对字段进行一些自增或者自减等与自身进行运算的操作，一般是先查再计算然后更新，或者是使用 SQL 表达式。
 
 ```go
 func Expr(expr string, args ...interface{}) clause.Expr
@@ -1227,11 +1151,9 @@ db.Model(p).Updates(map[string]any{"name": "jojo", "age": gorm.Expr("age + age")
 db.Model(p).Updates(map[string]any{"name": "jojo", "age": gorm.Expr("age * 2 + age")})
 ```
 
-
-
 ## 删除
 
-在gorm中，删除记录会用到`Delete`方法，它可以直接传实体结构，也可以传条件。
+在 gorm 中，删除记录会用到`Delete`方法，它可以直接传实体结构，也可以传条件。
 
 ```go
 func (db *DB) Delete(value interface{}, conds ...interface{}) (tx *DB)
@@ -1297,13 +1219,9 @@ db.Delete(&Person{}, []uint{1, 2, 3})
 db.Unscoped().Delete(&Person{}, []uint{1, 2, 3})
 ```
 
-
-
 ## 关联定义
 
-gorm提供了表关联的交互能力，通过嵌入结构体和字段的形式来定义结构体与结构体之间的关联。
-
-
+gorm 提供了表关联的交互能力，通过嵌入结构体和字段的形式来定义结构体与结构体之间的关联。
 
 ### 一对一
 
@@ -1311,18 +1229,18 @@ gorm提供了表关联的交互能力，通过嵌入结构体和字段的形式�
 
 ```go
 type Person struct {
-	Id      uint
-	Name    string
-	Address string
-	Age     uint
+  Id      uint
+  Name    string
+  Address string
+  Age     uint
 
-	MomId sql.NullInt64
-	Mom   Mom `gorm:"foreignKey:MomId;"`
+  MomId sql.NullInt64
+  Mom   Mom `gorm:"foreignKey:MomId;"`
 }
 
 type Mom struct {
-	Id   uint
-	Name string
+  Id   uint
+  Name string
 }
 ```
 
@@ -1333,8 +1251,6 @@ type Mom struct {
 对于外键字段，推荐使用`sql`包提供的类型，因为外键默认可以为`NULL`，在使用`Create`创建记录时，如果使用普通类型，零值`0`也会被创建，不存在的外键被创建显然是不被允许的。
 
 :::
-
-
 
 ### 一对多
 
@@ -1370,58 +1286,56 @@ type School struct {
 
 `school.Persons`是`[]person`类型，表示着可以拥有多个学生，而`Person`则必须要有包含引用`School`的外键，也就是`Person.SchoolId`。
 
-
-
 ### 多对多
 
 一个人可以拥有很多房子，一个房子也可以住很多人，这就是一个多对多的关系。
 
 ```go
 type Person struct {
-	Id      uint
-	Name    string
-	Address string
-	Age     uint
+  Id      uint
+  Name    string
+  Address string
+  Age     uint
 
-	MomId sql.NullInt64
-	Mom   Mom `gorm:"foreignKey:MomId;"`
+  MomId sql.NullInt64
+  Mom   Mom `gorm:"foreignKey:MomId;"`
 
-	SchoolId sql.NullInt64
-	School   School `gorm:"foreignKey:SchoolId;"`
+  SchoolId sql.NullInt64
+  School   School `gorm:"foreignKey:SchoolId;"`
 
-	Houses []House `gorm:"many2many:person_house;"`
+  Houses []House `gorm:"many2many:person_house;"`
 }
 
 type Mom struct {
-	Id   uint
-	Name string
+  Id   uint
+  Name string
 }
 
 type School struct {
-	Id   uint
-	Name string
+  Id   uint
+  Name string
 
-	Persons []Person
+  Persons []Person
 }
 
 type House struct {
-	Id   uint
-	Name string
+  Id   uint
+  Name string
 
-	Persons []Person `gorm:"many2many:person_house;"`
+  Persons []Person `gorm:"many2many:person_house;"`
 }
 
 type PersonHouse struct {
-	PersonId sql.NullInt64
-	Person   Person `gorm:"foreignKey:PersonId;"`
-	HouseId  sql.NullInt64
-	House    House `gorm:"foreignKey:HouseId;"`
+  PersonId sql.NullInt64
+  Person   Person `gorm:"foreignKey:PersonId;"`
+  HouseId  sql.NullInt64
+  House    House `gorm:"foreignKey:HouseId;"`
 }
 ```
 
 `Person`和`House`互相持有对方的切片类型表示多对多的关系，多对多关系一般需要创建连接表，通过`many2many`来指定连接表，连接表的外键必须要指定正确。
 
-创建完结构体后让gorm自动迁移到数据库中
+创建完结构体后让 gorm 自动迁移到数据库中
 
 ```go
 tables := []any{
@@ -1438,8 +1352,6 @@ for _, table := range tables {
 
 注意引用表与被引用表的先后创建顺序。
 
-
-
 ## 关联操作
 
 在创建完上述三种关联关系后，接下来就是如何使用关联来进行增删改查。这主要会用到`Association`方法
@@ -1455,8 +1367,6 @@ db.Model(&person).Association("Mom").Find(&mom)
 ```
 
 比如关联查找一个人的母亲，`Association`的参数就是`Mom`，也就是`Person.Mom`字段名。
-
-
 
 ### 创建关联
 
@@ -1502,7 +1412,7 @@ db.Create(&mit)
 // 添加Person与Mom的关联，一对一关联
 // INSERT INTO `moms` (`name`) VALUES ('jenny') ON DUPLICATE KEY UPDATE `id`=`id`
 // UPDATE `people` SET `mom_id`=1 WHERE `id` = 1
-db.Model(&jack).Association("Mom").Append(&jenny) 
+db.Model(&jack).Association("Mom").Append(&jenny)
 
 // 添加school与Person的关联，一对多关联
 // INSERT INTO `people` (`name`,`address`,`age`,`mom_id`,`school_id`,`id`) VALUES ('jack','usa',18,1,1,1),('mike','uk',20,NULL,1,DEFAULT) ON DUPLICATE KEY UPDATE `school_id`=VALUES(`school_id`)
@@ -1515,8 +1425,6 @@ db.Model(&jack).Association("Houses").Append([]House{h1, h2})
 ```
 
 假如所有的记录都不存在，在进行关联创建时，也会先创建记录再创建关联。
-
-
 
 ### 查找关联
 
@@ -1548,9 +1456,7 @@ var houses []House
 db.Model(&persons).Association("Houses").Find(&houses)
 ```
 
-关联查找会根据已有的数据，去引用表中查找符合条件的记录，对于多对多关系而言，gorm会自动完成表连接这一过程。
-
-
+关联查找会根据已有的数据，去引用表中查找符合条件的记录，对于多对多关系而言，gorm 会自动完成表连接这一过程。
 
 ### 更新关联
 
@@ -1596,9 +1502,7 @@ db.Model(&mit).Association("Persons").Replace(newPerson)
 db.Model(&jack).Association("Houses").Replace([]House{{Name: "h3"}, {Name: "h4"}, {Name: "h5"}})
 ```
 
-在关联更新时，如果被引用数据和引用数据都不存在，gorm会尝试创建它们。
-
-
+在关联更新时，如果被引用数据和引用数据都不存在，gorm 会尝试创建它们。
 
 ### 删除关联
 
@@ -1651,7 +1555,7 @@ db.Model(&jack).Association("Houses").Delete(&houses)
 db.Model(&jack).Association("Houses").Clear()
 ```
 
-如果想要删除对应的实体记录，可以在`Association`操作后面加上`Unscoped`操作（不会影响many2many）
+如果想要删除对应的实体记录，可以在`Association`操作后面加上`Unscoped`操作（不会影响 many2many）
 
 ```go
 db.Model(&jack).Association("Houses").Unscoped().Delete(&houses)
@@ -1668,11 +1572,9 @@ db.Where("name = ?", "mit").First(&mit)
 db.Select("Persons").Delete(&mit)
 ```
 
-
-
 ### 预加载
 
-预加载用于查询关联数据，对于具有关联关系的实体而言，它会先预先加载被关联引用的实体。之前提到的关联查询是对关联关系进行查询，预加载是直接对实体记录进行查询，包括所有的关联关系。**从语法上来说**，关联查询需要先查询指定的`[]Person`，然后再根据`[]Person` 去查询关联的`[]Mom`，预加载从语法上直接查询`[]Person`，并且也会将所有的关联关系顺带都加载了，不过实际上它们执行的SQL都是差不多的。下面看一个例子
+预加载用于查询关联数据，对于具有关联关系的实体而言，它会先预先加载被关联引用的实体。之前提到的关联查询是对关联关系进行查询，预加载是直接对实体记录进行查询，包括所有的关联关系。**从语法上来说**，关联查询需要先查询指定的`[]Person`，然后再根据`[]Person` 去查询关联的`[]Mom`，预加载从语法上直接查询`[]Person`，并且也会将所有的关联关系顺带都加载了，不过实际上它们执行的 SQL 都是差不多的。下面看一个例子
 
 ```go
 var users []Person
@@ -1732,26 +1634,22 @@ house h1 owner [jack]
 house h2 owner [jack]
 
 person mike
-mom 
+mom
 
 ```
 
 可以看到输出了每一个学校的每一个学生的母亲以及它们的房子，还有房子的所有主人。
 
-
-
 ## 事务
 
-gorm默认开启事务，任何插入和更新操作失败后都会回滚，可以在[连接配置](#连接配置)中关闭，性能大概会提升30%左右。gorm中事务的使用有多种方法，下面简单介绍下。
-
-
+gorm 默认开启事务，任何插入和更新操作失败后都会回滚，可以在[连接配置](#连接配置)中关闭，性能大概会提升 30%左右。gorm 中事务的使用有多种方法，下面简单介绍下。
 
 ### 自动
 
-闭包事务，通过`Transaction`方法，传入一个闭包函数，如果函数返回值不为nil，那么就会自动回滚。
+闭包事务，通过`Transaction`方法，传入一个闭包函数，如果函数返回值不为 nil，那么就会自动回滚。
 
 ```go
-func (db *DB) Transaction(fc func(tx *DB) error, opts ...*sql.TxOptions) (err error) 
+func (db *DB) Transaction(fc func(tx *DB) error, opts ...*sql.TxOptions) (err error)
 ```
 
 下面看一个例子，闭包中的操作应该使用参数`tx`，而非外部的`db`。
@@ -1779,24 +1677,22 @@ db.Transaction(func(tx *gorm.DB) error {
 })
 ```
 
-
-
 ### 手动
 
 比较推荐使用手动事务，由我们自己来控制何时回滚，何时提交。手动事务会用到下面三个方法
 
 ```go
 // Begin方法用于开启事务
-func (db *DB) Begin(opts ...*sql.TxOptions) *DB 
+func (db *DB) Begin(opts ...*sql.TxOptions) *DB
 
 // Rollback方法用于回滚事务
-func (db *DB) Rollback() *DB 
+func (db *DB) Rollback() *DB
 
 // Commit方法用于提交事务
 func (db *DB) Commit() *DB
 ```
 
-下面看一个例子，开启事务后，就应该使用`tx`来操作orm。
+下面看一个例子，开启事务后，就应该使用`tx`来操作 orm。
 
 ```go
 var ps []Person
@@ -1854,8 +1750,6 @@ if err != nil {
 tx.Commit()
 ```
 
-
-
 ## 总结
 
-如果你阅读完了上面的所有内容，并动手敲了代码，那么你就可以使用gorm进行对数据库进行增删改查了，gorm除了这些操作以外，还有其它许多功能，更多细节可以前往官方文档了解。
+如果你阅读完了上面的所有内容，并动手敲了代码，那么你就可以使用 gorm 进行对数据库进行增删改查了，gorm 除了这些操作以外，还有其它许多功能，更多细节可以前往官方文档了解。

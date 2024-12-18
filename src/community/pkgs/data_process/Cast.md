@@ -4,21 +4,15 @@
 
 文档：[spf13/cast: safe and easy casting from one type to another in Go (github.com)](https://github.com/spf13/cast#readme)
 
-
-
 ## 简介
 
 cast是一个简单的类型转换库，用于将一个类型到另一个类型的快速转换，可以省去很多麻烦的操作。
-
-
 
 ## 安装
 
 ```
 go get https://github.com/spf13/cast
 ```
-
-
 
 ## 例子
 
@@ -48,4 +42,3 @@ var eight interface{} = 8
 cast.ToInt(eight)              // 8
 cast.ToInt(nil)                // 0
 ```
-

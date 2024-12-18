@@ -4,8 +4,6 @@
 
 官方文档：[概述 | Casbin](https://casbin.org/zh/docs/overview)
 
-
-
 ::: tip
 
 本文只能算是一个Casbin入门文章，如果想要更细致的了解请前往官网进行学习。
@@ -30,8 +28,6 @@
 10. **拒绝优先**: 支持允许和拒绝授权, 拒绝优先于允许。
 11. **优先级**: 策略规则按照先后次序确定优先级，类似于防火墙规则
 
-
-
 ## 工作原理
 
 在Casbin中，访问控制模型被抽象为基于PERM的配置文件，PERM指Policy（策略），Effect（效果），Request（请求），Matcher（匹配），在项目修改授权机制时，只需要简单地修改配置文件即可。一个正常的Model配置文件内容如下：
@@ -51,8 +47,6 @@ m = r.sub == p.sub && r.obj == p.obj && r.act == p.act
 ```
 
 这是一个最简单的ACL访问控制模型。
-
-
 
 ### 策略
 
@@ -83,8 +77,6 @@ p, jojo, cake, eat
 
 p代表了这是一条策略规则定义，jojo即策略主体，cake即策略对象，eat即行为，完整意思为主体jojo能对对象cake进行行为eat。具体的策略规则并不会出现在模型文件中，会有专门的policy文件或者数据库来进行策略存储。
 
-
-
 ### 请求
 
 在配置文件中，请求定义部分为
@@ -95,8 +87,6 @@ r = sub, obj, act
 ```
 
 `r`即指request，不能用其他字符代替，sub即subject，指请求主体，obj即object，指请求对象，act即action，指的是请求行为。一般情况下请求定义与策略定义字段名都一致。请求部分并不由casbin负责，这由开发者自己决定什么是请求主体，什么是请求对象，casbin只需要负责根据传入的字段来进行访问控制。
-
-
 
 ### 匹配
 
@@ -129,8 +119,6 @@ e.Enforce(Sub{Name: "alice"}, Obj{Name: "a book", Admins: []interface{}{"alice",
 
 在进行匹配时，Casbin不会进行类型检查，而是将其作为`interface`进行`==`检查是否相等。
 
-
-
 ### 效果
 
 效果定义部分对匹配结果再次作出逻辑组合判断，在配置文件中，效果定义部分为
@@ -162,15 +150,13 @@ e = some(where (p.eft == allow)) && !some(where (p.eft == deny))
 
 虽然Casbin设计了上述政策效果的语法，但目前的执行只是使用硬编码的政策效果。 他们认为这种灵活性没有多大必要。 目前为止你必须使用内置的 policy effects，不能自定义，内置支持的 policy effects如下。
 
-| Policy effect定义                                            | 意义             | 示例                                                         |
-| ------------------------------------------------------------ | ---------------- | ------------------------------------------------------------ |
+| Policy effect定义                                            | 意义             | 示例                                                                    |
+| ------------------------------------------------------------ | ---------------- | ----------------------------------------------------------------------- |
 | some(where (p.eft == allow))                                 | allow-override   | [ACL, RBAC, etc.](https://casbin.org/zh/docs/supported-models#examples) |
-| !some(where (p.eft == deny))                                 | deny-override    | [拒绝改写](https://casbin.org/zh/docs/supported-models#examples) |
-| some(where (p.eft == allow)) && !some(where (p.eft == deny)) | allow-and-deny   | [同意与拒绝](https://casbin.org/zh/docs/supported-models#examples) |
-| priority(p.eft) \|\| deny                                    | priority         | [优先级](https://casbin.org/zh/docs/supported-models#examples) |
-| subjectPriority(p.eft)                                       | 基于角色的优先级 | [主题优先级](https://casbin.org/zh/docs/supported-models#examples) |
-
-
+| !some(where (p.eft == deny))                                 | deny-override    | [拒绝改写](https://casbin.org/zh/docs/supported-models#examples)        |
+| some(where (p.eft == allow)) && !some(where (p.eft == deny)) | allow-and-deny   | [同意与拒绝](https://casbin.org/zh/docs/supported-models#examples)      |
+| priority(p.eft) \|\| deny                                    | priority         | [优先级](https://casbin.org/zh/docs/supported-models#examples)          |
+| subjectPriority(p.eft)                                       | 基于角色的优先级 | [主题优先级](https://casbin.org/zh/docs/supported-models#examples)      |
 
 ::: tip
 
@@ -179,8 +165,6 @@ e = some(where (p.eft == allow)) && !some(where (p.eft == deny))
 2.模型文件可以有注释，以`#`符号进行注释。
 
 :::
-
-
 
 ### 示例
 
@@ -239,8 +223,6 @@ true
 
 这是一个最简单的ACL示例，Casbin官网中可以进行在线编辑并测试示例，前往[Casbin editor](https://casbin.org/zh/editor)进行测试。
 
-
-
 ## RBAC
 
 RBAC（Role-Based-Access-Controll），基于角色的访问控制，相较于ACL模型会多一个`[role definition]`，下面是一个简单的RBAC模型
@@ -297,8 +279,6 @@ g, data1_admin data2_admin
 
 表示角色data1_admin具有角色data2_admin，这是角色之间的继承关系。
 
-
-
 ### 资源角色模型
 
 资源角色模型新增了一个g2，作为资源的角色定义，模型定义如下
@@ -340,8 +320,6 @@ p, data_group_admin, data_group, write
 ```
 
 这一条策略便是定义了具有角色data_group_admin的用户能对具有data_group角色的资源进行写操作。
-
-
 
 ### 多租户领域模型
 
@@ -387,7 +365,5 @@ g, alice, admin, domain1
 ```
 
 定义了alice属于domain1具有角色admin
-
-
 
 ## ABAC

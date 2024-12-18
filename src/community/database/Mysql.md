@@ -1,18 +1,16 @@
 # MySQL
 
-Mysql是当下最流行的开源关系型数据库，具体的sql知识这里不会做过多的赘述，如果你不会请先自行学习，本文只是简单讲解如何利用go进行sql操作。在项目中的话一般不会直接使用驱动来进行数据库操作，而是会使用ORM框架，这里使用的是`sqlx`库，是对标准`sql`库的增强，没有ORM功能那么丰富但是胜在简洁。如果你想使用ORM，可以去了解`Gorm`，`Xorm`，`Ent`这些库。
-
-
+Mysql 是当下最流行的开源关系型数据库，具体的 sql 知识这里不会做过多的赘述，如果你不会请先自行学习，本文只是简单讲解如何利用 go 进行 sql 操作。在项目中的话一般不会直接使用驱动来进行数据库操作，而是会使用 ORM 框架，这里使用的是`sqlx`库，是对标准`sql`库的增强，没有 ORM 功能那么丰富但是胜在简洁。如果你想使用 ORM，可以去了解`Gorm`，`Xorm`，`Ent`这些库。
 
 ## 依赖
 
 下载`sqlx`库
 
 ```bash
-$ go get github.com/jmoiron/sqlx 
+$ go get github.com/jmoiron/sqlx
 ```
 
-`sqlx`或者说标准库`database/sql`支持的数据库不止MySQL，任何实现了`driver.Driver`接口的类型都支持，比如：
+`sqlx`或者说标准库`database/sql`支持的数据库不止 MySQL，任何实现了`driver.Driver`接口的类型都支持，比如：
 
 - PostgreSQL
 - Oracle
@@ -26,33 +24,29 @@ $ go get github.com/jmoiron/sqlx
 func Register(name string, driver driver.Driver)
 ```
 
-由于MySQL比较流行，也最为简单，所以本文采用MySQL来讲解，其他关系数据库操作起来都是大差不大差的，下载MySQL驱动库
+由于 MySQL 比较流行，也最为简单，所以本文采用 MySQL 来讲解，其他关系数据库操作起来都是大差不大差的，下载 MySQL 驱动库
 
 ```bash
-$ go get github.com/go-sql-driver/mysql 
+$ go get github.com/go-sql-driver/mysql
 ```
-
-
 
 ## 连接到数据库
 
-通过`sqlx.Open`函数，就可以打开一个数据库连接，它接受两个参数，第一个是驱动名称，第二个就是数据源（一般简称DSN）。
+通过`sqlx.Open`函数，就可以打开一个数据库连接，它接受两个参数，第一个是驱动名称，第二个就是数据源（一般简称 DSN）。
 
 ```go
 func Open(driverName, dataSourceName string) (*DB, error)
 ```
 
-驱动名称就是注册驱动时使用的名称，需要保持一致，DSN就是数据库的连接地址，每种数据库都可能会不一样，对于MySQL而言就是下面这样
+驱动名称就是注册驱动时使用的名称，需要保持一致，DSN 就是数据库的连接地址，每种数据库都可能会不一样，对于 MySQL 而言就是下面这样
 
 ```go
 db,err := sqlx.Open("mysql","root:123456@tcp(127.0.0.1:3306)/test")
 ```
 
-
-
 ## 准备数据
 
-```mysql
+```sql
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -76,8 +70,6 @@ INSERT INTO `user` VALUES ('16162', '王五', 22, '上海市');
 
 SET FOREIGN_KEY_CHECKS = 1;
 ```
-
-
 
 ## 查询
 
@@ -120,17 +112,15 @@ func query() {
 }
 
 func list() {
-	var perons []Person
-	err := db.Select(&perons, "select * from user")
-	if err != nil {
-		fmt.Println("list err", err)
-		return
-	}
-	fmt.Printf("list succ,%+v", perons)
+  var perons []Person
+  err := db.Select(&perons, "select * from user")
+  if err != nil {
+    fmt.Println("list err", err)
+    return
+  }
+  fmt.Printf("list succ,%+v", perons)
 }
 ```
-
-
 
 ## 新增
 
@@ -152,8 +142,6 @@ func insert() {
 }
 ```
 
-
-
 ## 更新
 
 更新数据
@@ -173,8 +161,6 @@ func update() {
    fmt.Println("Update succ")
 }
 ```
-
-
 
 ## 删除
 
@@ -196,8 +182,6 @@ func delete() {
 }
 ```
 
-
-
 ## 事务
 
 ```go
@@ -211,17 +195,17 @@ func (tx *Tx) Rollback() error //回滚一个事务
 ```go
 func main() {
 
-	transation, err := db.Begin()
-	if err != nil {
-		fmt.Println("transation err")
-	}
+  transation, err := db.Begin()
+  if err != nil {
+    fmt.Println("transation err")
+  }
     defer transation.Rollback()
 
-	insert()
-	query()
-	update()
-	query()
-	delete()
- 	transation.Commit()
+  insert()
+  query()
+  update()
+  query()
+  delete()
+   transation.Commit()
 }
 ```

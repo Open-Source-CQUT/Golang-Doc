@@ -4,25 +4,21 @@
 
 文档地址：[jinzhu/copier: Copier for golang, copy value from struct to struct and more (github.com)](https://github.com/jinzhu/copier#readme)
 
-copier是一个用于在go中进行类型复制的库，多用于结构体之间的转换。作者和gorm是同一个，它具有以下特点
+copier 是一个用于在 go 中进行类型复制的库，多用于结构体之间的转换。作者和 gorm 是同一个，它具有以下特点
 
 - 深拷贝
 - 复制同名的字段
 - 复制切片
-- 复制map
+- 复制 map
 - 复制方法
 
-由于copier的复制依赖于反射，所以性能上会有一定的损失。一般这种类型复制的库分成两类，一类基于反射，也是就copier这种，另一类是基于代码生成，通过生成类型转换的代码，这种方法性能不会造成损失，类似实现的库有[jmattheis/goverter](https://github.com/jmattheis/goverter)。
-
-
+由于 copier 的复制依赖于反射，所以性能上会有一定的损失。一般这种类型复制的库分成两类，一类基于反射，也是就 copier 这种，另一类是基于代码生成，通过生成类型转换的代码，这种方法性能不会造成损失，类似实现的库有[jmattheis/goverter](https://github.com/jmattheis/goverter)。
 
 ## 安装
 
 ```sh
- go get github.com/jinzhu/copier 
+ go get github.com/jinzhu/copier
 ```
-
-
 
 ## 使用
 
@@ -36,10 +32,10 @@ func Copy(toValue interface{}, fromValue interface{}) (err error)
 
 ```go
 type Option struct {
-	IgnoreEmpty   bool
-	CaseSensitive bool
-	DeepCopy      bool
-	FieldNameMapping []FieldNameMapping
+  IgnoreEmpty   bool
+  CaseSensitive bool
+  DeepCopy      bool
+  FieldNameMapping []FieldNameMapping
 }
 
 func CopyWithOption(toValue interface{}, fromValue interface{}, opt Option) (err error)
@@ -49,35 +45,35 @@ func CopyWithOption(toValue interface{}, fromValue interface{}, opt Option) (err
 
 ```go
 type User struct {
-	Id   string
-	Name string
-	// 当作为目标结构体时，忽略该字段
-	Address string `copier:"-"`
+  Id   string
+  Name string
+  // 当作为目标结构体时，忽略该字段
+  Address string `copier:"-"`
 }
 
 type Student struct {
-	// 指定字段名
-	StudentId   string `copier:"Id"`
-	StudentName string `copier:"Name"`
-	Address     string
-	School      string
-	Class       string
+  // 指定字段名
+  StudentId   string `copier:"Id"`
+  StudentName string `copier:"Name"`
+  Address     string
+  School      string
+  Class       string
 }
 
 func main() {
-	student := Student{
-		StudentId:   "123",
-		StudentName: "jack",
-		Address:     "usa",
-		School:      "MIT",
-		Class:       "AI",
-	}
-	user := User{}
-	if err := copier.Copy(&user, &student); err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v\n", student)
-	fmt.Printf("%+v\n", user)
+  student := Student{
+    StudentId:   "123",
+    StudentName: "jack",
+    Address:     "usa",
+    School:      "MIT",
+    Class:       "AI",
+  }
+  user := User{}
+  if err := copier.Copy(&user, &student); err != nil {
+    panic(err)
+  }
+  fmt.Printf("%+v\n", student)
+  fmt.Printf("%+v\n", user)
 }
 ```
 
@@ -92,29 +88,29 @@ func main() {
 
 ```go
 func main() {
-	student := []Student{
-		{
-			StudentId:   "123",
-			StudentName: "jack",
-			Address:     "usa",
-			School:      "MIT",
-			Class:       "AI",
-		},
-		{
-			StudentId:   "123",
-			StudentName: "jack",
-			Address:     "usa",
-			School:      "MIT",
-			Class:       "AI",
-		},
-	}
+  student := []Student{
+    {
+      StudentId:   "123",
+      StudentName: "jack",
+      Address:     "usa",
+      School:      "MIT",
+      Class:       "AI",
+    },
+    {
+      StudentId:   "123",
+      StudentName: "jack",
+      Address:     "usa",
+      School:      "MIT",
+      Class:       "AI",
+    },
+  }
 
-	var user []User
-	if err := copier.Copy(&user, &student); err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v\n", student)
-	fmt.Printf("%+v\n", user)
+  var user []User
+  if err := copier.Copy(&user, &student); err != nil {
+    panic(err)
+  }
+  fmt.Printf("%+v\n", student)
+  fmt.Printf("%+v\n", user)
 }
 ```
 
@@ -125,45 +121,45 @@ func main() {
 [{Id:123 Name:jack Address:} {Id:123 Name:jack Address:}]
 ```
 
-复制map
+复制 map
 
 ```go
 type User struct {
-	Id   string
-	Name string
-	// 当作为目标结构体时，忽略该字段
-	Address string `copier:"-"`
+  Id   string
+  Name string
+  // 当作为目标结构体时，忽略该字段
+  Address string `copier:"-"`
 }
 
 type Student struct {
-	// 指定字段名
-	StudentId   string `copier:"Id"`
-	StudentName string `copier:"Name"`
-	Address     string
-	School      string
-	Class       string
+  // 指定字段名
+  StudentId   string `copier:"Id"`
+  StudentName string `copier:"Name"`
+  Address     string
+  School      string
+  Class       string
 }
 
 func main() {
-	student := Student{
-		StudentId:   "123",
-		StudentName: "jack",
-		Address:     "usa",
-		School:      "MIT",
-		Class:       "AI",
-	}
+  student := Student{
+    StudentId:   "123",
+    StudentName: "jack",
+    Address:     "usa",
+    School:      "MIT",
+    Class:       "AI",
+  }
 
-	src := make(map[string]Student)
-	src["a"] = student
-	src["b"] = student
+  src := make(map[string]Student)
+  src["a"] = student
+  src["b"] = student
 
-	dest := make(map[string]User)
+  dest := make(map[string]User)
 
-	if err := copier.Copy(&dest, &src); err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v\n", src)
-	fmt.Printf("%+v\n", dest)
+  if err := copier.Copy(&dest, &src); err != nil {
+    panic(err)
+  }
+  fmt.Printf("%+v\n", src)
+  fmt.Printf("%+v\n", dest)
 }
 
 ```
@@ -175,17 +171,15 @@ map[a:{StudentId:123 StudentName:jack Address:usa School:MIT Class:AI} b:{Studen
 map[a:{Id:123 Name:jack Address:} b:{Id:123 Name:jack Address:}]
 ```
 
-
-
 ## 自定义
 
 还可以自定义转换方法，只需要传入`copier.TypeConverter`即可
 
 ```go
 type TypeConverter struct {
-	SrcType interface{}
-	DstType interface{}
-	Fn      func(src interface{}) (dst interface{}, err error)
+  SrcType interface{}
+  DstType interface{}
+  Fn      func(src interface{}) (dst interface{}, err error)
 }
 ```
 
@@ -193,61 +187,61 @@ type TypeConverter struct {
 
 ```go
 type User struct {
-	Id   string
-	Name string
-	// 当作为目标结构体时，忽略该字段
-	Address string `copier:"-"`
+  Id   string
+  Name string
+  // 当作为目标结构体时，忽略该字段
+  Address string `copier:"-"`
 }
 
 type Student struct {
-	// 指定字段名
-	StudentId   string `copier:"Id"`
-	StudentName string `copier:"Name"`
-	Address     string
-	School      string
-	Class       string
+  // 指定字段名
+  StudentId   string `copier:"Id"`
+  StudentName string `copier:"Name"`
+  Address     string
+  School      string
+  Class       string
 }
 
 func main() {
-	student := Student{
-		StudentId:   "123",
-		StudentName: "jack",
-		Address:     "usa",
-		School:      "MIT",
-		Class:       "AI",
-	}
+  student := Student{
+    StudentId:   "123",
+    StudentName: "jack",
+    Address:     "usa",
+    School:      "MIT",
+    Class:       "AI",
+  }
 
-	src := make(map[string]Student)
-	src["a"] = student
-	src["b"] = student
+  src := make(map[string]Student)
+  src["a"] = student
+  src["b"] = student
 
-	dest := make(map[string]User)
+  dest := make(map[string]User)
 
-	if err := copier.CopyWithOption(&dest, &src, copier.Option{
-		IgnoreEmpty:   false,
-		CaseSensitive: false,
-		DeepCopy:      false,
-		Converters: []copier.TypeConverter{
-			{
-				SrcType: Student{},
-				DstType: User{},
-				Fn: func(src interface{}) (dst interface{}, err error) {
-					s, ok := src.(Student)
-					if !ok {
-						return User{}, errors.New("error type")
-					}
-					return User{
-						Id: s.StudentId,
-					}, nil
-				},
-			},
-		},
-		FieldNameMapping: nil,
-	}); err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v\n", src)
-	fmt.Printf("%+v\n", dest)
+  if err := copier.CopyWithOption(&dest, &src, copier.Option{
+    IgnoreEmpty:   false,
+    CaseSensitive: false,
+    DeepCopy:      false,
+    Converters: []copier.TypeConverter{
+      {
+        SrcType: Student{},
+        DstType: User{},
+        Fn: func(src interface{}) (dst interface{}, err error) {
+          s, ok := src.(Student)
+          if !ok {
+            return User{}, errors.New("error type")
+          }
+          return User{
+            Id: s.StudentId,
+          }, nil
+        },
+      },
+    },
+    FieldNameMapping: nil,
+  }); err != nil {
+    panic(err)
+  }
+  fmt.Printf("%+v\n", src)
+  fmt.Printf("%+v\n", dest)
 }
 ```
 
@@ -257,4 +251,3 @@ func main() {
 map[a:{StudentId:123 StudentName:jack Address:usa School:MIT Class:AI} b:{StudentId:123 StudentName:jack Address:usa School:MIT Class:AI}]
 map[a:{Id:123 Name: Address:} b:{Id:123 Name: Address:}]
 ```
-

@@ -4,21 +4,15 @@
 
 文档：[go-ini/ini: 超赞的 Go 语言 INI 文件操作 (unknwon.cn)](https://ini.unknwon.cn/)
 
-
-
 ## 简介
 
 使用Go语言编写的ini文件的解析库，支持序列化和反序列，支持结构体映射，支持注释操作。
-
-
 
 ## 安装
 
 ```
 go get gopkg.in/ini.v1
 ```
-
-
 
 ## 快速开始
 
@@ -77,7 +71,7 @@ func main() {
     // 试一试自动类型转换
     fmt.Printf("Port Number: (%[1]T) %[1]d\n", cfg.Section("server").Key("http_port").MustInt(9999))
     fmt.Printf("Enforce Domain: (%[1]T) %[1]v\n", cfg.Section("server").Key("enforce_domain").MustBool(false))
-    
+
     // 差不多了，修改某个值然后进行保存
     cfg.Section("").Key("app_mode").SetValue("production")
     cfg.SaveTo("my.ini.local")
@@ -104,4 +98,3 @@ app_mode = production
 data = /home/git/grafana
 ...
 ```
-

@@ -1,12 +1,10 @@
 # Wire
 
-wire是谷歌开源的一个依赖注入工具，依赖注入这个概念在Java的Spring框架中相当盛行，go中也有一些依赖注入库，例如Uber开源的dig。不过wire的依赖注入理念并不是基于语言的反射机制，严格来说，wire其实是一个代码生成器，依赖注入的理念只体现在使用上，如果有问题的话，在代码生成期间就能找出来。
+wire 是谷歌开源的一个依赖注入工具，依赖注入这个概念在 Java 的 Spring 框架中相当盛行，go 中也有一些依赖注入库，例如 Uber 开源的 dig。不过 wire 的依赖注入理念并不是基于语言的反射机制，严格来说，wire 其实是一个代码生成器，依赖注入的理念只体现在使用上，如果有问题的话，在代码生成期间就能找出来。
 
 仓库地址：[google/wire: Compile-time Dependency Injection for Go (github.com)](https://github.com/google/wire)
 
 文档地址：[wire/docs/guide.md at main · google/wire (github.com)](https://github.com/google/wire/blob/main/docs/guide.md)
-
-
 
 ## 安装
 
@@ -22,13 +20,11 @@ go install github.com/google/wire/cmd/wire@latest
 go get github.com/google/wire
 ```
 
-
-
 ## 入门
 
-wire中依赖注入基于两个元素，**provier**和**injector**。
+wire 中依赖注入基于两个元素，**provier**和**injector**。
 
-**provier**可以是开发者提供一个构造器，如下，Provider必须是对外暴露的。
+**provier**可以是开发者提供一个构造器，如下，Provider 必须是对外暴露的。
 
 ```go
 package foobarbaz
@@ -83,7 +79,7 @@ func ProvideBaz(ctx context.Context, bar Bar) (Baz, error) {
 }
 ```
 
-也可以对proiver进行组合
+也可以对 proiver 进行组合
 
 ```go
 package foobarbaz
@@ -100,19 +96,19 @@ var SuperSet = wire.NewSet(ProvideFoo, ProvideBar, ProvideBaz)
 
 ::: tip
 
-wire对provider的返回值有如下规定
+wire 对 provider 的返回值有如下规定
 
-- 第一个返回值是provider提供的值
+- 第一个返回值是 provider 提供的值
 - 第二个返回值必须是`func() | error`
 - 第三个返回值，如果第二个返回值是`func`，那么第三个返回值必须是`error`
 
 :::
 
-**injector**是由wire生成的一个函数，它负责按照指定的顺序去调用provider，injector的签名由开发者来定义，wire生成具体的函数体，通过调用`wire.Build`来声明，这个声明不应该被调用，更不应该被编译。
+**injector**是由 wire 生成的一个函数，它负责按照指定的顺序去调用 provider，injector 的签名由开发者来定义，wire 生成具体的函数体，通过调用`wire.Build`来声明，这个声明不应该被调用，更不应该被编译。
 
 ```go
 func Build(...interface{}) string {
-	return "implementation not generated, run wire"
+  return "implementation not generated, run wire"
 }
 ```
 
@@ -168,29 +164,27 @@ func initializeBaz(ctx context.Context) (foobarbaz.Baz, error) {
 }
 ```
 
-生成的代码对于wire几乎没有任何依赖，不需要wire也可以正常工作，并且在后续执行`go generate`就可以再次生成，之后，开发者通过调用实际生成的injector传入对应的参数完成依赖注入。是不是整个过程的代码相当简单，感觉好像就是提供几个构造器，然后生成一个调用构造器的函数，最后再调用这个函数传入参数，好像也没做什么特别复杂的事情，手写一样可以，没错就是这样，wire就是做的这样一件简单的事情，只是由手写变成了自动生成。按照wire的理念，依赖注入本就是应该如此简单的一个事情，不应复杂化。
-
-
+生成的代码对于 wire 几乎没有任何依赖，不需要 wire 也可以正常工作，并且在后续执行`go generate`就可以再次生成，之后，开发者通过调用实际生成的 injector 传入对应的参数完成依赖注入。是不是整个过程的代码相当简单，感觉好像就是提供几个构造器，然后生成一个调用构造器的函数，最后再调用这个函数传入参数，好像也没做什么特别复杂的事情，手写一样可以，没错就是这样，wire 就是做的这样一件简单的事情，只是由手写变成了自动生成。按照 wire 的理念，依赖注入本就是应该如此简单的一个事情，不应复杂化。
 
 ## 示例
 
-下面来通过一个案例加深一下理解，这是一个初始化app的例子。
+下面来通过一个案例加深一下理解，这是一个初始化 app 的例子。
 
-`HttpServer`的provider接收一个`net.Addr`参数，返回指针和`error`
+`HttpServer`的 provider 接收一个`net.Addr`参数，返回指针和`error`
 
 ```go
 var ServerProviderSet = wire.NewSet(NewHttpserver)
 
 type HttpServer struct {
-	net.Addr
+  net.Addr
 }
 
 func NewHttpserver(addr net.Addr) (*HttpServer, error) {
-	return &HttpServer{addr}, nil
+  return &HttpServer{addr}, nil
 }
 ```
 
-下面的`MysqlClient`和`System`的provider同理
+下面的`MysqlClient`和`System`的 provider 同理
 
 ```go
 var DataBaseProviderSet = wire.NewSet(NewMysqlClient)
@@ -201,20 +195,20 @@ type MysqlClient struct {
 var SystemSet = wire.NewSet(NewApp)
 
 type System struct {
-	server *HttpServer
-	data   *MysqlClient
+  server *HttpServer
+  data   *MysqlClient
 }
 
 func (s *System) Run() {
-	log.Printf("app run on %s", s.server.String())
+  log.Printf("app run on %s", s.server.String())
 }
 
 func NewApp(server *HttpServer, data *MysqlClient) (System, error) {
-	return System{server: server, data: data}, nil
+  return System{server: server, data: data}, nil
 }
 ```
 
-provider定义完毕后，需要定义injector，最好新建一个`wire.go`文件来定义
+provider 定义完毕后，需要定义 injector，最好新建一个`wire.go`文件来定义
 
 ```go
 //go:build wireinject
@@ -223,19 +217,19 @@ provider定义完毕后，需要定义injector，最好新建一个`wire.go`文�
 package main
 
 import (
-	"github.com/google/wire"
-	"net"
+  "github.com/google/wire"
+  "net"
 )
 
 // 定义injector
 func initSystemServer(serverAddr net.Addr, dataAddr string) (System, error) {
-	// 按照顺序调用provider
-	panic(wire.Build(DataBaseProviderSet, ServerProviderSet, SystemSet))
+  // 按照顺序调用provider
+  panic(wire.Build(DataBaseProviderSet, ServerProviderSet, SystemSet))
 }
 
 ```
 
-`+build wireinject`是为了在编译时忽略掉此injector。然后执行如下命令，有如下输出即生成成功。
+`+build wireinject`是为了在编译时忽略掉此 injector。然后执行如下命令，有如下输出即生成成功。
 
 ```sh
 $ wire
@@ -254,49 +248,49 @@ $ wire: golearn: wrote /golearn/wire_gen.go
 package main
 
 import (
-	"net"
+  "net"
 )
 
 // Injectors from wire.go:
 
 // 定义injector
 func initSystemServer(serverAddr net.Addr, dataAddr string) (System, error) {
-	httpServer, err := NewHttpserver(serverAddr)
-	if err != nil {
-		return System{}, err
-	}
-	mysqlClient, err := NewMysqlClient(dataAddr)
-	if err != nil {
-		return System{}, err
-	}
-	system, err := NewApp(httpServer, mysqlClient)
-	if err != nil {
-		return System{}, err
-	}
-	return system, nil
+  httpServer, err := NewHttpserver(serverAddr)
+  if err != nil {
+    return System{}, err
+  }
+  mysqlClient, err := NewMysqlClient(dataAddr)
+  if err != nil {
+    return System{}, err
+  }
+  system, err := NewApp(httpServer, mysqlClient)
+  if err != nil {
+    return System{}, err
+  }
+  return system, nil
 }
 ```
 
-可以看到逻辑很清晰，调用顺序也是正确的，最后通过生成的injector来启动app。
+可以看到逻辑很清晰，调用顺序也是正确的，最后通过生成的 injector 来启动 app。
 
 ```go
 package main
 
 import (
-	"github.com/google/wire"
-	"log"
-	"net"
-	"net/netip"
+  "github.com/google/wire"
+  "log"
+  "net"
+  "net/netip"
 )
 
 func main() {
-	server, err := initSystemServer(
-		net.TCPAddrFromAddrPort(netip.MustParseAddrPort("127.0.0.1:8080")),
-		"mysql:localhost:3306/test")
-	if err != nil {
-		panic(err)
-	}
-	server.Run()
+  server, err := initSystemServer(
+    net.TCPAddrFromAddrPort(netip.MustParseAddrPort("127.0.0.1:8080")),
+    "mysql:localhost:3306/test")
+  if err != nil {
+    panic(err)
+  }
+  server.Run()
 }
 ```
 
@@ -308,13 +302,11 @@ func main() {
 
 这就是一个非常简单的使用案例。
 
-
-
 ## 高级用法
 
 ### 接口绑定
 
-有时候，依赖注入时会将一个具体的实现注入到接口上。wire在依赖注入时，是根据类型匹配来实现的。
+有时候，依赖注入时会将一个具体的实现注入到接口上。wire 在依赖注入时，是根据类型匹配来实现的。
 
 ```go
 ype Fooer interface {
@@ -341,7 +333,7 @@ func provideBar(f Fooer) string {
 }
 ```
 
-provider`provideBar`的参数是一个接口类型，它的实际上是`*MyFooer`，为了让代码生成时provider能够正确匹配，我们可以将两种类型绑定，如下
+provider`provideBar`的参数是一个接口类型，它的实际上是`*MyFooer`，为了让代码生成时 provider 能够正确匹配，我们可以将两种类型绑定，如下
 
 第一个参数是具体的接口指针类型，第二个是具体实现的指针类型。
 
@@ -358,7 +350,7 @@ var Set = wire.NewSet(
 
 ### 值绑定
 
-在使用`wire.Build`时，可以不用provider提供值，也可以使用`wire.Value`来提供一个具体的值。`wire.Value`支持表达式来构造值，这个表达式在生成代码时会被复制到injector中，如下。
+在使用`wire.Build`时，可以不用 provider 提供值，也可以使用`wire.Value`来提供一个具体的值。`wire.Value`支持表达式来构造值，这个表达式在生成代码时会被复制到 injector 中，如下。
 
 ```go
 type Foo struct {
@@ -371,7 +363,7 @@ func injectFoo() Foo {
 }
 ```
 
-生成的injector
+生成的 injector
 
 ```
 func injectFoo() Foo {
@@ -393,11 +385,9 @@ func injectReader() io.Reader {
 }
 ```
 
-
-
 ### 结构体构造
 
-在providerset中，可以使用`wire.Struct`来利用其他provider的返回值构建一个指定类型的结构体。
+在 providerset 中，可以使用`wire.Struct`来利用其他 provider 的返回值构建一个指定类型的结构体。
 
 第一个参数应该传入结构体指针类型，后续是字段名称。
 
@@ -430,7 +420,7 @@ func injectFooBar() FoodBar {
 }
 ```
 
-生成的injector可能如下所示
+生成的 injector 可能如下所示
 
 ```go
 func injectFooBar() FooBar {
@@ -450,7 +440,7 @@ func injectFooBar() FooBar {
 wire.Struct(new(FooBar), "*")
 ```
 
-默认是构造结构体类型，如果想要构造指针类型，可以修改injector签名的返回值
+默认是构造结构体类型，如果想要构造指针类型，可以修改 injector 签名的返回值
 
 ```
 func injectFooBar() *FoodBar {
@@ -458,7 +448,7 @@ func injectFooBar() *FoodBar {
 }
 ```
 
-如果想要忽略掉字段，可以加tag，如下所示
+如果想要忽略掉字段，可以加 tag，如下所示
 
 ```go
 type Foo struct {
@@ -469,19 +459,19 @@ type Foo struct {
 
 ### Cleanup
 
-如果provider构造的一个值在使用后需要进行收尾工作（比如关闭一个文件），provider可以返回一个闭包来进行这样的操作，injector并不会调用这个cleanup函数，具体何时调用交给injector的调用者，如下。
+如果 provider 构造的一个值在使用后需要进行收尾工作（比如关闭一个文件），provider 可以返回一个闭包来进行这样的操作，injector 并不会调用这个 cleanup 函数，具体何时调用交给 injector 的调用者，如下。
 
 ```go
 type Data struct {
-	// TODO wrapped database client
+  // TODO wrapped database client
 }
 
 // NewData .
 func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
-	cleanup := func() {
-		log.NewHelper(logger).Info("closing the data resources")
-	}
-	return &Data{}, cleanup, nil
+  cleanup := func() {
+    log.NewHelper(logger).Info("closing the data resources")
+  }
+  return &Data{}, cleanup, nil
 }
 ```
 
@@ -503,19 +493,19 @@ func wireApp(confData *conf.Data, logger log.Logger) (func(), error) {
 
 ### 类型重复
 
-provider的入参最好不要类型重复，尤其是对于一些基础类型
+provider 的入参最好不要类型重复，尤其是对于一些基础类型
 
 ```go
 type FooBar struct {
-	foo string
-	bar string
+  foo string
+  bar string
 }
 
 func NewFooBar(foo string, bar string) FooBar {
-	return FooBar{
-	    foo: foo,  
-	    bar: bar,
-	}
+  return FooBar{
+      foo: foo,
+      bar: bar,
+  }
 }
 
 func InitializeFooBar(a string, b string) FooBar {
@@ -529,4 +519,4 @@ func InitializeFooBar(a string, b string) FooBar {
 provider has multiple parameters of type string
 ```
 
-wire将无法区分这些参数该如何注入，为了避免冲突，可以使用类型别名。
+wire 将无法区分这些参数该如何注入，为了避免冲突，可以使用类型别名。

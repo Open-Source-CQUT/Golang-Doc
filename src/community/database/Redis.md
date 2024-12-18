@@ -1,36 +1,28 @@
 # Redis
 
-Redis 是一个开源的使用 ANSI C 语言编写、遵守 BSD 协议、支持网络、可基于内存、分布式、可选持久性的键值对(Key-Value)存储数据库，并提供多种语言的 API，Redis即可以当作一个NoSQL数据库，又可以是当作高速缓存存储，还支持简单的消息队列。
+Redis 是一个开源的使用 ANSI C 语言编写、遵守 BSD 协议、支持网络、可基于内存、分布式、可选持久性的键值对(Key-Value)存储数据库，并提供多种语言的 API，Redis 即可以当作一个 NoSQL 数据库，又可以是当作高速缓存存储，还支持简单的消息队列。
 
-本文仅仅讲解如何使用Go语言驱动来操作Redis数据库，不会对Redis本身做任何讲解。
-
-
+本文仅仅讲解如何使用 Go 语言驱动来操作 Redis 数据库，不会对 Redis 本身做任何讲解。
 
 官方文档：[Golang Redis client (uptrace.dev)](https://redis.uptrace.dev/)
 
 官方仓库：[go-redis/redis: Type-safe Redis client for Golang (github.com)](https://github.com/go-redis/redis)
 
-
-
 ## 安装
 
-关于Redis的驱动有很多，本文使用的是`github.com/go-redis/redis`。
+关于 Redis 的驱动有很多，本文使用的是`github.com/go-redis/redis`。
 
-<br>
-
-如果你使用的Redis版本号为6
+如果你使用的 Redis 版本号为 6
 
 ```
 go get github.com/go-redis/redis/v8
 ```
 
-如果你使用的Redis版本号为7
+如果你使用的 Redis 版本号为 7
 
 ```
 go get github.com/go-redis/redis/v9
 ```
-
-
 
 ## 快速开始
 
@@ -65,84 +57,80 @@ func TestQuickStart(t *testing.T) {
 }
 ```
 
-
-
 ## 连接配置
 
 ```go
 type Options struct {
-	// 网络类型 tcp 或者 unix.
-	// 默认是 tcp.
-	Network string
-	// redis地址，格式 host:port
-	Addr string
+  // 网络类型 tcp 或者 unix.
+  // 默认是 tcp.
+  Network string
+  // redis地址，格式 host:port
+  Addr string
 
     // Dialer 创建一个新的网络连接且比Network和Addr有着更高的优先级
-	// Network and Addr options.
-	Dialer func() (net.Conn, error)
-    
-	// 新建一个redis连接的时候，会回调这个函数
-	OnConnect func(*Conn) error
+  // Network and Addr options.
+  Dialer func() (net.Conn, error)
 
-	// redis密码，redis server没有设置可以为空。
-	Password string
-	
-	// redis数据库，序号从0开始，默认是0，可以不用设置
-	DB int
+  // 新建一个redis连接的时候，会回调这个函数
+  OnConnect func(*Conn) error
 
-	// redis操作失败最大重试次数，默认0。
-	MaxRetries int
-	
-	// 最小重试时间间隔.
-	// 默认是 8ms ; -1 表示关闭.
-	MinRetryBackoff time.Duration
-	
-	// 最大重试时间间隔
-	// 默认是 512ms; -1 表示关闭.
-	MaxRetryBackoff time.Duration
+  // redis密码，redis server没有设置可以为空。
+  Password string
 
-	// redis新连接超时时间.
-	// 默认是 5 秒.
-	DialTimeout time.Duration
-	
-	// socket读取超时时间
-	// 默认 3 秒.
-	ReadTimeout time.Duration
-	
-	// socket写超时时间
-	WriteTimeout time.Duration
+  // redis数据库，序号从0开始，默认是0，可以不用设置
+  DB int
 
-	// redis连接池的最大连接数.
-	// 默认连接池大小等于 cpu个数 * 10
-	PoolSize int
-	
-	// redis连接池最小空闲连接数.
-	MinIdleConns int
-    
-	// redis连接最大的存活时间，默认不会关闭过时的连接.
-	MaxConnAge time.Duration
-	
-	// 当你从redis连接池获取一个连接之后，连接池最多等待这个拿出去的连接多长时间。
-	// 默认是等待 ReadTimeout + 1 秒.
-	PoolTimeout time.Duration
-    
-	// redis连接池多久会关闭一个空闲连接.
-	// 默认是 5 分钟. -1 则表示关闭这个配置项
-	IdleTimeout time.Duration
-    
-	// 多长时间检测一下，空闲连接
-	// 默认是 1 分钟. -1 表示关闭空闲连接检测
-	IdleCheckFrequency time.Duration
+  // redis操作失败最大重试次数，默认0。
+  MaxRetries int
 
-	// 只读设置，如果设置为true， 在当前节点实例上，redis只能查询缓存不能更新。
-	readOnly bool
-    
+  // 最小重试时间间隔.
+  // 默认是 8ms ; -1 表示关闭.
+  MinRetryBackoff time.Duration
+
+  // 最大重试时间间隔
+  // 默认是 512ms; -1 表示关闭.
+  MaxRetryBackoff time.Duration
+
+  // redis新连接超时时间.
+  // 默认是 5 秒.
+  DialTimeout time.Duration
+
+  // socket读取超时时间
+  // 默认 3 秒.
+  ReadTimeout time.Duration
+
+  // socket写超时时间
+  WriteTimeout time.Duration
+
+  // redis连接池的最大连接数.
+  // 默认连接池大小等于 cpu个数 * 10
+  PoolSize int
+
+  // redis连接池最小空闲连接数.
+  MinIdleConns int
+
+  // redis连接最大的存活时间，默认不会关闭过时的连接.
+  MaxConnAge time.Duration
+
+  // 当你从redis连接池获取一个连接之后，连接池最多等待这个拿出去的连接多长时间。
+  // 默认是等待 ReadTimeout + 1 秒.
+  PoolTimeout time.Duration
+
+  // redis连接池多久会关闭一个空闲连接.
+  // 默认是 5 分钟. -1 则表示关闭这个配置项
+  IdleTimeout time.Duration
+
+  // 多长时间检测一下，空闲连接
+  // 默认是 1 分钟. -1 表示关闭空闲连接检测
+  IdleCheckFrequency time.Duration
+
+  // 只读设置，如果设置为true， 在当前节点实例上，redis只能查询缓存不能更新。
+  readOnly bool
+
     // TLS配置
-	TLSConfig *tls.Config
+  TLSConfig *tls.Config
 }
 ```
-
-
 
 ## 建立连接
 
@@ -155,8 +143,6 @@ redisClient := redis.NewClient(&redis.Options{
 })
 ```
 
-
-
 ## 关闭连接
 
 驱动内部维护着一个连接池，不需要操作一次就关闭一次连接。
@@ -165,17 +151,11 @@ redisClient := redis.NewClient(&redis.Options{
 defer redisClient.Close()
 ```
 
+这个 Redis 驱动几乎将所有的操作封装好了，Redis 命令和方法名一一对应，基本上只要知道 Redis 命令怎么用，驱动对应的方法都也差不多会了。
 
-
-
-
-这个Redis驱动几乎将所有的操作封装好了，Redis命令和方法名一一对应，基本上只要知道Redis命令怎么用，驱动对应的方法都也差不多会了。
-
-Redis命令：[redis 命令手册](https://redis.com.cn/commands.html)
+Redis 命令：[redis 命令手册](https://redis.com.cn/commands.html)
 
 ## 基本操作
-
-
 
 #### 删除键
 
@@ -183,8 +163,6 @@ Redis命令：[redis 命令手册](https://redis.com.cn/commands.html)
 redisClient.Set("name", "jack", 0)
 fmt.Println(redisClient.Del("name").Result())
 ```
-
-
 
 #### 过期时间
 
@@ -197,8 +175,6 @@ time.Sleep(time.Second * 3)
 fmt.Println(redisClient.Get("name").Val())
 ```
 
-
-
 #### 取消过期时间
 
 ```go
@@ -209,8 +185,6 @@ time.Sleep(time.Second * 2)
 fmt.Println(redisClient.Get("name"))
 ```
 
-
-
 #### 查询过期时间
 
 ```go
@@ -218,15 +192,11 @@ fmt.Println(redisClient.TTL("name"))
 fmt.Println(redisClient.PTTL("name"))
 ```
 
-
-
 #### 重命名
 
 ```go
 redisClient.Rename("name", "newName")
 ```
-
-
 
 #### 查询类型
 
@@ -234,19 +204,13 @@ redisClient.Rename("name", "newName")
 redisClient.Type("name")
 ```
 
-
-
 #### 扫描
 
 ```go
 fmt.Println(redisClient.Scan(0, "", 4))
 ```
 
-
-
 ## 字符串
-
-
 
 #### 简单存取
 
@@ -255,16 +219,12 @@ redisClient.Set("token", "abcefghijklmn", 0)
 fmt.Println(redisClient.Get("token").Val())
 ```
 
-
-
 #### 批量存取
 
 ```go
 redisClient.MSet("cookie", "12345", "token", "abcefg")
 fmt.Println(redisClient.MGet("cookie", "token").Val())
 ```
-
-
 
 #### 数字增减
 
@@ -278,11 +238,7 @@ redisClient.Decr("age")
 fmt.Println(redisClient.Get("age").Val())
 ```
 
-
-
 ## 哈希表
-
-
 
 #### 读写操作
 
@@ -307,16 +263,12 @@ b
 map[a:b c:d e:f name:jack]
 ```
 
-
-
 #### 删除键
 
 ```go
 // 删除map的一个字段
 redisClient.HDel("map", "a")
 ```
-
-
 
 #### 判断键是否存在
 
@@ -325,16 +277,12 @@ redisClient.HDel("map", "a")
 redisClient.HExists("map", "a")
 ```
 
-
-
 #### 获取所有的键
 
 ```go
 // 获取所有的map的键
 redisClient.HKeys("map")
 ```
-
-
 
 #### 获取哈希表键长度
 
@@ -343,8 +291,6 @@ redisClient.HKeys("map")
 redisClient.HLen("map")
 ```
 
-
-
 #### 遍历哈希表的键值对
 
 ```go
@@ -352,11 +298,7 @@ redisClient.HLen("map")
 redisClient.HScan("map", 0, "", 1)
 ```
 
-
-
 ## 列表
-
-
 
 #### 修改元素
 
@@ -373,8 +315,6 @@ redisClient.LInsertAfter("list", "a", "gg")
 redisClient.LSet("list", 0, "head")
 ```
 
-
-
 #### 访问长度
 
 ```go
@@ -382,9 +322,7 @@ redisClient.LSet("list", 0, "head")
 redisClient.LLen("list")
 ```
 
-
-
-####  访问元素
+#### 访问元素
 
 ```go
 // 左边弹出元素
@@ -397,8 +335,6 @@ redisClient.LIndex("list", 1)
 redisClient.LRange("list", 0, 1)
 ```
 
-
-
 #### 删除元素
 
 ```go
@@ -410,11 +346,7 @@ redisClient.LTrim("list", 0, 1)
 redisClient.LTrim("list", 0, 1)
 ```
 
-
-
 ## 集合
-
-
 
 #### 新增元素
 
@@ -423,8 +355,6 @@ redisClient.LTrim("list", 0, 1)
 redisClient.SAdd("set", "a", "b", "c")
 redisClient.SAdd("set2", "c", "d", "e")
 ```
-
-
 
 #### 访问集合元素
 
@@ -438,8 +368,6 @@ redisClient.SRandMemberN("set", 1)
 // 获取一个集合的元素个数
 redisClient.SCard("set")
 ```
-
-
 
 #### 集合操作
 
@@ -458,8 +386,6 @@ redisClient.SUnion("set", "set2")
 redisClient.SUnionStore("store", "set", "store")
 ```
 
-
-
 #### 删除元素
 
 ```go
@@ -469,16 +395,12 @@ redisClient.SPop("set")
 redisClient.SPopN("set", 2)
 ```
 
-
-
 #### 移动元素
 
 ```go
 // 从源集合移动指定元素刀目标集合
 redisClient.SMove("set", "set2", "a")
 ```
-
-
 
 #### 删除元素
 
@@ -487,8 +409,6 @@ redisClient.SMove("set", "set2", "a")
 redisClient.SRem("set", "a", "b")
 ```
 
-
-
 #### 遍历
 
 ```go
@@ -496,11 +416,7 @@ redisClient.SRem("set", "a", "b")
 redisClient.SScan("set", 0, "", 2)
 ```
 
-
-
 ## 有序集合
-
-
 
 #### 加入元素
 
@@ -515,8 +431,6 @@ redisClient.ZAdd("ss", redis.Z{
 })
 ```
 
-
-
 #### 元素排名
 
 ```go
@@ -525,8 +439,6 @@ redisClient.ZRank("ss", "1")
 // 返回有序集合中该元素的排名，从高到低排列
 redisClient.ZRevRank("ss", "1")
 ```
-
-
 
 #### 访问元素
 
@@ -548,8 +460,6 @@ redisClient.ZRangeByScore("ss", redis.ZRangeBy{
 })
 ```
 
-
-
 #### 修改权值
 
 ```go
@@ -559,8 +469,6 @@ redisClient.ZIncr("ss", redis.Z{
    Member: "b",
 })
 ```
-
-
 
 #### 删除元素
 
@@ -572,10 +480,6 @@ redisClient.ZRemRangeByRank("ss", 1, 2)
 // 删除权值在min和max区间的元素
 redisClient.ZRemRangeByScore("ss", "1", "2")
 ```
-
-
-
-
 
 ## 脚本
 
@@ -593,8 +497,6 @@ redisClient.ScriptKill()
 // 验证对应哈希值的脚本是否存在
 redisClient.ScriptExists("")
 ```
-
-
 
 ## 发布订阅
 

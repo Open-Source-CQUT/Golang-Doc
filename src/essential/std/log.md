@@ -1,9 +1,10 @@
 ---
 date: 2022-10-20
 ---
+
 # log
 
-Go语言标准库log包实现了简单的日志。
+Go 语言标准库 log 包实现了简单的日志。
 
 ```go
 func main() {
@@ -13,9 +14,7 @@ func main() {
 }
 ```
 
-Fatal会在写入日志信息后调用`os.exit(1)`，panic则会抛出`panic`
-
-
+Fatal 会在写入日志信息后调用`os.exit(1)`，panic 则会抛出`panic`
 
 ## 前缀
 
@@ -29,13 +28,11 @@ func (l *Logger) SetPrefix(prefix string) //设置前缀
 
 ```go
 func main() {
-	log.SetPrefix("[main]")
-	log.Println("日志")
-	log.Panicln("panic日志")
+  log.SetPrefix("[main]")
+  log.Println("日志")
+  log.Panicln("panic日志")
 }
 ```
-
-
 
 ## Flag
 
@@ -62,7 +59,7 @@ const (
 )
 ```
 
-例子 
+例子
 
 ```go
 func main() {
@@ -71,8 +68,6 @@ func main() {
    log.Panicln("panic日志")
 }
 ```
-
-
 
 当然也可以使用`log.SetOutput(w io.Writer)`来设置日志的输出路径，也可以通过`New`方法创建自己的实例。
 
