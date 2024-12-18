@@ -16,8 +16,6 @@ jobs:
 
       - name: Setup Pnpm
         uses: pnpm/action-setup@v3
-        with:
-          version: 9
 
       - name: 设置 Node.js
         uses: actions/setup-node@v4
