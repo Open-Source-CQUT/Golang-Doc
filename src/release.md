@@ -376,7 +376,7 @@ go1.13 版本的详细更新日志可以前往[Go 1.13 Release Notes](https://go
 1. `GO111MODULE`值默认为`auto`
 2. 新增`GOPRIVATE`环境变量来支持私有的依赖源
 3. 新增`GOSUMDB`环境环境
-4. `derfer`的使用开销降低了 30%
+4. `defer`的使用开销降低了 30%
 5. 当发生索引下标越界时，`panic`现在会打印出下标信息
 6. go 下载依赖时会进行语义化版本验证
 
