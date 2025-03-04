@@ -2,8 +2,8 @@
 
 **维护版本：**
 
+- go1.24，首次发布：2025-02-11，最后更新：go1.24.0 (2025-02-11)
 - go1.23，首次发布：2024-08-13，最后更新：go1.23.4 (2024-12-03)
-- go1.22，首次发布：2024-02-08，最后更新：go1.22.6 (2024-08-06)
 
 Go 语言官方更新日志：[Release History - The Go Programming Language](https://go.dev/doc/devel/release)
 
@@ -18,6 +18,78 @@ Go2.0 上一次提出草案是在 2018 年 11 月 19 日，那时还是处于 go
 此页面只是对官方日志的一个简单搬运，不定期更新，想获取最新消息还请前往官网。
 
 :::
+
+## 1.24
+
+首次发布：2025-02-11
+
+最后更新：go1.24.0 (2025-02-11)
+
+go1.24 版本的详细更新日志可以前往[Go 1.24 Release Notes](https://go.dev/doc/go1.24)
+查看，在其维护期间发布的所有补丁版本可以前往[Go1.24 - Release Patch](https://go.dev/doc/devel/release#go1.24.0)了解。
+
+**语言层面**
+
+1. 泛型类型别名，允许为泛型类型创建别名，这在引用第三方定义的泛型类型时非常有用，例如
+
+   ```go
+   import (
+       "other"
+   )
+   
+   type MyQuque[T any] = other.Queue[T]
+   ```
+
+**标准库**
+
+1. 新增 `weak` 包：提供弱指针（Weak Pointers），允许对象在不增加引用计数的情况下被引用，避免缓存导致的内存泄漏，使用前需检查指针是否为
+   `nil`
+2. 文件系统访问限制：引入 `os.Root` 类型，限制文件操作在特定目录内，增强安全性
+3. 加密与哈希支持：新增 `crypto/mlkem`，`crypto/hkdf`、`crypto/pbkdf2` 和 `crypto/sha3` 包，优化现有加密算法性能
+4. 新增基准测试函数 `testing.B.Loop`，以更好的进行循环测试
+5. `encoding/json` ：新增 `omitzero` 标签，支持基于 `IsZero()` 方法的零值过滤
+6. `strings` 和 `bytes`：新增迭代器函数（如 `Lines`、`SplitSeq`、`FieldsSeq`）
+
+**运行时**
+
+1. 基于Swiss Tables重构内置map，大型map访问速度提升30%，迭代速度提升10%-60%
+2. `sync.Map` 改用并发哈希 Trie（hash-trie）以优化性能，尤其是在并发写的情况
+3. 运行时内部的互斥锁采用新的spinbit实现，降低了锁竞争，提升高并发场景性能
+4. 优化小对象分配策略，减少内存碎片和GC暂停时间
+5. 新增 `runtime.AddCleanup` 替代 `runtime.SetFinalizer`，支持为对象注册多个清理函数，并在独立 goroutine 中顺序执行
+
+**Cgo**
+
+1. 支持 `#cgo noescape` 和 `#cgo nocallback` 注解，分别声明 C 函数不逃逸内存和不回调 Go 函数，提升运行时性能
+2. Cgo 现在将拒绝编译对具有多个不兼容声明的 C 函数的调用，严格检测跨文件的不兼容 C 函数声明（如 `void f(int)` 和
+   `void f(double)`），避免生成错误调用序列
+
+**工具链**
+
+1. 模块工具依赖管理：通过 go.mod 的 tool 指令跟踪工具依赖，替代传统的 tools.go 空导入方案
+2. 结构化输出：go build 和 go test 支持 -json 标志，输出 JSON 格式的构建和测试结果
+3. 编译与链接优化：编译器生成代码效率提升，链接器默认生成 GNU Build ID（ELF 平台）和 UUID（macOS）
+4. 禁止通过别名绕过对 CGO 生成类型的方法定义限制
+5. `go build` 自动嵌入版本控制系统信息到二进制文件（支持 `-buildvcs=false` 禁用）
+6. `GOAUTH` 环境变量支持私有模块认证。
+7. `go.mod` 支持 `tool` 指令管理可执行依赖，替代 `tools.go` 空白导入
+8. 新增 `go get -tool`参数 和 `go install tool` 命令管理模块工具依赖
+9. 构建缓存支持 `go run` 和 `go tool` 的二进制缓存
+10. `objdump` 支持 LoongArch、RISC-V、S390X 反汇编
+11. `vet` 新增 `tests` 分析器（检测测试函数签名错误）
+
+**平台兼容性**
+
+1. macOS：Go 1.24 为最后一个支持 macOS 11 Big Sur 的版本，Go 1.25 将要求 macOS 12+
+2. Windows：将 32 位 ARM 架构标记为不完整的（GOOS=windows
+   GOARCH=arm），见 [issue #70705](https://golang.google.cn/issue/70705)
+3. Linux：最低内核版本要求升级至 3.2
+4. 要求 Go 1.22.6+ 作为引导工具链
+
+**废弃**
+
+1. `math/rand.Seed()`彻底失效，需通过 `GODEBUG=randseednop=0` 恢复旧行为。
+2. `runtime.GOROOT()`标记为弃用，推荐通过`go env GOROOT`获取路径
 
 ## 1.23
 
@@ -42,14 +114,14 @@ go1.23 版本的详细更新日志可以前往[Go 1.23 Release Notes](https://go
        return
      }
    }
-
+   
    func main() {
      sl := []string{"hello", "world", "golang"}
      for i, s := range Upper(sl) {
        fmt.Printf("%d : %s\n", i, s)
      }
    }
-
+   
    //0 : HELLO
    //1 : WORLD
    //2 : GOLANG
@@ -84,7 +156,7 @@ go1.23 版本的详细更新日志可以前往[Go 1.23 Release Notes](https://go
    ```go
    //go:linkname gcinit runtime.gcinit
    func gcinit()
-
+   
    func main() {
      gcinit()
    }
@@ -527,7 +599,7 @@ go1.5 版本的详细更新日志可以前往[Go 1.5 Release Notes](https://go.d
        Point{-25.352594, 131.034361}: "Uluru",
        Point{37.422455, -122.084306}: "Googleplex",
    }
-
+   
    // 省略类型
    m := map[Point]string{
        {29.935523, 52.891566}:   "Persepolis",
@@ -570,7 +642,7 @@ go1.4 版本的详细更新日志可以前往[Go 1.4 Release Notes](https://go.d
    type T int
    func (T) M() {}
    var x **T
-
+   
    // 不被允许
    x.M()
    ```
