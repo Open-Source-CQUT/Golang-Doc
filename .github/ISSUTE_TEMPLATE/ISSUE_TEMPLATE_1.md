@@ -2,7 +2,7 @@
 name: 错误反馈
 about: 错别字，解释错误，语义错误，代码错误
 title: "[Bug-分类名-章节名-小节名]：简短的问题总结"
-labels: bug
+labels: [ "bug" ]
 ---
 
 ## 环境
