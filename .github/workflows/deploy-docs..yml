@@ -3,8 +3,6 @@ name: 部署博客
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   deploy-gh-pages:
