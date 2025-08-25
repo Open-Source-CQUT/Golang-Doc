@@ -27,7 +27,7 @@
 
 | 名称      | 描述                | 仓库                                             |
 | --------- | ------------------- | ------------------------------------------------ |
-| grom      | 开发者友好的 ORM 库 | https://github.com/go-gorm/gorm                  |
+| gorm      | 开发者友好的 ORM 库 | https://github.com/go-gorm/gorm                  |
 | xorm      | 简单强大的 ORM      | https://gitea.com/xorm/xorm                      |
 | ent       | FaceBook 开源的 ORM | https://github.com/ent/ent                       |
 | sqlx      | 对 sql 库的强大拓展 | https://github.com/jmoiron/sqlx                  |
@@ -287,7 +287,7 @@
 | ---------- | ------------------------------------- | ------------------------------------------------ |
 | fyne       | 跨平台的 GUI 开发工具箱（真有点东西） | https://github.com/fyne-io/fyne                  |
 | go-flutter | 用 go 写 flutter                      | https://github.com/go-flutter-desktop/go-flutter |
-|            |                                       |                                                  |
+| Wails      | 可以将它看作为 Go 的快并且轻量的 Electron 替代品 | https://github.com/wailsapp/wails  |
 
 ### 系统交互
 
