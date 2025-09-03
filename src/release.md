@@ -2,8 +2,8 @@
 
 **维护版本：**
 
-- go1.24，首次发布：2025-02-11，最后更新：go1.24.0 (2025-02-11)
-- go1.23，首次发布：2024-08-13，最后更新：go1.23.4 (2024-12-03)
+- go1.25，首次发布：2025-08-12，最后更新：go1.25.0 (2025-08-12)
+- go1.24，首次发布：2025-02-11，最后更新：go1.24.6 (2024-08-06)
 
 Go 语言官方更新日志：[Release History - The Go Programming Language](https://go.dev/doc/devel/release)
 
@@ -19,11 +19,85 @@ Go2.0 上一次提出草案是在 2018 年 11 月 19 日，那时还是处于 go
 
 :::
 
+## 1.25
+
+首次发布：2025-08-12
+
+最后更新：go1.25.0  (2025-08-12)
+
+go1.25 版本的详细更新日志可以前往[Go 1.24 Release Notes](https://go.dev/doc/go1.25)
+查看，在其维护期间发布的所有补丁版本可以前往[Go1.25 - Release Patch](https://go.dev/doc/devel/release#go1.25.0)了解。
+
+**语言层面**
+
+1. 移除了泛型中的核心类型的概念（core type），见官方博文[Goodbye core types](https://golang.google.cn/blog/coretypes)
+
+**标准库**
+
+1. 新增`test/synctest`，用于测试并发代码
+2. 新增实验库`encoding/json/v2`，包含了:
+    - `encoding/json/v2`
+      ，反序列化速度较于v1提升2-10倍左右，基准测试见[go-json-experiment/jsonbench](https://github.com/go-json-experiment/jsonbench)
+    - `encoding/json/jsontext`，提供了与json字符串低级交互的能力
+
+**工具链**
+
+1. 后续的Go发行版将会包含少量的预构建二进制工具
+2. go mod新增`ignore`指令，用于指定go命令应该忽略的文件夹
+3. `go doc -http` 可以启动一个本地的http server，查看代码文档
+4. go vet，新增 `waitgroup`和`hostport`分析器
+5. 当go命令行更新`go.mod`或`go.work`中的go版本时，不再添加指定的 go toolchain version
+
+**运行时**
+
+1. GOMAXPROCS在容器环境中会感知容器CPU限制
+
+2. 新版实验GC`greenteagc`，GC的基本调度单位从object变成了memoery span
+
+3. 当panic未捕获时，不再重复打印
+
+   ```
+   panic: PANIC [recovered]
+     panic: PANIC
+   ```
+
+   变为
+
+   ```
+   panic: PANIC [recovered, repanicked]
+   ```
+
+4. 新增 `runtime/trace.FlightRecorder`，能够以更轻量的方式持续捕获运行时执行信息
+
+**编译器**
+
+1. 修复了1.21空指针延迟检查（延迟到错误检查以后）的bug，下面这个一眼有问题的代码，在1.25版本以前能够正常运行
+
+   ```go
+   package main
+   
+   import "os"
+   
+   func main() {
+   	f, err := os.Open("nonExistentFile")
+   	name := f.Name()
+   	if err != nil {
+   		println("should panic") // 1.25以前会输出这一行
+   		return
+   	}
+   	println(name)
+   }
+   ```
+
+2. 编译器会对位于栈上的slice预留更多后备内存，以提高使用性能
+
+3. 支持生成DWARF5调试信息
+
 ## 1.24
 
 首次发布：2025-02-11
 
-最后更新：go1.24.0 (2025-02-11)
+最后更新：go1.24.6 (2025-08-06)
 
 go1.24 版本的详细更新日志可以前往[Go 1.24 Release Notes](https://go.dev/doc/go1.24)
 查看，在其维护期间发布的所有补丁版本可以前往[Go1.24 - Release Patch](https://go.dev/doc/devel/release#go1.24.0)了解。
