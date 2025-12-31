@@ -309,7 +309,7 @@ func main() {
 有时候，依赖注入时会将一个具体的实现注入到接口上。wire 在依赖注入时，是根据类型匹配来实现的。
 
 ```go
-ype Fooer interface {
+type Fooer interface {
     Foo() string
 }
 
