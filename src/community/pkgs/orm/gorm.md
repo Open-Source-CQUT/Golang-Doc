@@ -1267,7 +1267,7 @@ type Person struct {
     Mom   Mom `gorm:"foreignKey:MomId;"`
 
     SchoolId sql.NullInt64
-    School   School gorm:"foreignKey:SchoolId;"`
+    School   School `gorm:"foreignKey:SchoolId;"`
 }
 
 type Mom struct {
