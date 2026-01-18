@@ -312,12 +312,12 @@ import (
 )
 
 type LoginUser struct {
-  Username string `bind:"required" json:"username" form:"username" uri:"username"`
-  Password string `bind:"required" json:"password" form:"password" uri:"password"`
+  Username string `binding:"required" json:"username" form:"username" uri:"username"`
+  Password string `binding:"required" json:"password" form:"password" uri:"password"`
 }
 
 func main() {
-    e := gin.Default()
+  e := gin.Default()
   e.POST("/loginWithJSON", Login)
   e.POST("/loginWithForm", Login)
   e.GET("/loginWithQuery/:username/:password", Login)
