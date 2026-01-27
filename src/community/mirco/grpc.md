@@ -1,4 +1,4 @@
-# gPRC
+# gRPC
 
 ![](/images/grpc/cover.png)
 
