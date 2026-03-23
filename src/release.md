@@ -2,8 +2,8 @@
 
 **维护版本：**
 
-- go1.25，首次发布：2025-08-12，最后更新：go1.25.0 (2025-08-12)
-- go1.24，首次发布：2025-02-11，最后更新：go1.24.6 (2024-08-06)
+- go1.26，首次发布：2026-02-10，最后更新：go1.26.0 (2026-02-10)
+- go1.25，首次发布：2025-08-12，最后更新：go1.25.6 (2026-02-10)
 
 Go 语言官方更新日志：[Release History - The Go Programming Language](https://go.dev/doc/devel/release)
 
@@ -19,13 +19,60 @@ Go2.0 上一次提出草案是在 2018 年 11 月 19 日，那时还是处于 go
 
 :::
 
+## 1.26
+
+首次发布：2026-02-10
+
+最后更新：go1.26.0 (2026-02-10)
+
+go1.26 版本的详细更新日志可以前往[Go 1.26 Release Notes](https://go.dev/doc/go1.26)查看，在其维护期间发布的所有补丁版本可以前往[Go1.26 - Release Patch](https://go.dev/doc/devel/release#go1.26.0)了解。
+
+**语言层面**
+
+1. `new` 内置函数现在允许接收一个表达式作为操作数，用于指定变量的初始值。这在处理需要指针表示可选值的场景（如 JSON 序列化）时非常有用。
+2. 移除了泛型类型在其类型参数列表中不能引用自身的限制，现在可以指定引用被约束泛型类型的类型约束（例如 `type Adder[A Adder[A]] interface`）。
+
+**工具链**
+
+1. `go fix` 命令经过彻底重写，现在基于与 `go vet` 相同的分析框架，并包含数十个用于代码现代化的修复程序，以及一个源码级内联工具。
+2. `go mod init` 现在会在新建的 `go.mod` 文件中默认指定一个较低的 Go 版本（通常为当前工具链版本减 1），以鼓励创建向后兼容的模块。
+3. 移除了 `cmd/doc` 和 `go tool doc`，统一使用 `go doc` 作为替代。
+4. `pprof` 工具的 Web UI (`-http` 标志) 现在默认显示火焰图（flame graph）视图。
+
+**运行时**
+
+1. 默认启用 "Green Tea" 垃圾回收器，针对小对象的标记和扫描性能进行了优化，预计可降低 10%–40% 的 GC 开销。
+2. cgo 调用的基准运行时开销降低了约 30%。
+3. 在 64 位平台上，运行时在启动时会随机化堆的基地址，以增强安全性，使得在使用 cgo 时更难预测内存地址。
+4. 实验性地新增了 goroutine 泄漏分析配置（`goroutineleakprofile`），通过 GC 机制检测永远被阻塞的 goroutine，帮助排查并发泄漏问题。
+
+**编译器与链接器**
+
+1. 编译器现在能在更多情况下将 slice 的后备存储分配在栈上，从而提升性能。
+2. Windows 上的 64 位 ARM (windows/arm64) 链接器现在支持 cgo 程序的内部链接模式。
+
+**标准库**
+
+1. 新增 `crypto/hpke` 包：实现了 RFC 9180 规范的混合公钥加密（HPKE），并支持后量子混合 KEM。
+2. 新增实验性的 `simd/archsimd` 包：提供特定架构的 SIMD 操作（目前支持 amd64 上的 128 位、256 位和 512 位向量类型）。
+3. 新增实验性的 `runtime/secret` 包：提供安全擦除操作涉及机密信息的临时变量（如寄存器、栈、新堆分配）的功能，以确保前向安全性。
+4. `io.ReadAll` 函数优化，分配的中间内存更少，最终切片大小更小，并且速度通常提升两倍。
+5. `net/http`：`ServeMux` 的尾部斜杠重定向现在使用 HTTP 状态码 307 (Temporary Redirect) 而不是 301。
+6. 加密库（如 `crypto/rand` 等）中的随机数生成不再使用传递的 `random` 参数，而是强制使用安全的加密随机字节源，新增了 `testing/cryptotest.SetGlobalRandom` 用于确定性测试。
+
+**平台兼容性**
+
+1. macOS：Go 1.26 是支持 macOS 12 Monterey 的最后一个版本，Go 1.27 将要求 macOS 13+。
+2. Windows：彻底移除了损坏的 32 位 ARM 架构 (windows/arm) 支持。
+3. FreeBSD：`freebsd/riscv64` 端口被标记为损坏 (broken)。
+
 ## 1.25
 
 首次发布：2025-08-12
 
 最后更新：go1.25.0  (2025-08-12)
 
-go1.25 版本的详细更新日志可以前往[Go 1.24 Release Notes](https://go.dev/doc/go1.25)
+go1.25 版本的详细更新日志可以前往[Go 1.25 Release Notes](https://go.dev/doc/go1.25)
 查看，在其维护期间发布的所有补丁版本可以前往[Go1.25 - Release Patch](https://go.dev/doc/devel/release#go1.25.0)了解。
 
 **语言层面**
