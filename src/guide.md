@@ -163,7 +163,7 @@ go/
 释义如下
 
 - `go/root`目录用于存放各个版本 go 语言源文件
-- `go/mod`对应`GOAPTH`
+- `go/mod`对应`GOPATH`
 - `go/mod/libs`对应`GOMODCACHE`，也就是下载的第三方依赖存放地址
 - `go/mod/bin`对应`GOBIN`，第三方依赖二进制文件存放地址
 - `go/cache`，对应`GOCACHE`，存放缓存文件
