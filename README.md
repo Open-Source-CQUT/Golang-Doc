@@ -51,7 +51,7 @@ pnpm docs:build
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Open-Source-CQUT/Golang-Doc&type=Timeline)](https://star-history.com/#Open-Source-CQUT/Golang-Doc&Timeline)
+[![Star History Chart](https://star-history.dera.page/svg?repos=Open-Source-CQUT/Golang-Doc&type=Timeline)](https://star-history.dera.page/#Open-Source-CQUT/Golang-Doc&Timeline)
 
 ## 贡献
 
