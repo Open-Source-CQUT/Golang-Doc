@@ -61,7 +61,7 @@ ct := resp.Header.Get("Content-Type")
 
 ```go
 file, err := os.Create("output.html")
-_, err := io.Copy(file, resp.Body)
+_, err = io.Copy(file, resp.Body)
 ```
 
 - 直接读取并打印
@@ -71,14 +71,14 @@ data, err := io.ReadAll(resp.Body)
 fmt.Println(string(data))
 ```
 
-- 如果是 json 我们还可以进行序列化
+- 如果是 json 我们还可以进行反序列化
 
 ```go
 // 这边是自定义的结构体
 var d Data
 
 data, err := io.ReadAll(resp.Body)
-err := json.Unmarshal(data, &d)
+err = json.Unmarshal(data, &d)
 ```
 
 ### Post 示例
@@ -106,7 +106,7 @@ func main() {
     req.Header.Set("Content-Type", "application/json")
 
     // 对于需要身份认证的场景， 还可以设置密码
-    request.Header.Set("Authorization","123456")
+    req.Header.Set("Authorization","123456")
 
     resp, err := c.Do(req)
     if err != nil {
@@ -256,7 +256,7 @@ Server 跟 Client 之间的交互， 在 golang 当中的核心实现是以下�
 
 - `ServeHTTP` 获取 Request, 使用 ResponseWriter 进行 HTTP 的交互
 - `Handler` 核心接口， 只有一个函数 ServeHTTP
-- `HandlerFunc` 这是一个 Wrapper, 将一个普通的函数包装成符合 Handler 接口的结构体
+- `HandlerFunc` 这是一个 Wrapper, 将一个普通的函数包装成符合 Handler 接口的函数
 - `ResponseWriter` 设置 Header, Body, 返回相应的状态码
 - `ServeMux` 根据不同的路径将不同的请求路由到相应的地方， 使用对应的 Handler 处理
 - `Serve` 连接网络和 Handler, 开启服务
@@ -323,7 +323,7 @@ func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
 
 ```
 
-HanlderFunc 是一个特殊的 Wrapper 使得该函数实现接口 `ServeHTTP`
+HandlerFunc 是一个特殊的 Wrapper 使得该函数实现接口 `ServeHTTP`
 
 ### Server
 
@@ -351,7 +351,7 @@ type Server struct {
 
 ```go
 func handlerMinimal(w http.ResponseWriter, r *http.Request) {
-    slog.Info("receive a request, reponding with hello")
+    slog.Info("receive a request, respond with hello")
 
     w.Write([]byte("Hello 👋 This is a minimal handler"))
 }
@@ -410,9 +410,9 @@ Hello 👋 This is a minimal handler%
 
 但是目前我们比较纯粹的 HandlerFunc 内部并没有实现将请求定向到对应的 Handler 的能力
 
-路径请求几乎对于所有的服务都是必须的， 所以 http 标准库当中也提供了自动的路径和 Hanlder 注册的结构体
+路径请求几乎对于所有的服务都是必须的， 所以 http 标准库当中也提供了自动的路径和 Handler 注册的结构体
 
-这个结构体就是 `ServeMux` 它也实现了 Hanlder 接口所要求的 `ServeHTTP` 函数
+这个结构体就是 `ServeMux` 它也实现了 Handler 接口所要求的 `ServeHTTP` 函数
 
 ```go
 func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request) {
@@ -454,6 +454,10 @@ func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Re
 先实现不同路径对应的 handler
 
 ```go
+const endpointRoot = "/"
+const endpointHello = "/hello"
+const endpointHello = "/http"
+
 func handleRoot(w http.ResponseWriter, r *http.Request) {
     // read user-agent from header
     ua := r.Header.Get("User-Agent")
